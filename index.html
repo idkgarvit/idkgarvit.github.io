@@ -3,455 +3,503 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orbit | Portfolio</title>
+    <title>Orbit | Garvit Kanojia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
+        /* === RESET & BASE === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #e0e0e0;
-            line-height: 1.6;
+            background: #05050a;
+            color: #c0c0d0;
+            line-height: 1.7;
+            overflow-x: hidden;
         }
-        ::selection { background: #00f0ff; color: #0a0a0f; }
+        ::selection { background: #00d4ff; color: #05050a; }
+        a { color: inherit; text-decoration: none; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0f; }
-        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 3px; }
+        /* === SCROLLBAR === */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #05050a; }
+        ::-webkit-scrollbar-thumb { background: #00d4ff40; border-radius: 2px; }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        /* === ANIMATED GRID BACKGROUND === */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black 30%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black 30%, transparent 70%);
+        }
 
-        /* ===== ANIMATIONS ===== */
+        /* === FLOATING ORBS === */
+        .orb {
+            position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+            filter: blur(80px); opacity: 0.15;
+        }
+        .orb-1 {
+            width: 500px; height: 500px;
+            background: #00d4ff; top: -10%; left: -10%;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: 400px; height: 400px;
+            background: #7c3aed; bottom: -10%; right: -10%;
+            animation: orbFloat 25s ease-in-out infinite reverse;
+        }
+        .orb-3 {
+            width: 300px; height: 300px;
+            background: #00ff88; top: 30%; right: 20%;
+            animation: orbFloat 30s ease-in-out infinite 5s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(60px, -40px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* === NAV === */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 16px 0;
+            background: rgba(5, 5, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        nav .container {
+            max-width: 1000px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        nav .logo {
+            font-family: 'JetBrains Mono', monospace; font-weight: 600;
+            font-size: 18px; color: #fff; letter-spacing: -0.5px;
+        }
+        nav .logo span { color: #00d4ff; }
+        nav .links { display: flex; gap: 32px; }
+        nav .links a {
+            font-size: 14px; color: #666; transition: color 0.3s; font-weight: 500;
+        }
+        nav .links a:hover { color: #00d4ff; }
+
+        /* === SECTION BASE === */
+        section { position: relative; z-index: 1; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+        /* === ANIMATIONS === */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         @keyframes typewriter {
             from { width: 0; }
             to { width: 100%; }
         }
         @keyframes blink {
+            0%, 100% { border-color: #00d4ff; }
             50% { border-color: transparent; }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0,240,255,0.1); }
-            50% { box-shadow: 0 0 40px rgba(0,240,255,0.25); }
-        }
-        @keyframes bgShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .anim-fade {
-            opacity: 0; transform: translateY(30px);
+        .reveal {
+            opacity: 0; transform: translateY(40px);
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        .anim-fade.visible {
-            opacity: 1; transform: translateY(0);
-        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        /* Hero */
+        /* === HERO === */
         .hero {
-            padding: 80px 0 60px;
-            text-align: center;
-            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 25%, #0a0a0f 50%, #0f0f1a 75%, #0a0a0f 100%);
-            background-size: 400% 400%;
-            animation: bgShift 15s ease infinite, glowPulse 4s ease-in-out infinite;
-            border-bottom: 1px solid #1a1a2e;
-        }
-        .hero-avatar {
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            border: 3px solid #00f0ff;
-            object-fit: cover;
-            margin-bottom: 24px;
-            background: #1a1a2e;
+            min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
-            font-size: 48px; color: #00f0ff; font-weight: 800;
-            margin-left: auto; margin-right: auto;
-            animation: float 4s ease-in-out infinite, glowPulse 3s ease-in-out infinite;
+            text-align: center; padding: 120px 24px 80px;
+        }
+        .hero-content { max-width: 700px; animation: fadeUp 1s ease; }
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            color: #00d4ff; margin-bottom: 24px;
         }
         .hero h1 {
-            font-size: 36px; font-weight: 800;
-            background: linear-gradient(135deg, #00f0ff, #00ff88);
+            font-size: clamp(40px, 8vw, 72px); font-weight: 900;
+            line-height: 1.05; margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 40%, #00d4ff 70%, #7c3aed 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: fadeUp 1s ease;
         }
-        .hero .alias {
+        .hero .typewriter-wrap {
+            display: flex; justify-content: center;
+            min-height: 32px; margin-bottom: 32px;
+        }
+        .hero .typewriter {
+            font-size: 18px; color: #888;
             font-family: 'JetBrains Mono', monospace;
-            color: #666; font-size: 16px; margin-top: 4px;
+            overflow: hidden; white-space: nowrap;
+            border-right: 2px solid #00d4ff;
+            width: 0; display: inline-block;
+            animation: typewriter 3s steps(45) 1s forwards, blink 0.8s step-end infinite;
         }
-        .hero .alias span { color: #00f0ff; }
-        .hero p {
-            color: #888; font-size: 18px; margin-top: 16px; max-width: 600px; margin-left: auto; margin-right: auto;
+        .hero .typewriter.done { border-color: transparent; }
+        .hero .social-links {
+            display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
         }
-        /* Typewriter effect */
-        .typewriter-wrapper {
-            display: inline-block; max-width: 600px; margin-top: 16px;
-        }
-        .typewriter {
-            display: inline-block; overflow: hidden; white-space: nowrap;
-            border-right: 2px solid #00f0ff; color: #888; font-size: 18px;
-            width: 0; animation: typewriter 3s steps(50) 0.5s forwards, blink 0.8s step-end infinite;
-        }
-        .typewriter-done { border-color: transparent; }
-
-        /* Sections */
-        section { padding: 60px 0; }
-        section h2 {
-            font-size: 24px; font-weight: 700;
-            margin-bottom: 32px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        section h2::after {
-            content: ''; flex: 1; height: 1px; background: #1a1a2e;
-        }
-        .section-subtitle {
-            color: #666; font-size: 14px; margin-top: -24px; margin-bottom: 32px;
-        }
-
-        /* About */
-        .about-content {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-        }
-        .about-text p { color: #999; margin-bottom: 16px; font-size: 15px; }
-        .about-text p strong { color: #ccc; }
-        .about-stats {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-        }
-        .stat-card {
-            background: #111118; border: 1px solid #1a1a2e;
-            border-radius: 12px; padding: 20px; text-align: center;
-            transition: all 0.3s ease; cursor: default;
-        }
-        .stat-card:hover {
-            border-color: #00f0ff; transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0,240,255,0.1);
-        }
-        .stat-card .num {
-            font-size: 28px; font-weight: 800;
-            background: linear-gradient(135deg, #00f0ff, #00ff88);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .stat-card .label { color: #666; font-size: 13px; margin-top: 4px; }
-
-        /* Skills */
-        .skills-grid {
-            display: flex; flex-wrap: wrap; gap: 10px;
-        }
-        .skill-tag {
-            padding: 8px 16px; border-radius: 8px;
-            font-size: 13px; font-weight: 500;
-            background: #111118; border: 1px solid #1a1a2e;
-            color: #aaa; transition: all 0.3s ease;
-        }
-        .skill-tag:hover {
-            border-color: #00f0ff; color: #00f0ff;
-            transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,240,255,0.15);
-        }
-
-        /* Writeups */
-        .writeup-card {
-            background: #111118; border: 1px solid #1a1a2e;
-            border-radius: 12px; padding: 24px;
-            margin-bottom: 20px; transition: all 0.3s ease;
-        }
-        .writeup-card:hover {
-            border-color: #333; transform: translateX(4px);
-            box-shadow: -4px 0 20px rgba(0,240,255,0.05);
-        }
-        .writeup-card .meta {
-            display: flex; gap: 12px; align-items: center;
-            font-size: 12px; color: #555; margin-bottom: 8px; flex-wrap: wrap;
-        }
-        .writeup-card .meta .badge {
-            padding: 2px 10px; border-radius: 4px;
-            font-weight: 600; font-size: 11px;
-        }
-        .badge-critical { background: rgba(255,50,50,0.15); color: #ff4444; }
-        .badge-high { background: rgba(255,150,0,0.15); color: #ff9900; }
-        .badge-medium { background: rgba(255,200,0,0.15); color: #ffcc00; }
-        .badge-low { background: rgba(0,200,100,0.15); color: #00cc66; }
-        .badge-hof { background: rgba(0,240,255,0.15); color: #00f0ff; }
-        .writeup-card h3 {
-            font-size: 18px; font-weight: 600; margin-bottom: 8px;
-            color: #eee;
-        }
-        .writeup-card p { color: #777; font-size: 14px; }
-        .writeup-card .tags {
-            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
-        }
-        .writeup-card .tags span {
-            font-size: 11px; padding: 3px 10px; border-radius: 4px;
-            background: #0a0a0f; color: #555; border: 1px solid #1a1a2e;
-        }
-
-        /* Socials */
-        .socials {
-            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-        }
-        .social-link {
+        .hero .social-links a {
             display: flex; align-items: center; gap: 8px;
-            padding: 12px 24px; border-radius: 10px;
-            background: #111118; border: 1px solid #1a1a2e;
-            color: #ccc; text-decoration: none; font-size: 14px;
+            padding: 10px 20px; border-radius: 10px;
+            font-size: 14px; font-weight: 500;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #888; transition: all 0.3s ease;
+        }
+        .hero .social-links a:hover {
+            background: rgba(0,212,255,0.06);
+            border-color: rgba(0,212,255,0.2);
+            color: #00d4ff; transform: translateY(-2px);
+        }
+        .hero-scroll {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: #444; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+        }
+        @keyframes scrollDot {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(12px); }
+        }
+        .hero-scroll .dot {
+            width: 2px; height: 16px; background: #00d4ff; border-radius: 2px;
+            animation: scrollDot 2s ease-in-out infinite;
+        }
+
+        /* === SECTION HEADERS === */
+        .section-label {
+            font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+            color: #00d4ff; margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 40px); font-weight: 800;
+            color: #fff; margin-bottom: 16px;
+        }
+        .section-desc {
+            color: #666; font-size: 16px; max-width: 600px; margin-bottom: 48px;
+        }
+
+        /* === ABOUT === */
+        .about-wrap { padding: 120px 0; }
+        .about-grid {
+            display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: start;
+        }
+        .about-text p { color: #888; font-size: 15px; margin-bottom: 16px; }
+        .about-text p strong { color: #ccc; }
+        .about-text .highlight {
+            color: #00d4ff; font-weight: 600;
+        }
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px; padding: 24px; text-align: center;
             transition: all 0.3s ease;
         }
-        .social-link:hover {
-            border-color: #00f0ff; color: #00f0ff; transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,240,255,0.15);
+        .stat-item:hover {
+            border-color: rgba(0,212,255,0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,212,255,0.04);
         }
-        .social-link .icon { font-size: 20px; }
+        .stat-item .num {
+            font-size: 32px; font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .stat-item .label { color: #555; font-size: 13px; margin-top: 4px; }
 
-        /* Footer */
+        /* === SKILLS === */
+        .skills-wrap { padding: 100px 0; border-top: 1px solid rgba(255,255,255,0.04); }
+        .skills-cloud {
+            display: flex; flex-wrap: wrap; gap: 10px;
+        }
+        .skill-pill {
+            padding: 10px 20px; border-radius: 100px;
+            font-size: 13px; font-weight: 500;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #777; transition: all 0.3s ease;
+            cursor: default;
+        }
+        .skill-pill:hover {
+            border-color: rgba(0,212,255,0.2);
+            color: #00d4ff; transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,212,255,0.06);
+        }
+
+        /* === CARDS (shared) === */
+        .card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 28px;
+            transition: all 0.3s ease; display: block;
+        }
+        .card:hover {
+            border-color: rgba(0,212,255,0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,212,255,0.04);
+        }
+        .card-meta {
+            display: flex; gap: 10px; align-items: center;
+            font-size: 12px; color: #555; margin-bottom: 12px; flex-wrap: wrap;
+        }
+        .card-badge {
+            padding: 3px 12px; border-radius: 100px;
+            font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .cb-critical { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.15); }
+        .cb-high { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid rgba(249,115,22,0.15); }
+        .cb-medium { background: rgba(234,179,8,0.1); color: #eab308; border: 1px solid rgba(234,179,8,0.15); }
+        .cb-hof { background: rgba(0,212,255,0.1); color: #00d4ff; border: 1px solid rgba(0,212,255,0.15); }
+        .cb-python { background: rgba(55,120,200,0.1); color: #3778c8; border: 1px solid rgba(55,120,200,0.15); }
+        .cb-shell { background: rgba(0,200,100,0.1); color: #00cc66; border: 1px solid rgba(0,200,100,0.15); }
+        .card h3 { font-size: 17px; font-weight: 700; color: #eee; margin-bottom: 8px; }
+        .card p { color: #666; font-size: 14px; line-height: 1.7; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+        .card-tags span {
+            font-size: 11px; padding: 3px 10px; border-radius: 4px;
+            background: rgba(255,255,255,0.03); color: #555;
+        }
+
+        /* === PROJECTS / FINDINGS GRID === */
+        .projects-wrap, .findings-wrap { padding: 100px 0; border-top: 1px solid rgba(255,255,255,0.04); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        /* === TIMELINE === */
+        .timeline { position: relative; padding-left: 32px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 1px; background: linear-gradient(to bottom, rgba(0,212,255,0.3), rgba(0,212,255,0));
+        }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-dot {
+            position: absolute; left: -36px; top: 6px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #00d4ff; border: 2px solid #05050a;
+            box-shadow: 0 0 0 2px rgba(0,212,255,0.2);
+        }
+        .timeline-date { font-size: 12px; color: #555; font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+        .timeline-title { font-size: 16px; font-weight: 700; color: #ddd; margin-bottom: 4px; }
+        .timeline-desc { font-size: 14px; color: #666; }
+
+        /* === FOOTER === */
         footer {
-            text-align: center; padding: 40px 0;
-            border-top: 1px solid #1a1a2e; color: #444; font-size: 13px;
+            padding: 60px 0; text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            color: #444; font-size: 14px;
         }
-        footer a { color: #00f0ff; text-decoration: none; }
+        footer .orbit {
+            font-family: 'JetBrains Mono', monospace; color: #00d4ff;
+        }
 
-        /* Responsive */
-        @media (max-width: 640px) {
-            .about-content { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 28px; }
-            .writeup-card { padding: 16px; }
-            .social-link { padding: 10px 16px; font-size: 13px; }
-            .typewriter { white-space: normal; border-right: none; width: 100%; }
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            nav .links { display: none; }
+            .about-grid { grid-template-columns: 1fr; gap: 40px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .hero .social-links a { padding: 8px 14px; font-size: 13px; }
+            .hero .typewriter {
+                white-space: normal; border-right: none; width: 100%;
+                animation: none; border: none;
+            }
+            .hero-scroll { display: none; }
+            .card { padding: 20px; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .hero h1 { font-size: 32px; }
         }
     </style>
 </head>
 <body>
 
+<!-- Background -->
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Nav -->
+<nav>
+    <div class="container">
+        <a href="#" class="logo"><span>~</span>/orbit</a>
+        <div class="links">
+            <a href="#work">Work</a>
+            <a href="#findings">Findings</a>
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </div>
+</nav>
+
 <!-- Hero -->
 <section class="hero">
-    <div class="container">
-        <div class="hero-avatar">🪐</div>
+    <div class="hero-content">
+        <div class="hero-badge">Bug Bounty Hunter &amp; Security Researcher</div>
         <h1>Garvit Kanojia</h1>
-        <div class="alias"><span>Orbit</span> / idkgarvit</div>
-        <div class="typewriter-wrapper">
-            <div class="typewriter" id="typewriter-text">Bug bounty hunter, security researcher &amp; MCA student</div>
+        <div class="typewriter-wrap">
+            <div class="typewriter" id="tw">aka Orbit — finding real primitives in the wild</div>
         </div>
+        <div class="social-links">
+            <a href="https://github.com/idkgarvit" target="_blank">🐙 GitHub</a>
+            <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank">💼 LinkedIn</a>
+            <a href="https://hackerone.com/idkgarvit" target="_blank">🛡️ HackerOne</a>
+            <a href="https://bugcrowd.com/idkgarvit" target="_blank">🐞 Bugcrowd</a>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="dot"></div>
     </div>
 </section>
 
 <!-- About -->
-<section class="anim-fade">
+<section class="about-wrap reveal" id="about">
     <div class="container">
-        <h2>About</h2>
-        <div class="about-content">
+        <div class="about-grid">
             <div class="about-text">
+                <div class="section-label">About</div>
+                <h2 class="section-title">Breaking things to fix them</h2>
                 <p>I'm a <strong>22-year-old MCA student</strong> from India who hunts bugs in my free time. I've submitted <strong>12+ vulnerability reports</strong> across HackerOne, Bugcrowd, Com Olho, Intigriti, and off-platform programs.</p>
-                <p>My strength is finding <strong>real primitives</strong> — exposed S3 write buckets, leaked API keys with write access, exposed Bastion hosts, bypassed WAFs. My gap is closing exploitation chains — and I'm closing it one session at a time.</p>
-                <p>Hall of Fame on <strong>SOLARMAN</strong>. P1 Critical submitted to <strong>Polygon Technology</strong>. Unauthenticated S3 write found at <strong>Nubank (Bugcrowd)</strong>.</p>
-                <p>When I'm not hunting, I'm studying for my MCA, building my toolkit, and learning from the best in the community.</p>
+                <p>I hunt the things most people skip — <span class="highlight">exposed S3 write buckets</span>, <span class="highlight">leaked API keys with write access</span>, <span class="highlight">IoT firmware chains</span>, and <span class="highlight">ERC-4337 bundler infrastructure</span>.</p>
+                <p>Hall of Fame on <strong>SOLARMAN</strong> (7 vulns incl. unauthenticated RCE). P1 Critical on <strong>Polygon Technology</strong>. My approach: find real primitives, then close the exploitation chain.</p>
             </div>
-            <div class="about-stats">
-                <div class="stat-card">
-                    <div class="num">12+</div>
-                    <div class="label">Reports Submitted</div>
-                </div>
-                <div class="stat-card">
-                    <div class="num">4</div>
-                    <div class="label">Platforms Hunted</div>
-                </div>
-                <div class="stat-card">
-                    <div class="num">1</div>
-                    <div class="label">Hall of Fame</div>
-                </div>
-                <div class="stat-card">
-                    <div class="num">P1</div>
-                    <div class="label">Highest Severity</div>
-                </div>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="num">12+</div><div class="label">Reports</div></div>
+                <div class="stat-item"><div class="num">4</div><div class="label">Platforms</div></div>
+                <div class="stat-item"><div class="num">1</div><div class="label">Hall of Fame</div></div>
+                <div class="stat-item"><div class="num">P1</div><div class="label">Highest</div></div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Skills -->
-<section class="anim-fade">
-    <div class="container">
-        <h2>Skills &amp; Focus</h2>
-        <div class="section-subtitle">What I hunt and what I use</div>
-        <div class="skills-grid">
-            <span class="skill-tag">Web Application Security</span>
-            <span class="skill-tag">API Security</span>
-            <span class="skill-tag">Android Security</span>
-            <span class="skill-tag">Blockchain / ERC-4337</span>
-            <span class="skill-tag">Cloud Infrastructure</span>
-            <span class="skill-tag">Network Security</span>
-            <span class="skill-tag">Burp Suite</span>
-            <span class="skill-tag">Python</span>
-            <span class="skill-tag">Kali Linux</span>
-            <span class="skill-tag">ADB / Android Pentesting</span>
-            <span class="skill-tag">GraphQL</span>
-            <span class="skill-tag">OAuth 2.0</span>
-            <span class="skill-tag">WebSocket Security</span>
-            <span class="skill-tag">SSTI / JWT / SSRF</span>
-            <span class="skill-tag">Source Code Review</span>
-            <span class="skill-tag">Recon & OSINT</span>
         </div>
     </div>
 </section>
 
 <!-- Projects -->
-<section class="anim-fade">
+<section class="projects-wrap reveal" id="work">
     <div class="container">
-        <h2>Major Projects</h2>
-        <div class="section-subtitle">Open-source security tools I've built &amp; contributed to</div>
-
-        <a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-hof">Shell</span>
-                <span>Own Project</span>
-            </div>
-            <h3>LIDRA</h3>
-            <p>A lightweight reconnaissance and automation tool built for security assessments. Streamlines target enumeration and data collection for penetration testing workflows.</p>
-            <div class="tags">
-                <span>Recon</span>
-                <span>Automation</span>
-                <span>Shell</span>
-            </div>
-        </a>
-
-        <a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-critical">Python</span>
-                <span>Own Project</span>
-            </div>
-            <h3>OBSIDIOS</h3>
-            <p>Autonomous network security platform with real-time host discovery, AI-driven CVE mapping, attack path simulation, a 3D tactical dashboard, and automated defense with Discord alerts.</p>
-            <div class="tags">
-                <span>Network Security</span>
-                <span>AI / CVE Mapping</span>
-                <span>Attack Path Simulation</span>
-                <span>Discord Alerts</span>
-            </div>
-        </a>
-
-        <a href="https://github.com/TacShot/hyntel" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-medium">Python</span>
-                <span>Contributor</span>
-            </div>
-            <h3>HYNTEL</h3>
-            <p>A security audit script for systems that automates intelligence gathering and vulnerability identification during internal security assessments.</p>
-            <div class="tags">
-                <span>Security Audit</span>
-                <span>Intelligence Gathering</span>
-                <span>Python</span>
-            </div>
-        </a>
+        <div class="section-label">Projects</div>
+        <h2 class="section-title">Tools I've built</h2>
+        <div class="section-desc">Open-source security tools for reconnaissance, network defence, and audit automation.</div>
+        <div class="grid-2">
+            <a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="card">
+                <div class="card-meta"><span class="card-badge cb-shell">Shell</span><span>Own Project</span></div>
+                <h3>LIDRA</h3>
+                <p>Lightweight recon and automation tool for security assessments. Streamlines target enumeration and data collection for pentesting workflows.</p>
+                <div class="card-tags"><span>Recon</span><span>Automation</span><span>Shell</span></div>
+            </a>
+            <a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="card">
+                <div class="card-meta"><span class="card-badge cb-python">Python</span><span>Own Project</span></div>
+                <h3>OBSIDIOS</h3>
+                <p>Autonomous network security platform with AI-driven CVE mapping, attack path simulation, 3D tactical dashboard, and Discord alerts.</p>
+                <div class="card-tags"><span>Network Sec</span><span>AI</span><span>CVE Mapping</span><span>Discord</span></div>
+            </a>
+            <a href="https://github.com/TacShot/hyntel" target="_blank" class="card">
+                <div class="card-meta"><span class="card-badge cb-python">Python</span><span>Contributor</span></div>
+                <h3>HYNTEL</h3>
+                <p>Security audit script for systems that automates intelligence gathering and vulnerability identification during internal assessments.</p>
+                <div class="card-tags"><span>Audit</span><span>Intel</span><span>Python</span></div>
+            </a>
+            <a href="https://github.com/idkgarvit/Jarvis" target="_blank" class="card">
+                <div class="card-meta"><span class="card-badge cb-python">Python</span><span>Own Project</span></div>
+                <h3>JARVIS</h3>
+                <p>Smart voice-based AI assistant with real-time speech recognition, text-to-speech, and OpenAI/ChatGPT integration via OpenRouter.</p>
+                <div class="card-tags"><span>AI</span><span>Voice</span><span>Python</span><span>OpenAI</span></div>
+            </a>
+        </div>
     </div>
 </section>
 
-<!-- Writeups -->
-<section class="anim-fade">
+<!-- Findings -->
+<section class="findings-wrap reveal" id="findings">
     <div class="container">
-        <h2>Findings &amp; Writeups</h2>
-        <div class="section-subtitle">Selected vulnerability reports and bug discoveries</div>
+        <div class="section-label">Findings</div>
+        <h2 class="section-title">Vulnerability research</h2>
+        <div class="section-desc">Selected reports across bug bounty programs and coordinated disclosures.</div>
 
-        <!-- SOLARMAN -->
-        <a href="https://github.com/idkgarvit/idkgarvit.github.io/issues" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-hof">Hall of Fame</span>
-                <span>SOLARMAN</span>
-                <span>•</span>
-                <span>Off-Platform</span>
-            </div>
-            <h3>SOLARMAN — Hall of Fame (First Paid Bounty)</h3>
-            <p>Identified and reported a security vulnerability in SOLARMAN's web platform that earned a Hall of Fame recognition — my first paid bounty. Details disclosed as part of their coordinated disclosure program.</p>
-            <div class="tags">
-                <span>Info Disclosure</span>
-                <span>Coordinated Disclosure</span>
-                <span>HoF</span>
-            </div>
+        <a href="https://github.com/idkgarvit/idkgarvit.github.io/issues" target="_blank" class="card" style="margin-bottom: 16px;">
+            <div class="card-meta"><span class="card-badge cb-hof">Hall of Fame</span><span>SOLARMAN</span><span>•</span><span>Off-Platform</span></div>
+            <h3>SOLARMAN LSW-3 — 7 Vulnerabilities Including Unauthenticated RCE</h3>
+            <p>Discovered 7 security flaws in SOLARMAN's IoT data logger including hardcoded credentials, missing auth on POST endpoints, cleartext HTTP, and unrestricted firmware upload leading to unauthenticated remote code execution. ₹15,000 bounty + CVE + Hall of Fame. Full disclosure June 2027.</p>
+            <div class="card-tags"><span>IoT</span><span>RCE</span><span>Firmware</span><span>CVE</span><span>HoF</span></div>
         </a>
 
-        <!-- Polygon / Pimlico -->
-        <a href="https://hackerone.com/idkgarvit" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-critical">Critical</span>
-                <span>Polygon Technology</span>
-                <span>•</span>
-                <span>HackerOne</span>
-                <span>•</span>
-                <span>Pending Triage</span>
-            </div>
+        <a href="https://hackerone.com/idkgarvit" target="_blank" class="card" style="margin-bottom: 16px;">
+            <div class="card-meta"><span class="card-badge cb-critical">Critical</span><span>Polygon Technology</span><span>•</span><span>HackerOne</span></div>
             <h3>Pimlico Bundler API Key — Unrestricted Write Access on 7 Chains</h3>
-            <p>Discovered a hardcoded Pimlico bundler API key in Polygon's staking JS bundle. The key provides unrestricted <code>eth_sendUserOperation</code> access across 7 EVM chains (Polygon, Ethereum, Arbitrum, Optimisim, Base, etc.). Combined with the on-chain smart wallet factory, an attacker can deploy controlled wallets and execute arbitrary UserOps.</p>
-            <div class="tags">
-                <span>ERC-4337</span>
-                <span>Pimlico</span>
-                <span>Hardcoded Key</span>
-                <span>Account Abstraction</span>
-                <span>Multi-Chain</span>
-            </div>
+            <p>Hardcoded Pimlico bundler API key in Polygon's JS bundle with unrestricted eth_sendUserOperation access across 7 EVM chains. Combined with on-chain smart wallet factory, enables arbitrary wallet deployment. Proven via AA21/AA23 error code transition.</p>
+            <div class="card-tags"><span>ERC-4337</span><span>Pimlico</span><span>Multi-Chain</span><span>Hardcoded Key</span></div>
         </a>
 
-        <!-- Nubank S3 -->
-        <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-medium">P5 Informational</span>
-                <span>Nubank Brasil</span>
-                <span>•</span>
-                <span>Bugcrowd</span>
-            </div>
-            <h3>Unauthenticated S3 Bucket Write Access</h3>
-            <p>Identified an exposed S3 bucket belonging to Nubank's production infrastructure that allowed unauthenticated write operations. The bucket was misconfigured with public write policies, enabling anyone with the bucket URL to upload, modify, or delete objects.</p>
-            <div class="tags">
-                <span>S3</span>
-                <span>Cloud Misconfiguration</span>
-                <span>Unauthenticated Access</span>
-            </div>
-        </a>
-
-        <!-- Other notable -->
-        <a href="https://github.com/idkgarvit/idkgarvit.github.io/issues" target="_blank" class="writeup-card" style="display:block; text-decoration:none;">
-            <div class="meta">
-                <span class="badge badge-high">P3-P1</span>
-                <span>Various Programs</span>
-            </div>
-            <h3>Additional Findings</h3>
-            <p>Azure Bastion exposure at TMF Group, ADFS config leak, ViewState deserialization surface at TrueHR, CORS wildcard + auth bypass at CoinPoker/Baazi Games, AES keys exposed in Marionnaud, and stack trace disclosure at AS Watson. Full exploitation chains in progress.</p>
-            <div class="tags">
-                <span>Azure</span>
-                <span>ADFS</span>
-                <span>ViewState</span>
-                <span>CORS</span>
-                <span>Info Disclosure</span>
-            </div>
-        </a>
+        <div class="grid-2">
+            <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="card">
+                <div class="card-meta"><span class="card-badge cb-medium">P5</span><span>Nubank (Bugcrowd)</span></div>
+                <h3>Unauthenticated S3 Bucket Write Access</h3>
+                <p>Exposed S3 bucket in Nubank's production infrastructure with public write policies — anyone could upload, modify, or delete objects without authentication.</p>
+                <div class="card-tags"><span>S3</span><span>Cloud</span><span>Misconfig</span></div>
+            </a>
+            <a href="https://github.com/idkgarvit/idkgarvit.github.io/issues" target="_blank" class="card">
+                <div class="card-meta"><span class="card-badge cb-high">P3-P1</span><span>Various Programs</span></div>
+                <h3>Additional Findings</h3>
+                <p>Azure Bastion exposure, ADFS config leak, ViewState deserialization, CORS wildcard + auth bypass, AES keys in source, and stack trace disclosure across multiple programs.</p>
+                <div class="card-tags"><span>Azure</span><span>ADFS</span><span>ViewState</span><span>CORS</span></div>
+            </a>
+        </div>
     </div>
 </section>
 
-<!-- Connect -->
-<section class="anim-fade">
+<!-- Timeline / Journey -->
+<section class="skills-wrap reveal" id="skills">
     <div class="container">
-        <h2>Connect</h2>
-        <div class="section-subtitle">Find me on these platforms</div>
-        <div class="socials">
-            <a href="https://github.com/idkgarvit" target="_blank" class="social-link">
-                <span class="icon">🐙</span> GitHub
-            </a>
-            <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" class="social-link">
-                <span class="icon">💼</span> LinkedIn
-            </a>
-            <a href="https://hackerone.com/idkgarvit" target="_blank" class="social-link">
-                <span class="icon">🛡️</span> HackerOne
-            </a>
-            <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="social-link">
-                <span class="icon">🐞</span> Bugcrowd
-            </a>
-            <a href="https://instagram.com/garvit_kanojia_15" target="_blank" class="social-link">
-                <span class="icon">📸</span> Instagram
-            </a>
+        <div class="section-label">Skills</div>
+        <h2 class="section-title">What I work with</h2>
+        <div class="section-desc">Technologies, techniques, and domains I hunt in.</div>
+        <div class="skills-cloud">
+            <span class="skill-pill">Web Security</span>
+            <span class="skill-pill">API Security</span>
+            <span class="skill-pill">Android Security</span>
+            <span class="skill-pill">Blockchain / ERC-4337</span>
+            <span class="skill-pill">IoT / Firmware</span>
+            <span class="skill-pill">Cloud Infrastructure</span>
+            <span class="skill-pill">Network Security</span>
+            <span class="skill-pill">Burp Suite</span>
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">Kali Linux</span>
+            <span class="skill-pill">ADB / Android</span>
+            <span class="skill-pill">GraphQL</span>
+            <span class="skill-pill">OAuth 2.0</span>
+            <span class="skill-pill">WebSocket</span>
+            <span class="skill-pill">SSTI / JWT / SSRF</span>
+            <span class="skill-pill">Source Code Review</span>
+            <span class="skill-pill">Recon & OSINT</span>
+            <span class="skill-pill">DNS Rebinding</span>
+            <span class="skill-pill">CSPT</span>
+        </div>
+    </div>
+</section>
+
+<!-- Contact -->
+<section class="findings-wrap reveal" id="contact" style="padding-bottom: 60px;">
+    <div class="container" style="text-align: center;">
+        <div class="section-label">Connect</div>
+        <h2 class="section-title">Find me online</h2>
+        <div class="section-desc" style="margin-left: auto; margin-right: auto;">I'm active on these platforms — let's connect.</div>
+        <div class="hero social-links" style="justify-content: center; margin-top: 32px;">
+            <a href="https://github.com/idkgarvit" target="_blank">🐙 GitHub</a>
+            <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank">💼 LinkedIn</a>
+            <a href="https://hackerone.com/idkgarvit" target="_blank">🛡️ HackerOne</a>
+            <a href="https://bugcrowd.com/idkgarvit" target="_blank">🐞 Bugcrowd</a>
+            <a href="https://instagram.com/garvit_kanojia_15" target="_blank">📸 Instagram</a>
         </div>
     </div>
 </section>
@@ -459,27 +507,30 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <p>Built with 🧊 by <a href="https://github.com/idkgarvit">Orbit</a> • 2026</p>
+        <p>Built with 🧊 by <span class="orbit">Orbit</span> • 2026</p>
     </div>
 </footer>
+
 <script>
-    // Typewriter: remove cursor after animation
-    setTimeout(() => {
-        const tw = document.getElementById('typewriter-text');
-        if (tw) tw.classList.add('typewriter-done');
-    }, 4000);
+    // Typewriter cleanup
+    setTimeout(() => document.getElementById('tw')?.classList.add('done'), 4500);
 
-    // Intersection Observer for scroll fade-in
+    // Intersection Observer
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
         });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    document.querySelectorAll('.anim-fade').forEach(el => observer.observe(el));
+    // Smooth nav scroll
+    document.querySelectorAll('nav a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
 </script>
 
 </body>
