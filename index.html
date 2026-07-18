@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit | Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        ::selection { background: #00f0ff; color: #0a0a0f; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 3px; }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            background: linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+            border-bottom: 1px solid #1a1a2e;
+        }
+        .hero-avatar {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            border: 3px solid #00f0ff;
+            object-fit: cover;
+            margin-bottom: 24px;
+            background: #1a1a2e;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 48px; color: #00f0ff; font-weight: 800;
+            margin-left: auto; margin-right: auto;
+        }
+        .hero h1 {
+            font-size: 36px; font-weight: 800;
+            background: linear-gradient(135deg, #00f0ff, #00ff88);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero .alias {
+            font-family: 'JetBrains Mono', monospace;
+            color: #666; font-size: 16px; margin-top: 4px;
+        }
+        .hero .alias span { color: #00f0ff; }
+        .hero p {
+            color: #888; font-size: 18px; margin-top: 16px; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+
+        /* Sections */
+        section { padding: 60px 0; }
+        section h2 {
+            font-size: 24px; font-weight: 700;
+            margin-bottom: 32px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        section h2::after {
+            content: ''; flex: 1; height: 1px; background: #1a1a2e;
+        }
+        .section-subtitle {
+            color: #666; font-size: 14px; margin-top: -24px; margin-bottom: 32px;
+        }
+
+        /* About */
+        .about-content {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+        }
+        .about-text p { color: #999; margin-bottom: 16px; font-size: 15px; }
+        .about-text p strong { color: #ccc; }
+        .about-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+        }
+        .stat-card {
+            background: #111118; border: 1px solid #1a1a2e;
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .stat-card .num {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00f0ff, #00ff88);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .stat-card .label { color: #666; font-size: 13px; margin-top: 4px; }
+
+        /* Skills */
+        .skills-grid {
+            display: flex; flex-wrap: wrap; gap: 10px;
+        }
+        .skill-tag {
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 13px; font-weight: 500;
+            background: #111118; border: 1px solid #1a1a2e;
+            color: #aaa; transition: all 0.2s;
+        }
+        .skill-tag:hover {
+            border-color: #00f0ff; color: #00f0ff;
+        }
+
+        /* Writeups */
+        .writeup-card {
+            background: #111118; border: 1px solid #1a1a2e;
+            border-radius: 12px; padding: 24px;
+            margin-bottom: 20px; transition: border-color 0.2s;
+        }
+        .writeup-card:hover { border-color: #333; }
+        .writeup-card .meta {
+            display: flex; gap: 12px; align-items: center;
+            font-size: 12px; color: #555; margin-bottom: 8px;
+        }
+        .writeup-card .meta .badge {
+            padding: 2px 10px; border-radius: 4px;
+            font-weight: 600; font-size: 11px;
+        }
+        .badge-critical { background: rgba(255,50,50,0.15); color: #ff4444; }
+        .badge-high { background: rgba(255,150,0,0.15); color: #ff9900; }
+        .badge-medium { background: rgba(255,200,0,0.15); color: #ffcc00; }
+        .badge-low { background: rgba(0,200,100,0.15); color: #00cc66; }
+        .badge-hof { background: rgba(0,240,255,0.15); color: #00f0ff; }
+        .writeup-card h3 {
+            font-size: 18px; font-weight: 600; margin-bottom: 8px;
+            color: #eee;
+        }
+        .writeup-card p { color: #777; font-size: 14px; }
+        .writeup-card .tags {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+        }
+        .writeup-card .tags span {
+            font-size: 11px; padding: 3px 10px; border-radius: 4px;
+            background: #0a0a0f; color: #555; border: 1px solid #1a1a2e;
+        }
+
+        /* Socials */
+        .socials {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+        }
+        .social-link {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 24px; border-radius: 10px;
+            background: #111118; border: 1px solid #1a1a2e;
+            color: #ccc; text-decoration: none; font-size: 14px;
+            transition: all 0.2s;
+        }
+        .social-link:hover {
+            border-color: #00f0ff; color: #00f0ff; transform: translateY(-2px);
+        }
+        .social-link .icon { font-size: 20px; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 0;
+            border-top: 1px solid #1a1a2e; color: #444; font-size: 13px;
+        }
+        footer a { color: #00f0ff; text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .about-content { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 28px; }
+            .writeup-card { padding: 16px; }
+            .social-link { padding: 10px 16px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-avatar">🪐</div>
+        <h1>Garvit Kanojia</h1>
+        <div class="alias"><span>Orbit</span> / idkgarvit</div>
+        <p>Bug bounty hunter, security researcher & MCA student. Finding real primitives in the wild and closing exploitation chains.</p>
+    </div>
+</section>
+
+<!-- About -->
+<section>
+    <div class="container">
+        <h2>About</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>I'm a <strong>22-year-old MCA student</strong> from India who hunts bugs in my free time. I've submitted <strong>12+ vulnerability reports</strong> across HackerOne, Bugcrowd, Com Olho, Intigriti, and off-platform programs.</p>
+                <p>My strength is finding <strong>real primitives</strong> — exposed S3 write buckets, leaked API keys with write access, exposed Bastion hosts, bypassed WAFs. My gap is closing exploitation chains — and I'm closing it one session at a time.</p>
+                <p>Hall of Fame on <strong>SOLARMAN</strong>. P1 Critical submitted to <strong>Polygon Technology</strong>. Unauthenticated S3 write found at <strong>Nubank (Bugcrowd)</strong>.</p>
+                <p>When I'm not hunting, I'm studying for my MCA, building my toolkit, and learning from the best in the community.</p>
+            </div>
+            <div class="about-stats">
+                <div class="stat-card">
+                    <div class="num">12+</div>
+                    <div class="label">Reports Submitted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num">4</div>
+                    <div class="label">Platforms Hunted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num">1</div>
+                    <div class="label">Hall of Fame</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num">P1</div>
+                    <div class="label">Highest Severity</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills -->
+<section>
+    <div class="container">
+        <h2>Skills & Focus</h2>
+        <div class="section-subtitle">What I hunt and what I use</div>
+        <div class="skills-grid">
+            <span class="skill-tag">Web Application Security</span>
+            <span class="skill-tag">API Security</span>
+            <span class="skill-tag">Android Security</span>
+            <span class="skill-tag">Blockchain / ERC-4337</span>
+            <span class="skill-tag">Cloud Infrastructure</span>
+            <span class="skill-tag">Network Security</span>
+            <span class="skill-tag">Burp Suite</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Kali Linux</span>
+            <span class="skill-tag">ADB / Android Pentesting</span>
+            <span class="skill-tag">GraphQL</span>
+            <span class="skill-tag">OAuth 2.0</span>
+            <span class="skill-tag">WebSocket Security</span>
+            <span class="skill-tag">SSTI / JWT / SSRF</span>
+            <span class="skill-tag">Source Code Review</span>
+            <span class="skill-tag">Recon & OSINT</span>
+        </div>
+    </div>
+</section>
+
+<!-- Writeups -->
+<section>
+    <div class="container">
+        <h2>Findings & Writeups</h2>
+        <div class="section-subtitle">Selected vulnerability reports and bug discoveries</div>
+
+        <!-- SOLARMAN -->
+        <div class="writeup-card">
+            <div class="meta">
+                <span class="badge badge-hof">Hall of Fame</span>
+                <span>SOLARMAN</span>
+                <span>•</span>
+                <span>Off-Platform</span>
+            </div>
+            <h3>SOLARMAN — Hall of Fame (First Paid Bounty)</h3>
+            <p>Identified and reported a security vulnerability in SOLARMAN's web platform that earned a Hall of Fame recognition — my first paid bounty. Details disclosed as part of their coordinated disclosure program.</p>
+            <div class="tags">
+                <span>Info Disclosure</span>
+                <span>Coordinated Disclosure</span>
+                <span>HoF</span>
+            </div>
+        </div>
+
+        <!-- Polygon / Pimlico -->
+        <div class="writeup-card">
+            <div class="meta">
+                <span class="badge badge-critical">Critical</span>
+                <span>Polygon Technology</span>
+                <span>•</span>
+                <span>HackerOne</span>
+                <span>•</span>
+                <span>Pending Triage</span>
+            </div>
+            <h3>Pimlico Bundler API Key — Unrestricted Write Access on 7 Chains</h3>
+            <p>Discovered a hardcoded Pimlico bundler API key in Polygon's staking JS bundle. The key provides unrestricted <code>eth_sendUserOperation</code> access across 7 EVM chains (Polygon, Ethereum, Arbitrum, Optimisim, Base, etc.). Combined with the on-chain smart wallet factory, an attacker can deploy controlled wallets and execute arbitrary UserOps. Proven via AA21 → AA23 error code transition with correct vs. wrong factory addresses.</p>
+            <div class="tags">
+                <span>ERC-4337</span>
+                <span>Pimlico</span>
+                <span>Hardcoded Key</span>
+                <span>Account Abstraction</span>
+                <span>Multi-Chain</span>
+            </div>
+        </div>
+
+        <!-- Nubank S3 -->
+        <div class="writeup-card">
+            <div class="meta">
+                <span class="badge badge-medium">P5 Informational</span>
+                <span>Nubank Brasil</span>
+                <span>•</span>
+                <span>Bugcrowd</span>
+            </div>
+            <h3>Unauthenticated S3 Bucket Write Access</h3>
+            <p>Identified an exposed S3 bucket belonging to Nubank's production infrastructure that allowed unauthenticated write operations. The bucket was misconfigured with public write policies, enabling anyone with the bucket URL to upload, modify, or delete objects.</p>
+            <div class="tags">
+                <span>S3</span>
+                <span>Cloud Misconfiguration</span>
+                <span>Unauthenticated Access</span>
+            </div>
+        </div>
+
+        <!-- Other notable -->
+        <div class="writeup-card">
+            <div class="meta">
+                <span class="badge badge-high">P3-P1</span>
+                <span>Various Programs</span>
+            </div>
+            <h3>Additional Findings</h3>
+            <p>Azure Bastion exposure at TMF Group, ADFS config leak, ViewState deserialization surface at TrueHR, CORS wildcard + auth bypass at CoinPoker/Baazi Games, AES keys exposed in Marionnaud, and stack trace disclosure at AS Watson. Full exploitation chains in progress.</p>
+            <div class="tags">
+                <span>Azure</span>
+                <span>ADFS</span>
+                <span>ViewState</span>
+                <span>CORS</span>
+                <span>Info Disclosure</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Socials -->
+<section>
+    <div class="container">
+        <h2>Connect</h2>
+        <div class="section-subtitle">Find me on these platforms</div>
+        <div class="socials">
+            <a href="https://github.com/idkgarvit" target="_blank" class="social-link">
+                <span class="icon">🐙</span> GitHub
+            </a>
+            <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" class="social-link">
+                <span class="icon">💼</span> LinkedIn
+            </a>
+            <a href="https://hackerone.com/idkgarvit" target="_blank" class="social-link">
+                <span class="icon">🛡️</span> HackerOne
+            </a>
+            <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="social-link">
+                <span class="icon">🐞</span> Bugcrowd
+            </a>
+            <a href="https://instagram.com/garvit_kanojia_15" target="_blank" class="social-link">
+                <span class="icon">📸</span> Instagram
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p>Built with 🧊 by <a href="https://github.com/idkgarvit">Orbit</a> • 2026</p>
+    </div>
+</footer>
+
+</body>
+</html>
