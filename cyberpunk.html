@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Orbit · Cyberpunk Pro</title>
+<title>Orbit · Cyberpunk</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -19,31 +19,6 @@
 }
 html{background:var(--bg-dark);color:var(--text-primary);font-family:var(--font-sans);overflow-x:hidden}
 body{overflow-x:hidden}
-#loader{
-  position:fixed;inset:0;z-index:9999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:var(--bg-dark);transition:opacity .8s,visibility .8s
-}
-#loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-#loader .logo{font-family:var(--font-mono);font-size:clamp(2rem,5vw,4rem);font-weight:700;color:var(--neon-cyan);margin-bottom:2rem;letter-spacing:4px}
-#loader .bar-track{width:clamp(200px,40vw,400px);height:3px;background:rgba(0,240,255,.15);border-radius:2px;overflow:hidden;position:relative}
-#loader .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-pink));border-radius:2px;transition:width .3s ease}
-#loader .perc{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted);margin-top:.75rem;letter-spacing:1px}
-/* cursor */
-#cursor{
-  position:fixed;pointer-events:none;z-index:9998;
-  width:8px;height:8px;border-radius:50%;
-  background:var(--neon-cyan);mix-blend-mode:difference;
-  transition:transform .15s ease,width .3s,height .3s,background .3s;
-  transform:translate(-50%,-50%);will-change:transform
-}
-#cursor.hover{width:40px;height:40px;background:var(--neon-pink);mix-blend-mode:screen;box-shadow:0 0 30px var(--neon-pink)}
-#cursor-trail{
-  position:fixed;pointer-events:none;z-index:9997;
-  width:4px;height:4px;border-radius:50%;
-  background:var(--neon-cyan);opacity:.3;
-  transition:none;will-change:transform
-}
 /* smooth scroll */
 html.lenis{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto}
@@ -59,29 +34,30 @@ nav{
 }
 nav a{color:inherit;text-decoration:none;transition:opacity .3s}
 nav a:hover{opacity:.6}
+nav a.main-link{color:var(--neon-cyan);opacity:.7}
+nav a.main-link:hover{opacity:1}
 /* sections */
 section{min-height:100vh;position:relative;overflow:hidden}
-.section-inner{max-width:1400px;margin:0 auto;padding:clamp(2rem,5vw,6rem);height:100vh;display:flex;flex-direction:column;justify-content:center}
+.section-inner{max-width:1400px;margin:0 auto;padding:clamp(2rem,5vw,6rem);min-height:100vh;display:flex;flex-direction:column;justify-content:center}
 /* hero */
 #hero .section-inner{align-items:center;text-align:center;justify-content:center}
-#hero .tagline{font-family:var(--font-mono);font-size:clamp(.7rem,1vw,.9rem);color:var(--neon-cyan);letter-spacing:6px;text-transform:uppercase;margin-bottom:1rem;opacity:0;transform:translateY(20px)}
+#hero .tagline{font-family:var(--font-mono);font-size:clamp(.7rem,1vw,.9rem);color:var(--neon-cyan);letter-spacing:6px;text-transform:uppercase;margin-bottom:1rem}
 #hero h1{
   font-size:clamp(2.5rem,8vw,7rem);font-weight:800;line-height:1;margin-bottom:1rem;
   background:linear-gradient(135deg,var(--neon-cyan),var(--neon-pink),var(--neon-purple));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  opacity:0;transform:translateY(30px)
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent
 }
-#hero .sub{font-size:clamp(1rem,1.5vw,1.3rem);color:var(--text-muted);max-width:600px;margin-bottom:2.5rem;opacity:0;transform:translateY(20px)}
-.btn-group{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;transform:translateY(20px)}
+#hero .sub{font-size:clamp(1rem,1.5vw,1.3rem);color:var(--text-muted);max-width:600px;margin-bottom:2.5rem}
+.btn-group{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
 .btn{
   padding:.8rem 2rem;border-radius:4px;font-family:var(--font-mono);font-size:.85rem;font-weight:600;
-  text-decoration:none;cursor:pointer;transition:all .3s;border:1px solid var(--neon-cyan);color:var(--neon-cyan);position:relative;overflow:hidden
+  text-decoration:none;cursor:pointer;transition:all .3s;border:1px solid var(--neon-cyan);color:var(--neon-cyan);display:inline-block
 }
 .btn-primary{background:var(--neon-cyan);color:var(--bg-dark);border-color:var(--neon-cyan)}
 .btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(0,240,255,.3)}
 .btn-primary:hover{box-shadow:0 0 40px rgba(0,240,255,.4)}
 /* stats row */
-.stats{display:flex;gap:3rem;margin-top:4rem;justify-content:center;opacity:0;transform:translateY(20px)}
+.stats{display:flex;gap:3rem;margin-top:4rem;justify-content:center}
 .stat{text-align:center}
 .stat-num{font-size:clamp(1.5rem,3vw,2.5rem);font-weight:800;font-family:var(--font-mono);color:var(--neon-cyan)}
 .stat-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin-top:.25rem}
@@ -96,8 +72,7 @@ section{min-height:100vh;position:relative;overflow:hidden}
 .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(clamp(280px,30vw,380px),1fr));gap:1.5rem}
 .card{
   background:var(--bg-card);border:1px solid rgba(0,240,255,.08);border-radius:12px;padding:2rem;
-  transition:all .5s cubic-bezier(.22,1,.36,1);transform:perspective(1000px) rotateX(0) rotateY(0);
-  will-change:transform;position:relative;overflow:hidden;cursor:default
+  transition:all .4s ease;position:relative;overflow:hidden;cursor:default
 }
 .card::before{
   content:'';position:absolute;inset:0;border-radius:12px;
@@ -132,92 +107,66 @@ section{min-height:100vh;position:relative;overflow:hidden}
   background:linear-gradient(90deg,var(--neon-cyan),var(--neon-pink));
   transition:width .1s linear
 }
-/* transition overlay */
-.transition-overlay{
-  position:fixed;inset:0;z-index:200;pointer-events:none;
-  background:var(--bg-dark);opacity:0;transition:opacity .6s
-}
-.transition-overlay.active{opacity:1}
 /* footer */
 footer{padding:2rem;text-align:center;font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted);border-top:1px solid rgba(0,240,255,.06)}
-/* scanline overlay for ambiance */
-.scanlines{
-  position:fixed;inset:0;z-index:50;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px)
-}
-/* reveal animations */
+/* reveal */
 .reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.22,1,.36,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.35s}
-.reveal-delay-4{transition-delay:.5s}
+.reveal.show{opacity:1;transform:translateY(0)}
 /* responsive */
 @media(max-width:768px){
   .card-grid{grid-template-columns:1fr}
   .stats{flex-wrap:wrap;gap:1.5rem}
-  #cursor,#cursor-trail{display:none}
   .btn{padding:.6rem 1.2rem;font-size:.8rem}
 }
 </style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="logo">~/ORBIT</div>
-  <div class="bar-track"><div class="bar-fill" id="load-bar"></div></div>
-  <div class="perc" id="load-perc">000%</div>
-</div>
-
-<div id="cursor"></div>
-<div id="cursor-trail"></div>
 <div id="scroll-progress"></div>
-<div class="scanlines"></div>
-<div class="transition-overlay"></div>
 
 <nav>
   <a href="#">~/orbit</a>
-  <a href="https://idkgarvit.github.io/index.html" target="_blank">← main</a>
+  <a class="main-link" href="https://idkgarvit.github.io/index.html" target="_blank">main</a>
 </nav>
 
 <section id="hero">
   <div class="section-inner">
     <div class="tagline reveal">security research · web · blockchain</div>
-    <h1 class="reveal reveal-delay-1">ORBIT</h1>
-    <p class="sub reveal reveal-delay-2">Breaking systems, building tools, tracking adversaries. SOC analyst by training, pentester by instinct.</p>
-    <div class="btn-group reveal reveal-delay-3">
-      <a href="#projects" class="btn btn-primary">view work →</a>
-      <a href="#about" class="btn">about me</a>
+    <h1 class="reveal" style="transition-delay:.15s">ORBIT</h1>
+    <p class="sub reveal" style="transition-delay:.3s">Breaking systems, building tools, tracking adversaries.</p>
+    <div class="btn-group reveal" style="transition-delay:.45s">
+      <a href="#projects" class="btn btn-primary">view work</a>
+      <a href="#about" class="btn">about</a>
     </div>
-    <div class="stats reveal reveal-delay-4">
-      <div class="stat"><div class="stat-num" data-count="5">0</div><div class="stat-label">Platforms</div></div>
-      <div class="stat"><div class="stat-num" data-count="12">0</div><div class="stat-label">Findings</div></div>
-      <div class="stat"><div class="stat-num" data-count="240">0</div><div class="stat-label">PortSwigger Labs</div></div>
+    <div class="stats reveal" style="transition-delay:.6s">
+      <div class="stat"><div class="stat-num n" data-n="5">0</div><div class="stat-label">Platforms</div></div>
+      <div class="stat"><div class="stat-num n" data-n="12">0</div><div class="stat-label">Findings</div></div>
+      <div class="stat"><div class="stat-num n" data-n="240">0</div><div class="stat-label">Labs</div></div>
     </div>
   </div>
 </section>
 
 <section id="projects">
   <div class="section-inner">
-    <div class="section-label reveal">◆ featured findings</div>
-    <h2 class="reveal reveal-delay-1">Security research</h2>
+    <div class="section-label reveal">featured findings</div>
+    <h2 class="reveal" style="transition-delay:.15s">Security research</h2>
     <div class="card-grid">
-      <div class="card reveal reveal-delay-2" data-tilt>
+      <div class="card reveal" style="transition-delay:.25s">
         <div class="card-tag">critical · blockchain</div>
         <h3>ERC-4337 Bundler Key — 7 Chains</h3>
-        <p>Hardcoded Pimlico bundler API key exposed across 7 EVM chains with unrestricted write access. UserOp accepted through bundler pipeline.</p>
+        <p>Hardcoded Pimlico bundler API key exposed across 7 EVM chains with unrestricted write access.</p>
         <span class="card-sev">CRITICAL</span>
       </div>
-      <div class="card reveal reveal-delay-2" data-tilt>
+      <div class="card reveal" style="transition-delay:.35s">
         <div class="card-tag">high · cloud</div>
         <h3>Unauthenticated S3 Write</h3>
-        <p>Production S3 bucket with public write policies allowing unauthorized data upload. PoC demonstrated successful write without auth.</p>
+        <p>Production S3 bucket with public write policies allowing unauthorized data upload.</p>
         <span class="card-sev">HIGH</span>
       </div>
-      <div class="card reveal reveal-delay-2" data-tilt>
+      <div class="card reveal" style="transition-delay:.45s">
         <div class="card-tag">medium · api</div>
-        <h3>CORS Misconfig — Full Origin Mirror</h3>
-        <p>API endpoint reflects arbitrary origin in CORS headers with credentials: true. Preflight proof with automated PoC.</p>
+        <h3>CORS Misconfig — Origin Mirror</h3>
+        <p>API endpoint reflects arbitrary origin in CORS headers with credentials: true.</p>
         <span class="card-sev">MEDIUM</span>
       </div>
     </div>
@@ -227,18 +176,18 @@ footer{padding:2rem;text-align:center;font-family:var(--font-mono);font-size:.7r
 <section id="about">
   <div class="section-inner">
     <h2 class="reveal">Stack &amp; specialties</h2>
-    <p class="reveal reveal-delay-1">Web security, SOC operations, cloud penetration testing, blockchain auditing, and wireless assessment. I find what others miss.</p>
-    <div class="tags reveal reveal-delay-2">
-      <span>web app sec</span><span>network pen testing</span><span>cloud infra</span>
+    <p class="reveal" style="transition-delay:.15s">Web security, SOC operations, cloud pentesting, blockchain auditing, and wireless assessment.</p>
+    <div class="tags reveal" style="transition-delay:.3s">
+      <span>web app sec</span><span>network pentest</span><span>cloud infra</span>
       <span>blockchain</span><span>wireless</span><span>OSINT</span>
-      <span>Python</span><span>JavaScript</span><span>Bash</span>
+      <span>Python</span><span>JS</span><span>Bash</span>
       <span>Burp Suite</span><span>Ghost Suite</span><span>Kali Linux</span>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>~/orbit — built with Three.js · GSAP · Lenis · neon</p>
+  <p>~/orbit — built with Three.js · GSAP · Lenis</p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -246,123 +195,97 @@ footer{padding:2rem;text-align:center;font-family:var(--font-mono);font-size:.7r
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.0.42/dist/lenis.min.js"></script>
 <script>
-/* LOADER */
-(function(){
-  const bar=document.getElementById('load-bar'),perc=document.getElementById('load-perc');
-  let p=0;
-  const iv=setInterval(()=>{
-    p+=Math.random()*15+3;
-    if(p>100){p=100;clearInterval(iv)}
-    bar.style.width=p+'%';
-    perc.textContent=String(p|0).padStart(3,'0')+'%';
-    if(p===100){
-      setTimeout(()=>{
-        document.getElementById('loader').classList.add('hidden');
-      },400);
-    }
-  },120);
-})();
-
-/* LENIS */
-const lenis=new Lenis({duration:1.8,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),orientation:'vertical',smoothWheel:true});
-lenis.on('scroll',ScrollTrigger.update);
+/* LENIS SMOOTH SCROLL */
+const lenis=new Lenis({duration:1.8,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))});
+lenis.on('scroll',e=>ScrollTrigger.update());
 gsap.ticker.add(t=>lenis.raf(t*1e3));
 gsap.ticker.lagSmoothing(0);
 
 /* THREE.js BACKGROUND */
 (function(){
   const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,1e3);
+  const camera=new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,.1,1e3);
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
   renderer.setSize(window.innerWidth,window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setClearColor(0x000000,0);
-  document.getElementById('hero').prepend(renderer.domElement);
+  renderer.setClearColor(0x0a0a12,1);
+  const hero=document.getElementById('hero');
+  hero.style.background='transparent';
+  hero.prepend(renderer.domElement);
   renderer.domElement.style.position='absolute';
   renderer.domElement.style.inset='0';
   renderer.domElement.style.zIndex='-1';
 
   /* grid */
+  const gridMat=new THREE.LineBasicMaterial({color:0x00f0ff,transparent:true,opacity:.07});
+  const gridItems=[];
+  for(let i=-25;i<=25;i+=2){
+    const g1=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,-12,0),new THREE.Vector3(i,12,0)]);
+    gridItems.push(new THREE.Line(g1,gridMat));
+    const g2=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-25,i*12/25,0),new THREE.Vector3(25,i*12/25,0)]);
+    gridItems.push(new THREE.Line(g2,gridMat));
+  }
   const gridGroup=new THREE.Group();
-  const gridMat=new THREE.LineBasicMaterial({color:0x00f0ff,transparent:true,opacity:.08});
-  for(let i=-20;i<=20;i++){
-    const g=new THREE.BufferGeometry();
-    const v=new Float32Array([i,-10,0,i,10,0]);
-    g.setAttribute('position',new THREE.BufferAttribute(v,3));
-    gridGroup.add(new THREE.Line(g,gridMat));
-  }
-  for(let i=-10;i<=10;i++){
-    const g=new THREE.BufferGeometry();
-    const v=new Float32Array([-20,i,0,20,i,0]);
-    g.setAttribute('position',new THREE.BufferAttribute(v,3));
-    gridGroup.add(new THREE.Line(g,gridMat));
-  }
-  const gridMain=new THREE.LineSegments(new THREE.BufferGeometry(),gridMat);
-  gridGroup.add(gridMain);
-  gridGroup.position.z=-8;
+  gridItems.forEach(l=>gridGroup.add(l));
+  gridGroup.position.z=-10;
   scene.add(gridGroup);
 
   /* vertical rain */
-  const rainCount=300;
+  const rainCount=200;
   const rainPos=new Float32Array(rainCount*3);
   const rainSpeed=new Float32Array(rainCount);
   for(let i=0;i<rainCount;i++){
-    rainPos[i*3]=(Math.random()-.5)*30;
-    rainPos[i*3+1]=(Math.random()-.5)*20;
-    rainPos[i*3+2]=Math.random()*6-2;
-    rainSpeed[i]=.5+Math.random()*1.5;
+    rainPos[i*3]=(Math.random()-.5)*32;
+    rainPos[i*3+1]=(Math.random()-.5)*24;
+    rainPos[i*3+2]=Math.random()*8-4;
+    rainSpeed[i]=.3+Math.random()*1.2;
   }
   const rainGeo=new THREE.BufferGeometry();
   rainGeo.setAttribute('position',new THREE.BufferAttribute(rainPos,3));
   const rainMat=new THREE.PointsMaterial({
-    color:0x00f0ff,size:.06,transparent:true,opacity:.25,
+    color:0x00f0ff,size:.04,transparent:true,opacity:.2,
     blending:THREE.AdditiveBlending,sizeAttenuation:true
   });
   const rainSys=new THREE.Points(rainGeo,rainMat);
   scene.add(rainSys);
 
-  /* data tendrils */
+  /* pink tendrils */
   const tendrilGroup=new THREE.Group();
-  const tendrilMat=new THREE.LineBasicMaterial({color:0xff00aa,transparent:true,opacity:.12});
-  for(let t=0;t<8;t++){
+  const tendrilMat=new THREE.LineBasicMaterial({color:0xff00aa,transparent:true,opacity:.1});
+  for(let t=0;t<6;t++){
     const pts=[];
-    const x=(Math.random()-.5)*12;
-    for(let i=0;i<=40;i++){
-      const t2=i/40;
-      pts.push(x+t2*4*Math.sin(t2*Math.PI*4+Math.random()),t2*10-5,Math.sin(t2*Math.PI*3)*2-4);
+    const ox=(Math.random()-.5)*10;
+    for(let i=0;i<=30;i++){
+      const u=i/30;
+      pts.push(new THREE.Vector3(ox+u*3*Math.sin(u*Math.PI*3+t),u*8-4,Math.sin(u*Math.PI*2+t)*3-5));
     }
-    const g=new THREE.BufferGeometry();
-    g.setAttribute('position',new THREE.Float32BufferAttribute(pts.flat(),3));
+    const g=new THREE.BufferGeometry().setFromPoints(pts);
     tendrilGroup.add(new THREE.Line(g,tendrilMat));
   }
   scene.add(tendrilGroup);
 
-  camera.position.z=3;
-  let mouseX=0,mouseY=0;
-  document.addEventListener('mousemove',e=>{mouseX=(e.clientX/window.innerWidth-.5)*2;mouseY=(e.clientY/window.innerHeight-.5)*2});
+  camera.position.z=4;
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-.5)*2;my=(e.clientY/window.innerHeight-.5)*2});
 
-  function animBg(){
-    const t=performance.now()*1e-3;
-    gridGroup.rotation.x=Math.sin(t*.02)*.02;
-    gridGroup.rotation.y=Math.sin(t*.015)*.03;
-    // rain
+  (function anim(){
+    const t=performance.now()*.001;
+    gridGroup.rotation.x=Math.sin(t*.015)*.02;
+    gridGroup.rotation.y=Math.sin(t*.012)*.03;
     const p=rainSys.geometry.attributes.position.array;
     for(let i=0;i<rainCount;i++){
-      p[i*3+1]-=rainSpeed[i]*.02;
-      if(p[i*3+1]<-10)p[i*3+1]=10;
+      p[i*3+1]-=rainSpeed[i]*.015;
+      if(p[i*3+1]<-12)p[i*3+1]=12;
     }
     rainSys.geometry.attributes.position.needsUpdate=true;
-    // tendrils
-    tendrilGroup.rotation.z=Math.sin(t*.01)*.05;
-    tendrilGroup.position.y=Math.sin(t*.02)*.1;
-    // camera follow
-    camera.position.x+=(mouseX*.5-camera.position.x)*.03;
-    camera.position.y+=(mouseY*.3-camera.position.y)*.03;
+    tendrilGroup.rotation.z=Math.sin(t*.008)*.08;
+    tendrilGroup.position.y=Math.sin(t*.015)*.15;
+    camera.position.x+=(mx*.5-camera.position.x)*.02;
+    camera.position.y+=(my*.3-camera.position.y)*.02;
     camera.lookAt(0,0,0);
     renderer.render(scene,camera);
-    requestAnimationFrame(animBg);
-  }
-  animBg();
+    requestAnimationFrame(anim);
+  })();
 
   window.addEventListener('resize',()=>{
     camera.aspect=window.innerWidth/window.innerHeight;
@@ -371,92 +294,53 @@ gsap.ticker.lagSmoothing(0);
   });
 })();
 
-/* SCROLLTRIGGER REVEALS */
+/* SCROLL REVEALS */
 gsap.registerPlugin(ScrollTrigger);
-document.querySelectorAll('.reveal').forEach(el=>{
-  ScrollTrigger.create({
-    trigger:el,
-    start:'top 90%',
-    onEnter:()=>el.classList.add('visible'),
-    once:true
-  });
-});
+ScrollTrigger.refresh();
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')});
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
 /* STAT COUNTER */
-document.querySelectorAll('[data-count]').forEach(el=>{
-  ScrollTrigger.create({
-    trigger:el,
-    start:'top 85%',
-    onEnter:()=>{
-      const target=parseInt(el.dataset.count);
-      gsap.to(el,{duration:2,textContent:target,ease:'power2.out',snap:{textContent:target/100},onUpdate:()=>el.textContent=String(Math.round(parseFloat(el.textContent)))||'0'});
-    },
-    once:true
+const statObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;
+    const target=parseInt(el.dataset.n);
+    let current=0;
+    const step=()=>{
+      current+=Math.ceil((target-current)/12);
+      if(current>=target){current=target;el.textContent=target;return}
+      el.textContent=current;
+      requestAnimationFrame(step);
+    };
+    step();
+    statObserver.unobserve(el);
   });
-});
+},{threshold:.5});
+document.querySelectorAll('.n').forEach(el=>statObserver.observe(el));
 
-/* CURSOR */
-const cursor=document.getElementById('cursor');
-const trail=document.getElementById('cursor-trail');
-let mx=0,my=0,trailX=0,trailY=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  cursor.style.left=mx+'px';cursor.style.top=my+'px';
-});
-document.querySelectorAll('a,.btn,.card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
-  el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
-});
-function trailAnim(){
-  trailX+=(mx-trailX)*.08;
-  trailY+=(my-trailY)*.08;
-  trail.style.left=trailX+'px';
-  trail.style.top=trailY+'px';
-  requestAnimationFrame(trailAnim);
-}
-trailAnim();
-
-/* CARD TILT */
-document.querySelectorAll('[data-tilt]').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const rect=card.getBoundingClientRect();
-    const x=e.clientX-rect.left,y=e.clientY-rect.top;
-    const cx=rect.width/2,cy=rect.height/2;
-    const rotX=(y-cy)/cy*-8,rotY=(x-cx)/cx*8;
-    card.style.setProperty('--mx',(x/rect.width*100)+'%');
-    card.style.setProperty('--my',(y/rect.height*100)+'%');
-    card.style.transform=`perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02,1.02,1.02)`;
-  });
-  card.addEventListener('mouseleave',()=>{
-    card.style.transform='perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
-  });
-});
-
-/* SCROLL PROGRESS BAR */
+/* SCROLL PROGRESS */
 lenis.on('scroll',({progress})=>{
   document.getElementById('scroll-progress').style.width=(progress*100)+'%';
 });
 
-/* TRANSITION OVERLAY FOR SECTION CHANGES */
-// subtle page transition effect
-window.addEventListener('beforeunload',()=>{
-  document.querySelector('.transition-overlay').classList.add('active');
-});
-
-/* MAGNETIC BUTTONS */
-document.querySelectorAll('.btn').forEach(btn=>{
-  btn.addEventListener('mousemove',e=>{
-    const rect=btn.getBoundingClientRect();
-    const dx=e.clientX-rect.left-rect.width/2;
-    const dy=e.clientY-rect.top-rect.height/2;
-    btn.style.transform=`translate(${dx*.15}px,${dy*.15}px)`;
+/* CARD TILT */
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    const rx=(y/r.height-.5)*-10,ry=(x/r.width-.5)*10;
+    card.style.setProperty('--mx',(x/r.width*100)+'%');
+    card.style.setProperty('--my',(y/r.height*100)+'%');
+    card.style.transform=`perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
   });
-  btn.addEventListener('mouseleave',()=>{
-    btn.style.transform='';
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)';
   });
 });
-
-console.log('~/orbit — cyberpunk pro loaded');
 </script>
 </body>
 </html>
