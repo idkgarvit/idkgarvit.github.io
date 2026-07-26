@@ -25,23 +25,35 @@
   --fg-d:#3a4250;
   --cyan:#00d4ff;
   --cyan-g:rgba(0,212,255,.08);
+  --crimson:#dc2626;
+  --crimson-g:rgba(220,38,38,.08);
   --purple:#a855f7;
+  --purple-g:rgba(168,85,247,.08);
   --green:#00ff88;
   --red:#ff5f57;
   --gutter:clamp(20px,4vw,48px);
 }
 html{scroll-behavior:smooth;background:var(--bg)}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden;perspective:1200px}
 ::selection{background:var(--cyan);color:var(--bg)}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--cyan);border-radius:2px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--crimson),var(--cyan));border-radius:2px}
 
 /* ═══ MATRIX RAIN ═══ */
 #matrix-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.12}
 
+/* ═══ ANIME PARTICLES ═══ */
+#particles-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.35}
+
+/* ═══ 3D SCROLL WRAPPER ═══ */
+#scroll-3d{position:relative;z-index:2;transform-origin:center center;transition:transform .05s linear;will-change:transform}
+
+.stat-c,.p-card,.r-card,.s-card,.tl-item{transition:transform .8s cubic-bezier(.22,1,.36,1),opacity .8s ease;will-change:transform,opacity}
+.stat-c:not(.v),.p-card:not(.v),.r-card:not(.v),.s-card:not(.v),.tl-item:not(.v){transform:rotateX(8deg) translateY(40px) translateZ(-60px);opacity:0}
+
 /* ═══ SCROLL PROGRESS ═══ */
-#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));z-index:9999;width:0%;transition:width .08s}
+#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--crimson),var(--purple),var(--cyan));z-index:9999;width:0%;transition:width .08s}
 
 /* ═══ NAV ═══ */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;background:rgba(8,11,16,.85);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-bottom:1px solid rgba(255,255,255,.03);transition:transform .35s cubic-bezier(.4,0,.2,1)}
@@ -49,15 +61,16 @@ nav.hidden{transform:translateY(-100%)}
 nav .inner{max-width:1200px;margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;justify-content:space-between}
 nav .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:#fff;text-decoration:none;transition:opacity .3s;opacity:.6;letter-spacing:-.3px}
 nav .logo:hover{opacity:1}
-nav .links a{font-size:11px;color:var(--fg-d);font-weight:600;transition:color .3s;letter-spacing:1.2px;text-transform:uppercase;text-decoration:none;margin-left:28px;position:relative}
-nav .links a::after{content:'';position:absolute;bottom:-5px;left:0;width:0;height:1.5px;background:var(--cyan);transition:width .3s}
-nav .links a:hover{color:var(--fg)}
-
+nav .links a{font-size:12px;font-weight:500;color:var(--fg-m);text-decoration:none;transition:color .3s;position:relative;letter-spacing:.3px}
+nav .links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--crimson),var(--cyan));transition:width .3s}
+nav .links a:hover{color:var(--fg);}
+nav .links a:hover::after{width:100%}
 /* ═══ GRAIN ═══ */
 .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.02;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px}
 
 /* ═══ HERO ═══ */
-.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:0 var(--gutter)}
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;z-index:1;overflow:hidden;padding:0 var(--gutter)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 600px 400px at 20% 50%,rgba(220,38,38,.06),transparent),radial-gradient(ellipse 500px 500px at 80% 20%,rgba(168,85,247,.04),transparent);pointer-events:none;z-index:0}
 .hero-content{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:2;padding-top:60px}
 .hero-left{position:relative}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:100px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;background:var(--cyan-g);border:1px solid rgba(0,212,255,.1);color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:20px}
@@ -106,22 +119,12 @@ nav .links a:hover{color:var(--fg)}
 @keyframes glitch2{0%{transform:translate(0)}20%{transform:translate(4px,-2px) skewX(1deg)}40%{transform:translate(-3px,1px) skewX(-1deg)}60%{transform:translate(2px,-1px)}80%{transform:translate(-5px,2px) skewX(.5deg)}100%{transform:translate(0)}}
 
 /* ═══ EPISODE DIVIDERS ═══ */
-.ep-divider{display:flex;align-items:center;gap:16px;margin-bottom:24px;position:relative;z-index:1}
-.ep-divider .num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--purple);letter-spacing:2px;white-space:nowrap}
-.ep-divider .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.2),transparent)}
+.ep-divider .num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--crimson);letter-spacing:2px;opacity:.9}
+.s-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--crimson);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.s-title .cr{color:var(--crimson)}
+.ep-divider .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(220,38,38,.2),rgba(168,85,247,.1),transparent)}
 .ep-divider .sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--fg-d);letter-spacing:1px}
 
-/* ═══ EPISODE REVEAL TRANSITION ═══ */
-#ep-reveal{position:fixed;inset:0;z-index:9997;display:flex;align-items:center;justify-content:center;background:rgba(8,11,16,.92);backdrop-filter:blur(12px);pointer-events:none;opacity:0;transition:opacity .5s ease}
-#ep-reveal.open{opacity:1;pointer-events:auto}
-#ep-reveal .label{font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:3px;color:var(--purple);text-align:center}
-#ep-reveal .label .tag{display:block;font-size:11px;color:var(--fg-d);margin-top:6px;letter-spacing:1px}
-#ep-reveal .bar-wrap{position:fixed;bottom:50%;left:50%;transform:translateX(-50%);display:flex;gap:4px;width:120px}
-#ep-reveal .bar-wrap span{height:2px;flex:1;background:var(--purple);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1)}
-#ep-reveal.open .bar-wrap span{transform:scaleX(1)}
-#ep-reveal.open .bar-wrap span:nth-child(2){transition-delay:.05s}
-#ep-reveal.open .bar-wrap span:nth-child(3){transition-delay:.1s}
-#ep-reveal.open .bar-wrap span:nth-child(4){transition-delay:.15s}
 
 /* ═══ SECTIONS ═══ */
 .section{padding:clamp(60px,8vh,100px) 0;position:relative;z-index:1}
@@ -133,9 +136,19 @@ nav .links a:hover{color:var(--fg)}
 .r{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
 .r.v{opacity:1;transform:translateY(0)}
 .r1{transition-delay:.06s}
-.r2{transition-delay:.12s}
-.r3{transition-delay:.18s}
-.r4{transition-delay:.24s}
+
+/* ═══ 3D CARD ENTRANCE ═══ */
+.stat-c,.p-card,.r-card,.s-card,.tl-item{transition:transform .8s cubic-bezier(.22,1,.36,1),opacity .8s ease;will-change:transform,opacity}
+.stat-c{transform:rotateX(8deg) translateY(40px) translateZ(-60px);opacity:0}
+.stat-c.v{transform:rotateX(0deg) translateY(0px) translateZ(0px);opacity:1}
+.p-card{transform:rotateY(12deg) translateZ(-40px);opacity:0}
+.p-card.v{transform:rotateY(0deg) translateZ(0px);opacity:1}
+.r-card{transform:translateZ(-80px) rotateX(6deg);opacity:0}
+.r-card.v{transform:translateZ(0px) rotateX(0deg);opacity:1}
+.s-card{transform:rotateY(-8deg) translateZ(-30px);opacity:0}
+.s-card.v{transform:rotateY(0deg) translateZ(0px);opacity:1}
+.tl-item{transform:translateX(-20px) rotateY(4deg);opacity:0}
+.tl-item.v{transform:translateX(0px) rotateY(0deg);opacity:1}
 .r5{transition-delay:.30s}
 .r6{transition-delay:.36s}
 
@@ -303,9 +316,12 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
 <body>
 
 <canvas id="matrix-canvas"></canvas>
+<canvas id="particles-canvas"></canvas>
 <div class="grain"></div>
 <div class="scanline"></div>
 <div id="progress"></div>
+
+<div id="scroll-3d">
 
 <!-- NAV -->
 <nav id="nav">
@@ -415,25 +431,25 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
     <h2 class="s-title">Built to break</h2>
     <p class="s-desc">Open-source security tools for recon, defense, and automation. Projects I've built and contributed to.</p>
     <div class="p-grid">
-      <a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="p-card r r1">
+      <a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="p-card r1">
         <div class="pm"><span class="pb pb-sh">Shell</span><span>Own</span></div>
         <h3>LIDRA</h3>
         <p>Lightweight recon and automation framework. Domain discovery, port scanning, endpoint mapping — single pipeline for security assessments.</p>
         <div class="pt"><span>Recon</span><span>Automation</span><span>Shell</span></div>
       </a>
-      <a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="p-card r r2">
+      <a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="p-card r2">
         <div class="pm"><span class="pb pb-py">Python</span><span>Own</span></div>
         <h3>OBSIDIOS</h3>
         <p>Autonomous network security platform with AI-driven CVE mapping, attack path simulation, 3D dashboard, and Discord alerting.</p>
         <div class="pt"><span>Network Sec</span><span>AI</span><span>CVE</span></div>
       </a>
-      <a href="https://github.com/TacShot/hyntel" target="_blank" class="p-card r r3">
+      <a href="https://github.com/TacShot/hyntel" target="_blank" class="p-card r3">
         <div class="pm"><span class="pb pb-py">Python</span><span>Contributor</span></div>
         <h3>HYNTEL</h3>
         <p>Security audit script that automates intel gathering and vulnerability identification during internal assessments. Map networks, surface risks.</p>
         <div class="pt"><span>Audit</span><span>Intel</span><span>Python</span></div>
       </a>
-      <div class="p-card place r r4">
+      <div class="p-card place r4">
         <div style="font-size:24px;margin-bottom:6px">📬</div>
         <h3 style="font-size:14px;color:#e0e4ec;margin-bottom:2px">Contact & Status</h3>
         <p style="font-size:12px;color:var(--fg-d);margin-bottom:6px">Aug–Dec 2026 · transformation arc</p>
@@ -464,13 +480,13 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
     </div>
 
     <div class="r-grid">
-      <a href="https://hackerone.com/idkgarvit" target="_blank" class="r-card r r2">
+      <a href="https://hackerone.com/idkgarvit" target="_blank" class="r-card r2">
         <div class="rm"><span class="rb2 rb-crit">Critical</span><span>Polygon · H1</span></div>
         <h4>ERC-4337 Bundler Key — 7 Chains</h4>
         <p>Hardcoded Pimlico bundler API key in JS bundle with unrestricted eth_sendUserOperation across 7 EVM chains. Smart wallet factory exploitation chain.</p>
         <div class="rt"><span>ERC-4337</span><span>Blockchain</span><span>Hardcoded Key</span></div>
       </a>
-      <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="r-card r r3">
+      <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="r-card r3">
         <div class="rm"><span class="rb2 rb-med">P5</span><span>Nubank · Bugcrowd</span></div>
         <h4>Unauthenticated S3 Write</h4>
         <p>Production S3 bucket with public write policies — anyone could upload, modify, or delete objects in a live banking environment.</p>
@@ -554,7 +570,6 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
   </div>
 </footer>
 
-<div id="ep-reveal"><div class="label"><span id="ep-num">EPISODE 01</span><span class="tag" id="ep-name">Profile</span></div><div class="bar-wrap"><span></span><span></span><span></span><span></span></div></div>
 
 <script>
 // ─── MATRIX RAIN ───
@@ -646,45 +661,48 @@ window.addEventListener('scroll',()=>{
 const revObs=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');revObs.unobserve(e.target)}});
 },{threshold:.06});
-document.querySelectorAll('.r').forEach(el=>revObs.observe(el));
+document.querySelectorAll('.r, .stat-c, .p-card, .r-card, .s-card, .tl-item').forEach(el=>revObs.observe(el));
 
-// ─── EPISODE REVEAL TRANSITION ───
-const epData = [
-  {sec:'about',num:'EPISODE 01',label:'Origin'},
-  {sec:'work',num:'EPISODE 02',label:'Arsenal'},
-  {sec:'research',num:'EPISODE 03',label:'Campaigns'},
-  {sec:'skills',num:'EPISODE 04',label:'Stack'},
-  {sec:'timeline',num:'EPISODE 05',label:'History'},
-];
-const epOverlay = document.getElementById('ep-reveal');
-const epNum = document.getElementById('ep-num');
-const epName = document.getElementById('ep-name');
-let epTimer = null;
-let lastEp = -1;
-const epObs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting && e.intersectionRatio > 0.3){
-      const idx = parseInt(e.target.dataset.ep);
-      if(idx !== lastEp && idx !== undefined){
-        lastEp = idx;
-        clearTimeout(epTimer);
-        const d = epData[idx];
-        if(d && d.num){
-          epNum.textContent = d.num;
-          epName.textContent = d.label;
-          epOverlay.classList.add('open');
-          epTimer = setTimeout(()=>{epOverlay.classList.remove('open')},700);
-        }
-      }
-    }
+// ─── 3D CARD ENTRANCE (merged into REVEAL above) ───
+
+// ─── ANIME PARTICLES ───
+const pc=document.getElementById('particles-canvas');
+const pctx=pc.getContext('2d');
+let pW,pH,prtcls=[];
+function pResize(){pW=pc.width=window.innerWidth;pH=pc.height=window.innerHeight}
+window.addEventListener('resize',pResize);pResize();
+const COLORS=['rgba(220,38,38,','rgba(168,85,247,','rgba(0,212,255,','rgba(255,95,87,'];
+for(let i=0;i<60;i++){prtcls.push({
+  x:Math.random()*pW,y:Math.random()*pH,r:Math.random()*2+1,
+  dx:(Math.random()-0.5)*.4,dy:(Math.random()-0.5)*.4-0.2,
+  c:COLORS[Math.floor(Math.random()*COLORS.length)]+(Math.random()*.4+.1)+')',
+  l:Math.random()*.6+.2,f:Math.random()*200
+})}
+function pDraw(){
+  pctx.clearRect(0,0,pW,pH);
+  prtcls.forEach(p=>{
+    p.x+=p.dx;p.y+=p.dy;p.l=Math.max(.1,Math.min(.8,p.l+(Math.random()-.5)*.02));
+    if(p.x<0||p.x>pW)p.dx*=-1;
+    if(p.y<0||p.y>pH){p.y=pH+5;p.dy=(Math.random()-.5)*.4-0.2}
+    pctx.beginPath();pctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    const c=p.c.replace(/[\d.]+\)$/,p.l.toFixed(2)+')');
+    pctx.fillStyle=c;pctx.fill();
   });
-},{threshold:[0.3]});
-document.querySelectorAll('.section').forEach((el,i)=>{
-  if(i < epData.length){
-    el.dataset.ep = i;
-    epObs.observe(el);
-  }
-});
+  requestAnimationFrame(pDraw);
+}
+pDraw();
+
+// ─── 3D SCROLL PERSPECTIVE ───
+const s3d=document.getElementById('scroll-3d');
+let ticking=false;
+window.addEventListener('scroll',()=>{
+  if(!ticking){requestAnimationFrame(()=>{
+    const s=window.scrollY,h=document.documentElement.scrollHeight-window.innerHeight,progress=Math.min(s/h,1);
+    const rot=progress*1.2;const yOff=-progress*20;
+    s3d.style.transform=`rotateX(${rot}deg) translateY(${yOff}px)`;
+    ticking=false;
+  });ticking=true}
+},{passive:true});
 
 // ─── COUNT UP ───
 const cuObs=new IntersectionObserver((entries)=>{
@@ -725,6 +743,8 @@ console.log('%cSOC · Web Security · Pentesting','font-size:14px;color:#00d4ff'
 console.log('%c"The One Piece is real"','font-size:12px;color:#a855f7');
 console.log('%c「この世界は残酷だ、そしてとても美しい」','font-size:11px;color:#666');
 </script>
+
+</div>
 
 </body>
 </html>
