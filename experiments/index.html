@@ -655,7 +655,7 @@ const sk=[
   {i:'🐍',n:'Tools',c:'tooling',lv:'INT',p:55,t:['Python','Bash','Recon'],d:'Custom tools.'},
 ];
 const sg=document.getElementById('sk-g');
-if(sg){sk.forEach(s=>{const c=document.createElement('div');c.className='sk-c';c.setAttribute('data-c',s.c);c.innerHTML=\`<div class="sk-t"><span class="sk-i">\${s.i}</span><span class="sk-lv">\${s.lv}</span></div><h4>\${s.n}</h4><div class="d">\${s.d}</div><div class="sk-w"><div class="sk-b" data-pct="\${s.p}"></div></div><div class="sk-l"><span>proficiency</span><span>\${s.p}%</span></div><div class="sk-tg">\${s.t.map(t=>'<span>'+t+'</span>').join('')}</div>`;sg.appendChild(c)});}
+if(sg){sk.forEach(s=>{const c=document.createElement('div');c.className='sk-c';c.setAttribute('data-c',s.c);c.innerHTML=`<div class="sk-t"><span class="sk-i">${s.i}</span><span class="sk-lv">${s.lv}</span></div><h4>${s.n}</h4><div class="d">${s.d}</div><div class="sk-w"><div class="sk-b" data-pct="${s.p}"></div></div><div class="sk-l"><span>proficiency</span><span>${s.p}%</span></div><div class="sk-tg">${s.t.map(t=>'<span>'+t+'</span>').join('')}</div>`;sg.appendChild(c)});}
 
 // ── LENIS ──
 let lenis = new Lenis({duration:1.2, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)), wheelMultiplier:0.9, smooth:true});
@@ -783,17 +783,17 @@ function applyScrollPattern(theme){
     case 'cp':
       setupCyberpunkScroll();
       // Lenis normal
-      if(lenis) lenis.options.duration=1.2;
+      if(lenis) lenis.duration=1.2;
       break;
     case 'fa':
       setupFantasyScroll();
       // Slower, heavier
-      if(lenis) lenis.options.duration=1.6;
+      if(lenis) lenis.duration=1.6;
       break;
     case 'sh':
       setupShonenScroll();
       // Faster, snappier
-      if(lenis) lenis.options.duration=0.3;
+      if(lenis) lenis.duration=0.3;
       break;
   }
   ScrollTrigger.refresh();
