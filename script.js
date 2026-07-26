@@ -118,40 +118,37 @@ const revObs=new IntersectionObserver((entries)=>{
 document.querySelectorAll('.r, .stat-c, .p-card, .r-card, .s-card, .tl-item').forEach(el=>revObs.observe(el));
 
 // ─── 3D SCROLL DEPTH EFFECT ───
-// "stays on one screen and when scroll everything moves"
-// Each section gets a 3D transform (rotateX + translateZ) based on its position
-// relative to the viewport, creating the illusion of moving through 3D space
+// "stays on one screen — when scroll, everything moves"
+// Single clean effect: the ENTIRE scene tilts & pulls back in 3D
+// as you scroll, creating the feeling of flying through a 3D space.
+// Background layers (matrix, particles) sit at different Z depths
+// for natural parallax.
 (function(){
-const sections = document.querySelectorAll('.section, .hero');
-const body = document.body;
-let ticking3d = false;
+const scene = document.getElementById('scene');
+if(!scene) return;
+let ticking = false;
 
 function update3D(){
   const vh = window.innerHeight;
-  sections.forEach(section => {
-    const rect = section.getBoundingClientRect();
-    const center = rect.top + rect.height / 2;
-    const vpCenter = vh / 2;
-    // Distance from viewport center (-1 to 1 range)
-    const dist = (center - vpCenter) / vh;
-    // Map to subtle 3D transforms
-    const rotX = dist * -2.5;    // max ±2.5° rotation
-    const zDepth = Math.abs(dist) * -40; // max -40px Z
-    
-    // Only apply when section is visible or nearby
-    if (rect.bottom > -vh && rect.top < vh * 2) {
-      section.style.transform = `rotateX(${rotX}deg) translateZ(${zDepth}px)`;
-      section.style.opacity = 1 - Math.min(Math.abs(dist), 1) * 0.15;
-    }
-  });
-  ticking3d = false;
+  const maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
+  const progress = Math.min(window.scrollY / maxScroll, 1);
+  
+  // Scene tilt: flat at top → 16° backward at bottom + Z pullback
+  // This creates the "stays on one screen, moves in 3D" feel
+  const rotX = progress * -16;
+  const transY = progress * -120;
+  const transZ = progress * -150;
+  scene.style.transform = `rotateX(${rotX}deg) translateY(${transY}px) translateZ(${transZ}px)`;
+  
+  ticking = false;
 }
 
 window.addEventListener('scroll', ()=>{
-  if(!ticking3d){requestAnimationFrame(update3D);ticking3d=true}
-},{passive:true});
-// Initial call
-update3D();
+  if(!ticking){ requestAnimationFrame(update3D); ticking = true; }
+}, {passive: true});
+
+// Initial render
+requestAnimationFrame(() => setTimeout(update3D, 50));
 })();
 
 // ─── COUNT UP ───
