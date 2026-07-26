@@ -3,196 +3,98 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Orbit · Anime Experiments</title>
-<meta name="description" content="Experimental portfolio — anime character backgrounds." />
+<title>Orbit · Anime Lab v2</title>
+<meta name="description" content="Experimental — unique world per theme." />
 <meta name="theme-color" content="#0a0a0f" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;700;900&family=Zen+Antique&family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;700;900&family=Zen+Antique&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
 <style>
-/* ═══ RESET ═══ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{background:var(--bg)}
 body{
-  font-family:var(--font-body);
-  background:var(--bg);
-  color:var(--fg);
-  line-height:1.7;
-  overflow-x:hidden;
-  transition:background .6s ease,color .6s ease;
+  font-family:var(--font-body);background:var(--bg);color:var(--fg);
+  line-height:1.7;overflow-x:hidden;
+  transition:background .8s ease,color .8s ease;
 }
 ::selection{background:var(--accent);color:var(--bg)}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent2),var(--accent));border-radius:2px}
-
 html.lenis{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .lenis.lenis-stopped{overflow:hidden}
-
 #three-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 .overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background:var(--overlay);transition:background .8s ease}
-#progress{
-  position:fixed;top:0;left:0;height:2px;
-  background:linear-gradient(90deg,var(--accent2),var(--accent),var(--accent3));
-  z-index:9999;width:0%;transition:width .1s linear;
-}
+#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent),var(--accent3));z-index:9999;width:0%}
+#progress{transition:width .08s linear}
 
-/* ═══ THEMES ═══ */
-:root{
-  --bg:#0a0a12;
-  --bg2:#0f0f1a;
-  --fg:#e0e4f0;
-  --fg-m:#8888aa;
-  --fg-d:#444466;
-  --accent:#ff3864;
-  --accent2:#ffaa00;
-  --accent3:#7000ff;
-  --accent-rgb:255,56,100;
-  --accent2-rgb:255,170,0;
-  --accent3-rgb:112,0,255;
-  --overlay:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 0%,rgba(10,10,18,.7) 100%);
-  --glow-bg:radial-gradient(circle,rgba(255,56,100,.08),transparent 50%);
-  --font-body:'Inter',sans-serif;
-  --font-mono:'JetBrains Mono',monospace;
-  --font-display:'Inter',sans-serif;
-  --border-color:rgba(255,56,100,.08);
-  --card-bg:rgba(255,255,255,.01);
-  --card-border:rgba(255,255,255,.04);
-  --card-glow:rgba(255,56,100,.06);
-  --hero-grad:linear-gradient(135deg,#e0e4f0 30%,var(--accent) 60%,var(--accent3));
-  --stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));
-}
+/* ═══ THEMES — root defaults to cyberpunk ═══ */
+:root{--bg:#080812;--bg2:#0c0c1a;--fg:#d0d8e8;--fg-m:#7878aa;--fg-d:#38385a;--accent:#ff3864;--accent2:#ffaa00;--accent3:#7000ff;--glow-bg:radial-gradient(circle,rgba(255,56,100,.08),transparent 50%);--border-color:rgba(255,56,100,.07);--card-bg:rgba(255,255,255,.015);--card-border:rgba(255,255,255,.03);--card-glow:rgba(255,56,100,.04);--hero-grad:linear-gradient(135deg,#d0d8e8 30%,var(--accent) 60%,var(--accent3));--stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Inter',sans-serif;--overlay:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 0%,rgba(8,8,18,.7) 100%)}
 
-body.theme-cyberpunk{
-  --bg:#0a0a12;--bg2:#0f0f1a;--fg:#e0e4f0;--fg-m:#8888aa;--fg-d:#444466;
-  --accent:#ff3864;--accent2:#ffaa00;--accent3:#7000ff;
-  --accent-rgb:255,56,100;--accent2-rgb:255,170,0;--accent3-rgb:112,0,255;
-  --overlay:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 0%,rgba(10,10,18,.7) 100%);
-  --glow-bg:radial-gradient(circle,rgba(255,56,100,.08),transparent 50%);
-  --font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Inter',sans-serif;
-  --border-color:rgba(255,56,100,.08);--card-bg:rgba(255,255,255,.01);--card-border:rgba(255,255,255,.04);
-  --card-glow:rgba(255,56,100,.06);--hero-grad:linear-gradient(135deg,#e0e4f0 30%,var(--accent) 60%,var(--accent3));
-  --stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));
-}
-body.theme-fantasy{
-  --bg:#0a0708;--bg2:#100b0d;--fg:#d4c8b8;--fg-m:#8a7e72;--fg-d:#4a4238;
-  --accent:#c41e1e;--accent2:#8b4513;--accent3:#2a1a0a;
-  --accent-rgb:196,30,30;--accent2-rgb:139,69,19;--accent3-rgb:42,26,10;
-  --overlay:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 0%,rgba(10,7,8,.8) 100%);
-  --glow-bg:radial-gradient(circle,rgba(196,30,30,.06),transparent 50%);
-  --font-body:'Inter',serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Zen Antique',serif;
-  --border-color:rgba(196,30,30,.08);--card-bg:rgba(20,12,10,.4);--card-border:rgba(100,50,30,.08);
-  --card-glow:rgba(196,30,30,.04);--hero-grad:linear-gradient(135deg,#d4c8b8 30%,var(--accent) 70%,#2a1a0a);
-  --stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));
-}
-body.theme-ghibli{
-  --bg:#f5efe6;--bg2:#ebe3d6;--fg:#3d3b35;--fg-m:#7a756a;--fg-d:#b0a99a;
-  --accent:#5b8c5a;--accent2:#d4a574;--accent3:#7ab0d4;
-  --accent-rgb:91,140,90;--accent2-rgb:212,165,116;--accent3-rgb:122,176,212;
-  --overlay:radial-gradient(ellipse 100% 70% at 50% 50%,transparent 0%,rgba(245,239,230,.3) 100%);
-  --glow-bg:radial-gradient(circle,rgba(91,140,90,.06),transparent 50%);
-  --font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Noto Sans JP',sans-serif;
-  --border-color:rgba(91,140,90,.08);--card-bg:rgba(255,255,255,.5);--card-border:rgba(91,140,90,.06);
-  --card-glow:rgba(212,165,116,.06);--hero-grad:linear-gradient(135deg,#3d3b35 20%,var(--accent) 50%,var(--accent2) 80%);
-  --stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));
-}
-body.theme-retro{
-  --bg:#0a0e27;--bg2:#12163a;--fg:#c8b8e8;--fg-m:#7a6a9a;--fg-d:#4a3a6a;
-  --accent:#ff6b9d;--accent2:#00d4ff;--accent3:#ffd700;
-  --accent-rgb:255,107,157;--accent2-rgb:0,212,255;--accent3-rgb:255,215,0;
-  --overlay:radial-gradient(ellipse 80% 60% at 50% 30%,transparent 0%,rgba(10,14,39,.7) 100%);
-  --glow-bg:radial-gradient(circle,rgba(255,107,157,.08),transparent 50%);
-  --font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Press Start 2P',monospace;
-  --border-color:rgba(255,107,157,.08);--card-bg:rgba(18,22,58,.4);--card-border:rgba(0,212,255,.06);
-  --card-glow:rgba(255,107,157,.06);--hero-grad:linear-gradient(135deg,#c8b8e8 20%,var(--accent) 50%,var(--accent2) 80%);
-  --stat-grad:linear-gradient(135deg,var(--accent),var(--accent3));
-}
-body.theme-shonen{
-  --bg:#faf6f0;--bg2:#f0e8dc;--fg:#2a2520;--fg-m:#6a6258;--fg-d:#a09888;
-  --accent:#ff4400;--accent2:#ffcc00;--accent3:#0044ff;
-  --accent-rgb:255,68,0;--accent2-rgb:255,204,0;--accent3-rgb:0,68,255;
-  --overlay:radial-gradient(ellipse 100% 60% at 50% 40%,transparent 0%,rgba(250,246,240,.3) 100%);
-  --glow-bg:radial-gradient(circle,rgba(255,68,0,.08),transparent 50%);
-  --font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Inter',sans-serif;
-  --border-color:rgba(255,68,0,.08);--card-bg:rgba(255,255,255,.5);--card-border:rgba(255,68,0,.04);
-  --card-glow:rgba(255,204,0,.06);--hero-grad:linear-gradient(135deg,#2a2520 30%,var(--accent) 60%,var(--accent3));
-  --stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));
-}
+/* Cyberpunk - active has highest specificity via [data-theme] on body */
+body[data-theme="cyberpunk"]{--bg:#080812;--bg2:#0c0c1a;--fg:#d0d8e8;--fg-m:#7878aa;--fg-d:#38385a;--accent:#ff3864;--accent2:#ffaa00;--accent3:#7000ff;--glow-bg:radial-gradient(circle,rgba(255,56,100,.08),transparent 50%);--border-color:rgba(255,56,100,.07);--card-bg:rgba(255,255,255,.015);--card-border:rgba(255,255,255,.03);--card-glow:rgba(255,56,100,.04);--hero-grad:linear-gradient(135deg,#d0d8e8 30%,var(--accent) 60%,var(--accent3));--stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Inter',sans-serif;--overlay:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 0%,rgba(8,8,18,.7) 100%)}
+body[data-theme="fantasy"]{--bg:#060406;--bg2:#0d080a;--fg:#c8b8a8;--fg-m:#7a6a5a;--fg-d:#3a2a1a;--accent:#c41e1e;--accent2:#8b4513;--accent3:#1a0a05;--glow-bg:radial-gradient(circle,rgba(196,30,30,.05),transparent 50%);--border-color:rgba(196,30,30,.06);--card-bg:rgba(20,12,10,.3);--card-border:rgba(60,30,20,.05);--card-glow:rgba(196,30,30,.03);--hero-grad:linear-gradient(135deg,#c8b8a8 20%,var(--accent) 70%,#1a0a05);--stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));--font-body:'Inter',serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Zen Antique',serif;--overlay:radial-gradient(ellipse 80% 60% at 50% 40%,transparent 0%,rgba(6,4,6,.85) 100%)}
+body[data-theme="ghibli"]{--bg:#f0ebe0;--bg2:#e8e0d0;--fg:#3a3830;--fg-m:#7a7568;--fg-d:#b0a898;--accent:#4a8c4a;--accent2:#c8a060;--accent3:#70aac8;--glow-bg:radial-gradient(circle,rgba(74,140,74,.05),transparent 50%);--border-color:rgba(74,140,74,.06);--card-bg:rgba(255,255,240,.5);--card-border:rgba(74,140,74,.04);--card-glow:rgba(200,160,96,.04);--hero-grad:linear-gradient(135deg,#3a3830 20%,var(--accent) 50%,var(--accent2) 80%);--stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Noto Sans JP',sans-serif;--overlay:radial-gradient(ellipse 100% 70% at 50% 50%,transparent 0%,rgba(240,235,224,.2) 100%)}
+body[data-theme="retro"]{--bg:#08081e;--bg2:#0e0e2e;--fg:#b8aae0;--fg-m:#6860aa;--fg-d:#383070;--accent:#ff6b9d;--accent2:#00d4ff;--accent3:#ffd700;--glow-bg:radial-gradient(circle,rgba(255,107,157,.06),transparent 50%);--border-color:rgba(255,107,157,.06);--card-bg:rgba(14,14,46,.4);--card-border:rgba(0,212,255,.04);--card-glow:rgba(255,107,157,.04);--hero-grad:linear-gradient(135deg,#b8aae0 20%,var(--accent) 50%,var(--accent2) 80%);--stat-grad:linear-gradient(135deg,var(--accent),var(--accent3));--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Press Start 2P',monospace;--overlay:radial-gradient(ellipse 80% 60% at 50% 30%,transparent 0%,rgba(8,8,30,.7) 100%)}
+body[data-theme="shonen"]{--bg:#f8f4ec;--bg2:#ece4d8;--fg:#282420;--fg-m:#686058;--fg-d:#989080;--accent:#ff4400;--accent2:#ffcc00;--accent3:#0044ff;--glow-bg:radial-gradient(circle,rgba(255,68,0,.06),transparent 50%);--border-color:rgba(255,68,0,.05);--card-bg:rgba(255,255,255,.5);--card-border:rgba(255,68,0,.03);--card-glow:rgba(255,204,0,.04);--hero-grad:linear-gradient(135deg,#282420 20%,var(--accent) 60%,var(--accent3));--stat-grad:linear-gradient(135deg,var(--accent),var(--accent2));--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-display:'Inter',sans-serif;--overlay:radial-gradient(ellipse 100% 60% at 50% 40%,transparent 0%,rgba(248,244,236,.2) 100%)}
 
-/* ═══ THEME OVERRIDES ═══ */
-body.theme-fantasy .glitch::before{color:var(--accent2)}body.theme-fantasy .glitch::after{color:#2a1a0a}
-body.theme-fantasy .p-card::before{background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(196,30,30,.08),transparent 50%)}
-body.theme-fantasy .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),#5a2010)}
-body.theme-fantasy .s-card[data-c]{border-left:3px solid var(--accent2)!important}
-body.theme-fantasy .tl-d{background:var(--accent);box-shadow:0 0 0 3px rgba(196,30,30,.12)}
-body.theme-fantasy nav{background:rgba(10,7,8,.8)}
+/* per-theme display overrides */
+body[data-theme="fantasy"] .glitch::before{color:var(--accent2)}body[data-theme="fantasy"] .glitch::after{color:#3a1a0a}
+body[data-theme="fantasy"] .tl-d{background:var(--accent);box-shadow:0 0 0 3px rgba(196,30,30,.12)}
+body[data-theme="fantasy"] .s-card[data-c]{border-left:3px solid var(--accent2)!important}
+body[data-theme="fantasy"] .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),#5a2010)!important}
+body[data-theme="fantasy"] .hero-terminal{background:rgba(0,0,0,.4)}
+body[data-theme="fantasy"] .hero-actions .primary{background:var(--accent);color:#fff}
+body[data-theme="fantasy"] .hero-actions .secondary{border-color:rgba(200,180,160,.08);color:var(--fg-m)}
+body[data-theme="fantasy"] .hero-actions .secondary:hover{border-color:var(--accent);color:var(--accent)}
 
-body.theme-ghibli .glitch::before{color:var(--accent2)}body.theme-ghibli .glitch::after{color:var(--accent3)}
-body.theme-ghibli #progress{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3))}
-body.theme-ghibli .hero-actions .primary{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(91,140,90,.2)}
-body.theme-ghibli .hero-actions .secondary{border-color:rgba(0,0,0,.08);color:var(--fg-m)}
-body.theme-ghibli .hero-actions .secondary:hover{border-color:var(--accent);color:var(--accent)}
-body.theme-ghibli .s-card{background:rgba(255,255,255,.3)}body.theme-ghibli .p-card{background:rgba(255,255,255,.3)}
-body.theme-ghibli .r-card{background:rgba(255,255,255,.3)}body.theme-ghibli .r-hero{background:rgba(91,140,90,.03)}
-body.theme-ghibli .stat-c{background:rgba(255,255,255,.4)}body.theme-ghibli nav{background:rgba(245,239,230,.8)}
-body.theme-ghibli .tl-d{background:var(--accent)}body.theme-ghibli .hero-badge{background:rgba(91,140,90,.08);color:var(--accent)}
-body.theme-ghibli footer .soc a:hover{background:rgba(212,165,116,.05);color:var(--accent2)}
-body.theme-ghibli .s-card[data-c]{border-left:3px solid var(--accent2)!important}
-body.theme-ghibli .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2))!important}
+body[data-theme="ghibli"] .glitch::before{color:var(--accent2)}body[data-theme="ghibli"] .glitch::after{color:var(--accent3)}
+body[data-theme="ghibli"] .tl-d{background:var(--accent);box-shadow:0 0 0 3px rgba(74,140,74,.12)}
+body[data-theme="ghibli"] .s-card[data-c]{border-left:3px solid var(--accent2)!important}
+body[data-theme="ghibli"] .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2))!important}
+body[data-theme="ghibli"] .hero-actions .primary{background:var(--accent);color:#fff}
+body[data-theme="ghibli"] .hero-actions .secondary:hover{border-color:var(--accent);color:var(--accent)}
+body[data-theme="ghibli"] .p-card,.s-card,.r-card,.stat-c,.r-hero{background:rgba(255,255,240,.4)!important}
 
-body.theme-retro .glitch::before{color:var(--accent2)}body.theme-retro .glitch::after{color:var(--accent3)}
-body.theme-retro #progress{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3))}
-body.theme-retro .hero-actions .primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg)}
-body.theme-retro .hero-actions .secondary:hover{border-color:var(--accent2);color:var(--accent2)}
-body.theme-retro .tl-d{background:var(--accent2);box-shadow:0 0 0 3px rgba(0,212,255,.12)}
-body.theme-retro .hero-badge{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.12);color:var(--accent2)}
-body.theme-retro .s-card[data-c]{border-left:3px solid var(--accent)!important}
-body.theme-retro .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3))!important}
+body[data-theme="retro"] .glitch::before{color:var(--accent2)}body[data-theme="retro"] .glitch::after{color:var(--accent3)}
+body[data-theme="retro"] .tl-d{background:var(--accent2);box-shadow:0 0 0 3px rgba(0,212,255,.12)}
+body[data-theme="retro"] .s-card[data-c]{border-left:3px solid var(--accent)!important}
+body[data-theme="retro"] .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3))!important}
+body[data-theme="retro"] .hero-actions .primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#08081e}
 
-body.theme-shonen .glitch::before{color:var(--accent)}body.theme-shonen .glitch::after{color:var(--accent3)}
-body.theme-shonen #progress{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3))}
-body.theme-shonen .hero-actions .primary{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(255,68,0,.3)}
-body.theme-shonen .hero-actions .secondary:hover{border-color:var(--accent);color:var(--accent)}
-body.theme-shonen .tl-d{background:var(--accent);box-shadow:0 0 0 3px rgba(255,68,0,.12)}
-body.theme-shonen .hero-badge{background:rgba(255,68,0,.08);color:var(--accent)}
-body.theme-shonen .s-card[data-c]{border-left:3px solid var(--accent)!important}
-body.theme-shonen .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2))!important}
+body[data-theme="shonen"] .glitch::before{color:var(--accent)}body[data-theme="shonen"] .glitch::after{color:var(--accent3)}
+body[data-theme="shonen"] .tl-d{background:var(--accent);box-shadow:0 0 0 3px rgba(255,68,0,.12)}
+body[data-theme="shonen"] .s-card[data-c]{border-left:3px solid var(--accent)!important}
+body[data-theme="shonen"] .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2))!important}
+body[data-theme="shonen"] .hero-actions .primary{background:var(--accent);color:#fff}
 
 /* ═══ LAYOUT ═══ */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;
   background:rgba(var(--accent-rgb),.02);backdrop-filter:blur(40px);border-bottom:1px solid var(--border-color);
-  transition:transform .4s cubic-bezier(.4,0,.2,1),background .6s;
+  transition:transform .4s,background .6s;
 }
 nav.hidden{transform:translateY(-100%)}
 nav .inner{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,48px);display:flex;align-items:center;justify-content:space-between}
-nav .logo{font-family:var(--font-mono);font-weight:800;font-size:14px;color:var(--fg);text-decoration:none;opacity:.5;letter-spacing:-.3px;transition:opacity .3s}
+nav .logo{font-family:var(--font-mono);font-weight:800;font-size:14px;color:var(--fg);text-decoration:none;opacity:.5;transition:opacity .3s}
 nav .logo:hover{opacity:1}
 nav .links{display:flex;gap:24px}
-nav .links a{font-size:11px;font-weight:500;color:var(--fg-m);text-decoration:none;position:relative;letter-spacing:.5px;transition:color .3s;cursor:pointer}
+nav .links a{font-size:11px;font-weight:500;color:var(--fg-m);text-decoration:none;position:relative;cursor:pointer;transition:color .3s}
 nav .links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s}
 nav .links a:hover{color:var(--fg)}nav .links a:hover::after{width:100%}
 
 #content{position:relative;z-index:5;pointer-events:none}#content *{pointer-events:auto}
-
-.hero{min-height:100vh;display:flex;align-items:center;padding:0 clamp(20px,4vw,48px)}
+.hero{min-height:100vh;display:flex;align-items:center;padding:0 clamp(20px,4vw,48px);position:relative}
 .hero-content{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;padding-top:60px}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:100px;
-  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
-  background:var(--glow-bg);border:1px solid var(--border-color);color:var(--accent);
-  font-family:var(--font-mono);margin-bottom:20px;
-}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:100px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;background:var(--glow-bg);border:1px solid var(--border-color);color:var(--accent);font-family:var(--font-mono);margin-bottom:20px}
 .hero-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulseDot 2s ease-in-out infinite;display:inline-block}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
 .hero h1{font-size:clamp(44px,6vw,72px);font-weight:900;line-height:1;margin-bottom:12px;letter-spacing:-2.5px}
-.hero h1 .line{display:block}.hero h1 .grad{-webkit-background-clip:text;-webkit-text-fill-color:transparent;background:var(--hero-grad);transition:background .8s}
+.hero h1 .line{display:block}.hero h1 .grad{background:var(--hero-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;transition:background .8s}
 .glitch{position:relative;display:inline-block;cursor:crosshair}
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .25s}
 .glitch:hover::before,.glitch:hover::after{opacity:1}
@@ -203,24 +105,20 @@ nav .links a:hover{color:var(--fg)}nav .links a:hover::after{width:100%}
 .hero .sub{font-size:15px;color:var(--fg-m);max-width:480px;margin-bottom:28px;line-height:1.8}.hero .sub strong{color:var(--fg)}
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
 .hero-actions a{padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:all .3s;font-family:var(--font-mono)}
-.hero-actions .secondary{border:1px solid var(--border-color);color:var(--fg-m);transition:all .3s}
+.hero-actions .secondary{border:1px solid var(--border-color);color:var(--fg-m)}
+.hero-actions .primary:hover{transform:translateY(-2px)}
+.hero-actions .secondary:hover{transform:translateY(-2px)}
 .hero-strip{display:flex;gap:24px;margin-top:32px;flex-wrap:wrap}
 .hero-strip span{font-size:12px;color:var(--fg-d);font-family:var(--font-mono)}
 .hero-strip span strong{color:var(--fg-m);font-weight:500;transition:color .6s}
-.hero-terminal{
-  background:rgba(0,0,0,.3);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;
-  backdrop-filter:blur(12px);transform:perspective(800px) rotateY(-6deg) rotateX(3deg) translateZ(20px);
-  transition:transform .5s,background .6s,border .6s;
-  box-shadow:-8px 12px 40px rgba(0,0,0,.4);
-}
+.hero-terminal{background:rgba(0,0,0,.25);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;backdrop-filter:blur(12px);transform:perspective(800px) rotateY(-4deg) rotateX(2deg) translateZ(20px);transition:transform .5s,background .6s,border .6s;box-shadow:-8px 12px 40px rgba(0,0,0,.4)}
 .hero-terminal:hover{transform:perspective(800px) rotateY(0) rotateX(0) translateZ(20px)}
 .term-bar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(255,255,255,.015);border-bottom:1px solid rgba(255,255,255,.03)}
 .term-dot{width:9px;height:9px;border-radius:50%}.term-dot.r{background:#ff5f57}.term-dot.y{background:#febc2e}.term-dot.g{background:#28c840}
 .term-bar span{font-size:10px;color:var(--fg-d);margin-left:12px;font-family:var(--font-mono)}
 .term-body{padding:18px 20px;font-family:var(--font-mono);font-size:13px;line-height:2;color:var(--fg-m)}
-.term-body .p{color:var(--accent);transition:color .6s}
-.term-body .c{color:var(--fg)}.term-body .o{color:var(--accent2);margin-left:16px;transition:color .6s}
-.term-body .o2{color:var(--fg-m);margin-left:16px}
+.term-body .p{color:var(--accent);transition:color .6s}.term-body .c{color:var(--fg)}
+.term-body .o{color:var(--accent2);margin-left:16px;transition:color .6s}
 .term-body .blink{display:inline-block;width:7px;height:15px;background:var(--accent);animation:cursorBlink 1s step-end infinite;vertical-align:middle;margin-left:3px;transition:background .6s}
 @keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
 
@@ -239,29 +137,21 @@ h2.s-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--fg);margin
 .about-text p{color:var(--fg-m);font-size:15px;margin-bottom:14px;line-height:1.9}
 .about-text p strong{color:var(--fg);font-weight:600}
 .about-text .hl{color:var(--accent);transition:color .6s}
-.about-text .pill{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:600;font-family:var(--font-mono);margin:1px 1px;letter-spacing:.3px}
-.pill-soc{background:rgba(59,130,246,.1);color:#60a5fa}
-.pill-web{background:rgba(var(--accent-rgb),.08);color:var(--accent)}
-.pill-pentest{background:rgba(249,115,22,.1);color:#fb923c}
-.pill-iot{background:rgba(168,85,247,.1);color:#a855f7}
+.about-text .pill{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:600;font-family:var(--font-mono);margin:1px;letter-spacing:.3px}
+.pill-soc{background:rgba(59,130,246,.1);color:#60a5fa}.pill-web{background:rgba(var(--accent-rgb,255,56,100),.08);color:var(--accent)}
+.pill-pentest{background:rgba(249,115,22,.1);color:#fb923c}.pill-iot{background:rgba(168,85,247,.1);color:#a855f7}
 .pill-cloud{background:rgba(34,197,94,.1);color:#22c55e}
 .stats-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-c{
-  background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:20px 16px;
-  text-align:center;transition:all .4s,background .6s,border .6s;
-}
+.stat-c{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:20px 16px;text-align:center;transition:all .4s,background .6s,border .6s}
 .stat-c:hover{border-color:var(--border-color);transform:translateY(-3px);box-shadow:0 8px 30px var(--card-glow)}
 .stat-c .n{font-size:30px;font-weight:900;background:var(--stat-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;transition:background .6s}
-.stat-c .l{color:var(--fg-d);font-size:11px;margin-top:5px;font-weight:500}
-.stat-c .sicon{font-size:20px;margin-bottom:6px;display:block;opacity:.6}
+.stat-c .l{color:var(--fg-d);font-size:11px;margin-top:5px;font-weight:500}.stat-c .sicon{font-size:20px;margin-bottom:6px;display:block;opacity:.6}
 
 .p-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.p-card{
-  background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:26px;display:block;
-  text-decoration:none;transition:transform .6s,border-color .4s,box-shadow .4s,background .6s;
-}
-.p-card::before{content:'';position:absolute;inset:0;border-radius:14px;opacity:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),var(--card-glow),transparent 50%);transition:opacity .4s;pointer-events:none}
+.p-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:26px;display:block;text-decoration:none;position:relative;overflow:hidden;transition:transform .6s,border-color .4s,box-shadow .4s,background .6s}
+.p-card::before{content:'';position:absolute;inset:0;border-radius:14px;opacity:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),var(--card-glow),transparent 50%);transition:opacity .4s;pointer-events:none;z-index:0}
 .p-card:hover::before{opacity:1}.p-card:hover{border-color:var(--border-color);box-shadow:0 12px 40px var(--card-glow)}
+.p-card *{position:relative;z-index:1}
 .p-card .pm{display:flex;gap:8px;align-items:center;font-size:10px;color:var(--fg-d);margin-bottom:8px;flex-wrap:wrap}
 .p-card .pb{padding:2px 9px;border-radius:100px;font-weight:600;font-size:8px;letter-spacing:.5px;text-transform:uppercase;font-family:var(--font-mono)}
 .pb-sh{background:rgba(0,200,100,.08);color:#00cc66;border:1px solid rgba(0,200,100,.12)}
@@ -271,33 +161,30 @@ h2.s-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--fg);margin
 .p-card .pt{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
 .p-card .pt span{font-size:9px;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.015);color:var(--fg-d);font-family:var(--font-mono)}
 .p-card.place{display:flex;align-items:center;justify-content:center;flex-direction:column;min-height:180px;border-style:dashed}
-.p-card.place p{color:var(--fg-d);text-align:center;font-size:12px}
 
 .r-hero{background:var(--glow-bg);border:1px solid var(--border-color);border-radius:14px;padding:32px;margin-bottom:14px;transition:background .6s,border .6s}
-.r-hero .rb{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:100px;font-size:9px;font-weight:600;letter-spacing:1px;background:var(--glow-bg);border:1px solid var(--border-color);color:var(--accent);font-family:var(--font-mono);margin-bottom:10px}
-.r-hero h3{font-size:18px;font-weight:800;color:var(--fg);margin-bottom:6px}.r-hero p{color:var(--fg-m);font-size:13.5px;line-height:1.7;max-width:680px}
+.r-hero .rb{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:100px;font-size:9px;font-weight:600;background:var(--glow-bg);border:1px solid var(--border-color);color:var(--accent);font-family:var(--font-mono);margin-bottom:10px}
+.r-hero h3{font-size:18px;font-weight:800;color:var(--fg);margin-bottom:6px}.r-hero p{color:var(--fg-m);font-size:13.5px}
 .r-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .r-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:22px;text-decoration:none;display:block;transition:transform .4s,border-color .3s,box-shadow .3s,background .6s}
 .r-card:hover{border-color:var(--border-color);transform:translateY(-2px);box-shadow:0 8px 30px var(--card-glow)}
-.r-card .rm{display:flex;gap:8px;font-size:10px;color:var(--fg-d);margin-bottom:6px;flex-wrap:wrap;align-items:center}
+.r-card .rm{display:flex;gap:8px;font-size:10px;color:var(--fg-d);margin-bottom:6px;flex-wrap:wrap}
 .r-card .rb2{padding:2px 8px;border-radius:100px;font-weight:600;font-size:8px;font-family:var(--font-mono)}
 .rb-crit{background:rgba(239,68,68,.08);color:#ef4444;border:1px solid rgba(239,68,68,.12)}
 .rb-med{background:rgba(234,179,8,.08);color:#eab308;border:1px solid rgba(234,179,8,.12)}
 .r-card h4{font-size:13.5px;font-weight:700;color:var(--fg);margin-bottom:3px;transition:color .6s}
-.r-card p{color:var(--fg-m);font-size:12px;line-height:1.6}
-.r-card .rt{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.r-card p{color:var(--fg-m);font-size:12px}.r-card .rt{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 .r-card .rt span{font-size:9px;padding:2px 7px;border-radius:3px;background:rgba(255,255,255,.015);color:var(--fg-d);font-family:var(--font-mono)}
 
 .skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.s-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:20px 18px;position:relative;overflow:hidden;transition:transform .4s,box-shadow .4s,background .6s,border .6s}
+.s-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:20px 18px;transition:transform .4s,box-shadow .4s,background .6s,border .6s}
 .s-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
 .s-card[data-c] .sc-bar{background:linear-gradient(90deg,var(--accent),var(--accent2))!important;transition:background .6s}
 .s-card[data-c]{border-left:3px solid var(--accent)!important;transition:border-left .6s}
 .s-card .sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.s-card .sc-icon{font-size:22px;line-height:1}
-.s-card .sc-lv{font-size:9px;font-weight:700;font-family:var(--font-mono);letter-spacing:1px;padding:2px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.04);color:var(--fg-d)}
+.s-card .sc-icon{font-size:22px}.s-card .sc-lv{font-size:9px;font-weight:700;font-family:var(--font-mono);padding:2px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.04);color:var(--fg-d)}
 .s-card h4{font-size:14px;font-weight:700;color:var(--fg);margin-bottom:3px;transition:color .6s}
-.s-card .sc-desc{font-size:12px;color:var(--fg-m);line-height:1.6;margin-bottom:10px}
+.s-card .sc-desc{font-size:12px;color:var(--fg-m);margin-bottom:10px}
 .s-card .sc-bar-wrap{height:4px;border-radius:2px;background:rgba(255,255,255,.04);overflow:hidden;margin-bottom:6px}
 .s-card .sc-bar{height:100%;border-radius:2px;width:0%;transition:width 1.5s,background .6s}
 .s-card .sc-bar-label{display:flex;justify-content:space-between;font-size:9px;color:var(--fg-d);font-family:var(--font-mono)}
@@ -307,30 +194,30 @@ h2.s-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--fg);margin
 .tl{position:relative;padding-left:38px}
 .tl::before{content:'';position:absolute;left:13px;top:6px;bottom:6px;width:1.5px;background:linear-gradient(to bottom,var(--accent),var(--accent2),transparent);transition:background .6s}
 .tl-item{position:relative;margin-bottom:36px}
-.tl-d{position:absolute;left:-32px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--accent2);border:2px solid var(--bg);box-shadow:0 0 0 3px rgba(var(--accent2-rgb),.12);animation:tlP 3s ease-in-out infinite;transition:background .6s,border .6s,box-shadow .6s}
-@keyframes tlP{0%,100%{box-shadow:0 0 0 3px rgba(var(--accent2-rgb),.1)}50%{box-shadow:0 0 0 5px rgba(var(--accent2-rgb),.05),0 0 16px rgba(var(--accent2-rgb),.08)}}
+.tl-d{position:absolute;left:-32px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--accent2);border:2px solid var(--bg);animation:tlP 3s ease-in-out infinite;transition:background .6s,border .6s,box-shadow .6s}
+@keyframes tlP{0%,100%{box-shadow:0 0 0 3px rgba(var(--accent2-rgb,255,170,0),.1)}50%{box-shadow:0 0 0 5px rgba(var(--accent2-rgb,255,170,0),.05),0 0 16px rgba(var(--accent2-rgb,255,170,0),.08)}}
 .tl-item.ft .tl-d{animation:none}
-.tl-dt{font-size:10px;color:var(--fg-d);font-family:var(--font-mono);margin-bottom:1px}
+.tl-dt{font-size:10px;color:var(--fg-d);font-family:var(--font-mono)}
 .tl-t{font-size:14px;font-weight:700;color:var(--fg);margin-bottom:2px;transition:color .6s}
 .tl-de{font-size:12.5px;color:var(--fg-m)}
 .tl-item.ft .tl-t,.tl-item.ft .tl-de{color:var(--fg-d)}
 
-/* Theme switcher */
-.ts{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:6px;transition:all .4s}
-.ts-toggle{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.04);color:var(--fg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .3s;margin-left:auto}
-.ts-toggle:hover{background:rgba(255,255,255,.08);transform:scale(1.1)}
-.ts-options{display:none;flex-direction:column;gap:4px;background:rgba(0,0,0,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:6px;min-width:180px}
+/* Theme selector */
+.ts{position:fixed;bottom:20px;right:20px;z-index:9998;display:flex;flex-direction:column;gap:6px}
+.ts-toggle{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.04);color:var(--fg);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .3s;margin-left:auto;font-family:var(--font-mono)}
+.ts-toggle:hover{background:rgba(255,255,255,.1);transform:scale(1.12)}
+.ts-options{display:none;flex-direction:column;gap:4px;background:rgba(0,0,0,.7);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:8px;min-width:190px}
 .ts.open .ts-options{display:flex}
-.ts-btn{padding:8px 12px;border-radius:8px;border:none;background:transparent;color:var(--fg-m);cursor:pointer;text-align:left;font-size:11px;font-weight:500;transition:all .2s;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
-.ts-btn:hover{background:rgba(255,255,255,.03);color:var(--fg)}
-.ts-btn.active{background:rgba(var(--accent-rgb),.06);color:var(--accent)}
-.ts-btn .sw{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.ts-btn{padding:9px 14px;border-radius:10px;border:none;background:transparent;color:var(--fg-m);cursor:pointer;text-align:left;font-size:12px;font-weight:500;transition:all .2s;display:flex;align-items:center;gap:8px;font-family:var(--font-mono)}
+.ts-btn:hover{background:rgba(255,255,255,.04);color:var(--fg)}
+.ts-btn.active{background:rgba(var(--accent-rgb,255,56,100),.07);color:var(--accent)}
+.ts-btn .sw{width:11px;height:11px;border-radius:50%;display:inline-block;flex-shrink:0;border:1px solid rgba(255,255,255,.06)}
 
 footer{padding:50px 0;border-top:1px solid var(--border-color);transition:border .6s}
 footer .in{max-width:1100px;margin:0 auto;padding:0 clamp(20px,4vw,48px);text-align:center}
-footer .soc{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+footer .soc{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
 footer .soc a{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;background:var(--card-bg);border:1px solid var(--card-border);color:var(--fg-m);text-decoration:none;transition:all .3s,background .6s}
-footer .soc a:hover{background:var(--glow-bg);border-color:var(--border-color);color:var(--accent);transform:translateY(-2px);box-shadow:0 0 24px var(--card-glow)}
+footer .soc a:hover{background:var(--glow-bg);border-color:var(--border-color);color:var(--accent);transform:translateY(-2px)}
 footer .cr{font-size:12px;color:var(--fg-d)}footer .cr .o{color:var(--accent);font-family:var(--font-mono);transition:color .6s}
 
 @media(max-width:860px){
@@ -338,15 +225,11 @@ footer .cr{font-size:12px;color:var(--fg-d)}footer .cr .o{color:var(--accent);fo
   .hero-terminal{transform:none;margin:0 auto;max-width:460px}.hero-terminal:hover{transform:none}
   .hero .sub{margin:0 auto 24px}.hero-actions,.hero-strip{justify-content:center}
   .about-wrap{grid-template-columns:1fr;gap:32px}.p-grid,.r-grid,.skills-grid{grid-template-columns:1fr}
-  nav .links{gap:14px}nav .links a{font-size:10px}.section{padding:50px 0}
-  .ts{bottom:14px;right:14px}
+  nav .links{gap:12px}nav .links a{font-size:10px}.section{padding:50px 0}.ts{bottom:14px;right:14px}
 }
-
-/* ═══ ANIME CHARACTER CANVAS ═══ */
-#anime-char{position:absolute;top:50%;left:50%;width:80vw;height:80vh;transform:translate(-50%,-50%);z-index:0;pointer-events:none;opacity:.5}
 </style>
 </head>
-<body class="theme-cyberpunk">
+<body data-theme="cyberpunk">
 
 <canvas id="three-canvas"></canvas>
 <div class="overlay"></div>
@@ -355,12 +238,7 @@ footer .cr{font-size:12px;color:var(--fg-d)}footer .cr .o{color:var(--accent);fo
 <nav id="nav">
   <div class="inner">
     <a href="#" class="logo">~/orbit</a>
-    <div class="links">
-      <a data-nav="about">About</a>
-      <a data-nav="work">Work</a>
-      <a data-nav="research">Research</a>
-      <a data-nav="skills">Skills</a>
-    </div>
+    <div class="links"><a data-nav="about">About</a><a data-nav="work">Work</a><a data-nav="research">Research</a><a data-nav="skills">Skills</a></div>
   </div>
 </nav>
 
@@ -368,564 +246,668 @@ footer .cr{font-size:12px;color:var(--fg-d)}footer .cr .o{color:var(--accent);fo
 <section class="hero" id="hero">
   <div class="hero-content">
     <div class="hero-left">
-      <div class="hero-badge"><span class="dot"></span> anime style experiments</div>
-      <h1>
-        <span class="line grad">Garvit Kanojia</span>
-        <span class="line"><span class="glitch" data-text="// ORBIT">// ORBIT</span></span>
-      </h1>
-      <p class="sub">
-        SOC analyst · <strong>web security</strong> · pentester.<br>
-        Breaking systems, building tools, tracking adversaries.
-      </p>
-      <div class="hero-actions">
-        <a href="#work" class="primary">view work →</a>
-        <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" class="secondary">LinkedIn</a>
-      </div>
-      <div class="hero-strip">
-        <span>soc <strong>trained</strong></span>
-        <span>web <strong>240+ labs</strong></span>
-        <span>pentest <strong>AD · cloud</strong></span>
-      </div>
+      <div class="hero-badge"><span class="dot"></span> anime lab v2</div>
+      <h1><span class="line grad">Garvit Kanojia</span><span class="line"><span class="glitch" data-text="// ORBIT">// ORBIT</span></span></h1>
+      <p class="sub">SOC analyst · <strong>web security</strong> · pentester.<br>Breaking systems, building tools, tracking adversaries.</p>
+      <div class="hero-actions"><a href="#work" class="primary">view work →</a><a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" class="secondary">LinkedIn</a></div>
+      <div class="hero-strip"><span>soc <strong>trained</strong></span><span>web <strong>240+ labs</strong></span><span>pentest <strong>AD · cloud</strong></span></div>
     </div>
     <div class="hero-terminal">
-      <div class="term-bar">
-        <div class="term-dot r"></div>
-        <div class="term-dot y"></div>
-        <div class="term-dot g"></div>
-        <span>~/orbit — zsh</span>
-      </div>
+      <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><span>~/orbit — zsh</span></div>
       <div class="term-body">
-        <div><span class="p">$</span> <span class="c">whoami</span></div>
-        <div class="o">Orbit — security researcher</div>
-        <div><span class="p">$</span> <span class="c">./anime-theme --list</span></div>
-        <div class="o">┌──────────────────────────────┐</div>
-        <div class="o">│ ① Cyberpunk  — neon hacker   │</div>
-        <div class="o">│ ② Dark Fantasy — berserker   │</div>
-        <div class="o">│ ③ Ghibli      — warm spirit  │</div>
-        <div class="o">│ ④ Retro 80s   — vaporwave    │</div>
-        <div class="o">│ ⑤ Battle      — fist style   │</div>
-        <div class="o">└──────────────────────────────┘</div>
+        <div><span class="p">$</span> <span class="c">./world --select</span></div>
+        <div class="o">┌─────────────────────────────────┐</div>
+        <div class="o">│ ① Cyberpunk  — neon grid rain   │</div>
+        <div class="o">│ ② Fantasy    — mist & runes     │</div>
+        <div class="o">│ ③ Ghibli     — sky & islands    │</div>
+        <div class="o">│ ④ Retro 80s  — sunset grid      │</div>
+        <div class="o">│ ⑤ Shonen     — impact arena     │</div>
+        <div class="o">└─────────────────────────────────┘</div>
         <div><span class="p">$</span> <span class="c">_</span><span class="blink"></span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section" id="about">
-  <div class="container">
-    <div class="ep-divider"><span class="num">◆ EPISODE 01</span><span class="line"></span><span class="sub">Profile</span></div>
-    <div class="about-wrap">
-      <div class="about-text">
-        <h2 class="s-title">Breaking things<br>to fix them</h2>
-        <p>I'm a security researcher from India who works across the full stack — from <strong>SOC operations</strong> and <strong>web application security</strong> to <strong>internal pentesting</strong> and <strong>cloud infrastructure</strong>. I don't specialize in one thing; I connect the dots between them.</p>
-        <p>Trained in <span class="hl">SIEM operations</span>, <span class="hl">log analysis</span>, and <span class="hl">incident response</span> — I can spot an SQLi in Apache logs, trace a C2 beacon in a PCAP, and follow the NIST framework from detection to recovery.</p>
-        <p>On the offensive side, I've completed <span class="hl">240+ PortSwigger labs</span> across every category, submitted vulnerability reports on <span class="hl">5 bug bounty platforms</span>, found hardware-level flaws in IoT devices through <span class="hl">coordinated disclosure</span>, and built my own security tooling for recon and automation.</p>
-        <p><span class="pill pill-soc">SOC/IR</span><span class="pill pill-web">Web Security</span><span class="pill pill-pentest">Pentesting</span><span class="pill pill-iot">IoT</span><span class="pill pill-cloud">Cloud</span></p>
-      </div>
-      <div class="stats-g">
-        <div class="stat-c" id="stat-240"><span class="sicon">🧪</span><div class="n"><span class="cu" data-t="240">0</span><span class="pl">+</span></div><div class="l">PortSwigger Labs</div></div>
-        <div class="stat-c" id="stat-12"><span class="sicon">📋</span><div class="n"><span class="cu" data-t="12">0</span><span class="pl">+</span></div><div class="l">Vulnerability Reports</div></div>
-        <div class="stat-c" id="stat-5"><span class="sicon">🎯</span><div class="n"><span class="cu" data-t="5">0</span></div><div class="l">Bug Bounty Platforms</div></div>
-        <div class="stat-c" id="stat-p1"><span class="sicon">⚠️</span><div class="n">P<span class="cu" data-t="1">0</span></div><div class="l">Highest Severity</div></div>
-      </div>
-    </div>
-  </div>
-</section>
+<section class="section" id="about"><div class="container">
+<div class="ep-divider"><span class="num">◆ EPISODE 01</span><span class="line"></span><span class="sub">Profile</span></div>
+<div class="about-wrap">
+<div class="about-text"><h2 class="s-title">Breaking things<br>to fix them</h2>
+<p>I'm a security researcher from India who works across the full stack — from <strong>SOC operations</strong> and <strong>web application security</strong> to <strong>internal pentesting</strong> and <strong>cloud infrastructure</strong>. I don't specialize in one thing; I connect the dots between them.</p>
+<p>Trained in <span class="hl">SIEM operations</span>, <span class="hl">log analysis</span>, and <span class="hl">incident response</span> — I can spot an SQLi in Apache logs, trace a C2 beacon in a PCAP, and follow the NIST framework from detection to recovery.</p>
+<p>Completed <span class="hl">240+ PortSwigger labs</span>, submitted reports on <span class="hl">5 bug bounty platforms</span>, found hardware-level IoT flaws through <span class="hl">coordinated disclosure</span>, and built my own security tooling.</p>
+<p><span class="pill pill-soc">SOC/IR</span><span class="pill pill-web">Web Security</span><span class="pill pill-pentest">Pentesting</span><span class="pill pill-iot">IoT</span><span class="pill pill-cloud">Cloud</span></p></div>
+<div class="stats-g">
+<div class="stat-c"><span class="sicon">🧪</span><div class="n"><span class="cu" data-t="240">0</span><span class="pl">+</span></div><div class="l">PortSwigger Labs</div></div>
+<div class="stat-c"><span class="sicon">📋</span><div class="n"><span class="cu" data-t="12">0</span><span class="pl">+</span></div><div class="l">Vuln Reports</div></div>
+<div class="stat-c"><span class="sicon">🎯</span><div class="n"><span class="cu" data-t="5">0</span></div><div class="l">Platforms</div></div>
+<div class="stat-c"><span class="sicon">⚠️</span><div class="n">P<span class="cu" data-t="1">0</span></div><div class="l">Highest Severity</div></div>
+</div></div></div></section>
 
-<section class="section" id="work">
-  <div class="container">
-    <div class="ep-divider"><span class="num">◆ EPISODE 02</span><span class="line"></span><span class="sub">Tools</span></div>
-    <h2 class="s-title">Built to break</h2>
-    <p class="s-desc">Open-source security tools for recon, defense, and automation.</p>
-    <div class="p-grid" id="p-grid">
-      <a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="p-card" data-delay="0"><div class="pm"><span class="pb pb-sh">Shell</span><span>Own</span></div><h3>LIDRA</h3><p>Lightweight recon and automation framework.</p><div class="pt"><span>Recon</span><span>Automation</span><span>Shell</span></div></a>
-      <a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="p-card" data-delay="1"><div class="pm"><span class="pb pb-py">Python</span><span>Own</span></div><h3>OBSIDIOS</h3><p>Autonomous network security platform with AI-driven CVE mapping.</p><div class="pt"><span>Network Sec</span><span>AI</span><span>CVE</span></div></a>
-      <a href="https://github.com/TacShot/hyntel" target="_blank" class="p-card" data-delay="2"><div class="pm"><span class="pb pb-py">Python</span><span>Contributor</span></div><h3>HYNTEL</h3><p>Security audit script for automated intel gathering.</p><div class="pt"><span>Audit</span><span>Intel</span><span>Python</span></div></a>
-      <div class="p-card place" data-delay="3"><div style="font-size:24px;margin-bottom:6px">📬</div><h3 style="font-size:14px;color:var(--fg);margin-bottom:2px">Contact & Status</h3><p style="font-size:12px;color:var(--fg-d)">Aug–Dec 2026 · transformation arc</p><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px"><a href="mailto:garvitkanojia15@gmail.com" style="font-size:10px;padding:4px 12px;border-radius:6px;background:var(--glow-bg);border:1px solid var(--border-color);color:var(--accent);text-decoration:none;font-family:var(--font-mono)">email</a><a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" style="font-size:10px;padding:4px 12px;border-radius:6px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.1);color:#a855f7;text-decoration:none;font-family:var(--font-mono)">linkedin</a></div></div>
-    </div>
-  </div>
-</section>
+<section class="section" id="work"><div class="container">
+<div class="ep-divider"><span class="num">◆ EPISODE 02</span><span class="line"></span><span class="sub">Tools</span></div>
+<h2 class="s-title">Built to break</h2><p class="s-desc">Open-source security tools for recon and automation.</p>
+<div class="p-grid">
+<a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="p-card" data-delay="0"><div class="pm"><span class="pb pb-sh">Shell</span><span>Own</span></div><h3>LIDRA</h3><p>Lightweight recon automation framework.</p><div class="pt"><span>Recon</span><span>Automation</span><span>Shell</span></div></a>
+<a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="p-card" data-delay="1"><div class="pm"><span class="pb pb-py">Python</span><span>Own</span></div><h3>OBSIDIOS</h3><p>Autonomous network security platform with AI CVE mapping.</p><div class="pt"><span>Network Sec</span><span>AI</span><span>CVE</span></div></a>
+<a href="https://github.com/TacShot/hyntel" target="_blank" class="p-card" data-delay="2"><div class="pm"><span class="pb pb-py">Python</span><span>Contributor</span></div><h3>HYNTEL</h3><p>Automated intel gathering and vuln identification.</p><div class="pt"><span>Audit</span><span>Intel</span><span>Python</span></div></a>
+<div class="p-card place" data-delay="3"><div style="font-size:24px;margin-bottom:6px">📬</div><h3 style="font-size:14px;color:var(--fg);margin-bottom:2px">Contact</h3><p style="font-size:12px;color:var(--fg-d)">Aug–Dec 2026 · transformation</p><div style="display:flex;gap:6px;justify-content:center;margin-top:4px"><a href="mailto:garvitkanojia15@gmail.com" style="font-size:10px;padding:4px 12px;border-radius:6px;background:var(--glow-bg);border:1px solid var(--border-color);color:var(--accent);text-decoration:none;font-family:var(--font-mono)">email</a><a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" style="font-size:10px;padding:4px 12px;border-radius:6px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.1);color:#a855f7;text-decoration:none;font-family:var(--font-mono)">linkedin</a></div></div>
+</div></div></section>
 
-<section class="section" id="research">
-  <div class="container">
-    <div class="ep-divider"><span class="num">◆ EPISODE 03</span><span class="line"></span><span class="sub">Findings</span></div>
-    <h2 class="s-title">Security research</h2>
-    <p class="s-desc">Coordinated disclosures and bug bounty findings.</p>
-    <div class="r-hero" data-delay="0"><div class="rb">🏆 Hall of Fame</div><h3>SOLARMAN IoT — 7 Vulnerabilities</h3><p>Discovered multiple security flaws in IoT data logger including hardcoded credentials and unrestricted firmware upload. Coordinated disclosure — HoF recognition.</p></div>
-    <div class="r-grid">
-      <a href="https://hackerone.com/idkgarvit" target="_blank" class="r-card" data-delay="1"><div class="rm"><span class="rb2 rb-crit">Critical</span><span>Polygon · H1</span></div><h4>ERC-4337 Bundler Key — 7 Chains</h4><p>Hardcoded Pimlico bundler API key with unrestricted eth_sendUserOperation across 7 EVM chains.</p><div class="rt"><span>ERC-4337</span><span>Blockchain</span><span>Hardcoded Key</span></div></a>
-      <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="r-card" data-delay="2"><div class="rm"><span class="rb2 rb-med">P5</span><span>Nubank · Bugcrowd</span></div><h4>Unauthenticated S3 Write</h4><p>Production S3 bucket with public write policies in a live banking environment.</p><div class="rt"><span>S3</span><span>Cloud</span><span>AWS</span><span>Misconfig</span></div></a>
-    </div>
-  </div>
-</section>
+<section class="section" id="research"><div class="container">
+<div class="ep-divider"><span class="num">◆ EPISODE 03</span><span class="line"></span><span class="sub">Findings</span></div>
+<h2 class="s-title">Security research</h2><p class="s-desc">Coordinated disclosures and bug bounty findings.</p>
+<div class="r-hero" data-delay="0"><div class="rb">🏆 Hall of Fame</div><h3>SOLARMAN IoT — 7 Vulnerabilities</h3><p>IoT data logger flaws including hardcoded credentials and unrestricted firmware upload. Coordinated disclosure — HoF.</p></div>
+<div class="r-grid">
+<a href="https://hackerone.com/idkgarvit" target="_blank" class="r-card" data-delay="1"><div class="rm"><span class="rb2 rb-crit">Critical</span><span>Polygon</span></div><h4>ERC-4337 Bundler Key — 7 Chains</h4><p>Hardcoded Pimlico bundler API key across 7 EVM chains.</p><div class="rt"><span>ERC-4337</span><span>Blockchain</span><span>Hardcoded Key</span></div></a>
+<a href="https://bugcrowd.com/idkgarvit" target="_blank" class="r-card" data-delay="2"><div class="rm"><span class="rb2 rb-med">P5</span><span>Nubank</span></div><h4>Unauthenticated S3 Write</h4><p>Production S3 bucket with public write policies.</p><div class="rt"><span>S3</span><span>Cloud</span><span>AWS</span><span>Misconfig</span></div></a>
+</div></div></section>
 
-<section class="section" id="skills">
-  <div class="container">
-    <div class="ep-divider"><span class="num">◆ EPISODE 04</span><span class="line"></span><span class="sub">Stack</span></div>
-    <h2 class="s-title">Specialties</h2>
-    <p class="s-desc">Core domains with proficiency levels.</p>
-    <div class="skills-grid" id="skills-g"></div>
-  </div>
-</section>
+<section class="section" id="skills"><div class="container">
+<div class="ep-divider"><span class="num">◆ EPISODE 04</span><span class="line"></span><span class="sub">Stack</span></div>
+<h2 class="s-title">Specialties</h2><p class="s-desc">Core security domains with proficiency.</p>
+<div class="skills-grid" id="skills-g"></div>
+</div></section>
 
-<section class="section" id="timeline" style="padding-bottom:30px">
-  <div class="container">
-    <div class="ep-divider"><span class="num">◆ EPISODE 05</span><span class="line"></span><span class="sub">History</span></div>
-    <h2 class="s-title">The journey</h2>
-    <p class="s-desc">Key milestones in security research.</p>
-    <div class="tl" id="tl">
-      <div class="tl-item" data-delay="0"><div class="tl-d"></div><div class="tl-dt">2026</div><div class="tl-t">P1 Critical — Polygon Technology</div><div class="tl-de">ERC-4337 bundler key exploitation chain across 7 EVM chains.</div></div>
-      <div class="tl-item" data-delay="1"><div class="tl-d"></div><div class="tl-dt">2026</div><div class="tl-t">Hall of Fame — SOLARMAN IoT</div><div class="tl-de">7 vulnerabilities in IoT data logger including unauthenticated firmware RCE.</div></div>
-      <div class="tl-item" data-delay="2"><div class="tl-d"></div><div class="tl-dt">2026</div><div class="tl-t">First Bug Bounty Submission</div><div class="tl-de">Began hunting across 5 platforms.</div></div>
-      <div class="tl-item" data-delay="3"><div class="tl-d"></div><div class="tl-dt">2025</div><div class="tl-t">Started Security Research</div><div class="tl-de">Self-taught offensive security, tool building.</div></div>
-      <div class="tl-item ft" data-delay="4"><div class="tl-d"></div><div class="tl-dt">2027</div><div class="tl-t">⌘ What's next</div><div class="tl-de">SOC analyst role — applying the full spectrum.</div></div>
-    </div>
-  </div>
-</section>
+<section class="section" id="timeline" style="padding-bottom:30px"><div class="container">
+<div class="ep-divider"><span class="num">◆ EPISODE 05</span><span class="line"></span><span class="sub">History</span></div>
+<h2 class="s-title">The journey</h2><p class="s-desc">Key security research milestones.</p>
+<div class="tl" id="tl">
+<div class="tl-item" data-delay="0"><div class="tl-d"></div><div class="tl-dt">2026</div><div class="tl-t">P1 Critical — Polygon Technology</div><div class="tl-de">ERC-4337 bundler key exploitation chain across 7 EVM chains.</div></div>
+<div class="tl-item" data-delay="1"><div class="tl-d"></div><div class="tl-dt">2026</div><div class="tl-t">Hall of Fame — SOLARMAN IoT</div><div class="tl-de">7 vulnerabilities, unauthenticated firmware RCE.</div></div>
+<div class="tl-item" data-delay="2"><div class="tl-d"></div><div class="tl-dt">2026</div><div class="tl-t">First Bug Bounty Submission</div><div class="tl-de">Began hunting across 5 platforms.</div></div>
+<div class="tl-item" data-delay="3"><div class="tl-d"></div><div class="tl-dt">2025</div><div class="tl-t">Started Security Research</div><div class="tl-de">Self-taught offensive security.</div></div>
+<div class="tl-item ft" data-delay="4"><div class="tl-d"></div><div class="tl-dt">2027</div><div class="tl-t">⌘ What's next</div><div class="tl-de">SOC analyst — applying the full spectrum.</div></div>
+</div></div></section>
 
-<footer>
-  <div class="in">
-    <div class="soc">
-      <a href="mailto:garvitkanojia15@gmail.com">📧 Email</a>
-      <a href="https://github.com/idkgarvit" target="_blank">🐙 GitHub</a>
-      <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank">💼 LinkedIn</a>
-      <a href="https://hackerone.com/idkgarvit" target="_blank">🛡️ HackerOne</a>
-      <a href="https://bugcrowd.com/idkgarvit" target="_blank">🐞 Bugcrowd</a>
-      <a href="https://instagram.com/garvit_kanojia_15" target="_blank">📸 Instagram</a>
-    </div>
-    <div class="cr">Experimental Anime Themes · <span class="o">Orbit</span> · 2026</div>
-  </div>
-</footer>
-</div>
+<footer><div class="in"><div class="soc">
+<a href="mailto:garvitkanojia15@gmail.com">📧 Email</a>
+<a href="https://github.com/idkgarvit" target="_blank">🐙 GitHub</a>
+<a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank">💼 LinkedIn</a>
+<a href="https://hackerone.com/idkgarvit" target="_blank">🛡️ HackerOne</a>
+<a href="https://bugcrowd.com/idkgarvit" target="_blank">🐞 Bugcrowd</a>
+<a href="https://instagram.com/garvit_kanojia_15" target="_blank">📸 Instagram</a>
+</div><div class="cr">Anime World Lab · <span class="o">Orbit</span> · 2026</div></div></footer>
+</div><!-- /content -->
 
 <div class="ts" id="theme-switcher">
   <button class="ts-toggle" id="ts-toggle">🎨</button>
   <div class="ts-options">
-    <button class="ts-btn active" data-theme="theme-cyberpunk"><span class="sw" style="background:#ff3864"></span>Cyberpunk — Neon Hacker</button>
-    <button class="ts-btn" data-theme="theme-fantasy"><span class="sw" style="background:#c41e1e"></span>Dark Fantasy — Berserker</button>
-    <button class="ts-btn" data-theme="theme-ghibli"><span class="sw" style="background:#5b8c5a"></span>Ghibli — Warm Spirit</button>
-    <button class="ts-btn" data-theme="theme-retro"><span class="sw" style="background:#ff6b9d"></span>Retro 80s — Vaporwave</button>
-    <button class="ts-btn" data-theme="theme-shonen"><span class="sw" style="background:#ff4400"></span>Battle Shonen — Fist Style</button>
+    <button class="ts-btn active" data-theme="cyberpunk"><span class="sw" style="background:#ff3864"></span>Neon Grid Rain</button>
+    <button class="ts-btn" data-theme="fantasy"><span class="sw" style="background:#c41e1e"></span>Mist & Runes</button>
+    <button class="ts-btn" data-theme="ghibli"><span class="sw" style="background:#4a8c4a"></span>Sky Islands</button>
+    <button class="ts-btn" data-theme="retro"><span class="sw" style="background:#ff6b9d"></span>Sunset Grid</button>
+    <button class="ts-btn" data-theme="shonen"><span class="sw" style="background:#ff4400"></span>Impact Arena</button>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// CANVAS ANIME CHARACTER SPRITES
-// ═══════════════════════════════════════════════════
-// Each theme draws a character silhouette on canvas
-// which becomes a Three.js sprite texture in the 3D scene
-
-function drawCharacter(ctx, w, h, theme){
+// ═══════════════════════════════════════════════════════════
+// CANVAS ANIME CHARACTER DRAWER — detailed anime art
+// ═══════════════════════════════════════════════════════════
+function drawAnimeChar(ctx, w, h, theme) {
   ctx.clearRect(0,0,w,h);
-  const cx = w/2, cy = h/2 + 20;
-  const scale = Math.min(w,h)/350;
+  const cx = w/2, cy = h/2 + 30;
+  const s = Math.min(w,h)/320;
 
-  switch(theme){
-    // ── CYBERPUNK: Hacker in trenchcoat, neon lines ──
-    case 'theme-cyberpunk':
-      // Coat body
-      ctx.fillStyle = '#1a1a2e';
-      ctx.beginPath();
-      ctx.moveTo(cx-55*scale, cy-20*scale);
-      ctx.lineTo(cx+55*scale, cy-20*scale);
-      ctx.lineTo(cx+70*scale, cy+100*scale);
-      ctx.lineTo(cx-70*scale, cy+100*scale);
-      ctx.closePath(); ctx.fill();
-      // Coat collar
+  switch(theme) {
+    // ── CYBERPUNK HACKER ──
+    case 'cyberpunk': {
+      // Coat
       ctx.fillStyle = '#0d0d1a';
-      ctx.beginPath(); ctx.moveTo(cx-30*scale,cy-30*scale); ctx.lineTo(cx,cy-55*scale); ctx.lineTo(cx+30*scale,cy-30*scale); ctx.closePath(); ctx.fill();
-      // Head
-      ctx.fillStyle = '#e8d8c8';
-      ctx.beginPath(); ctx.arc(cx, cy-65*scale, 28*scale, 0, Math.PI*2); ctx.fill();
-      // Hair - spiky cyber
+      ctx.beginPath(); ctx.moveTo(cx-65*s,cy-15*s); ctx.lineTo(cx+65*s,cy-15*s);
+      ctx.lineTo(cx+80*s,cy+120*s); ctx.lineTo(cx-80*s,cy+120*s); ctx.closePath(); ctx.fill();
+      // Coat inner
+      ctx.fillStyle = '#1a1a2e';
+      ctx.beginPath(); ctx.moveTo(cx-45*s,cy-10*s); ctx.lineTo(cx+45*s,cy-10*s);
+      ctx.lineTo(cx+50*s,cy+110*s); ctx.lineTo(cx-50*s,cy+110*s); ctx.closePath(); ctx.fill();
+      // Neck
+      ctx.fillStyle = '#e8d0b8';
+      ctx.fillRect(cx-12*s,cy-55*s,24*s,30*s);
+      // Face
+      ctx.fillStyle = '#f0dcc8';
+      ctx.beginPath(); ctx.arc(cx,cy-80*s,32*s,0,Math.PI*2); ctx.fill();
+      // Hair
       ctx.fillStyle = '#0a0a0a';
-      ctx.beginPath(); ctx.arc(cx, cy-75*scale, 30*scale, Math.PI, 2*Math.PI); ctx.fill();
-      // Cyber-lines on coat
-      ctx.strokeStyle = '#ff3864';
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(cx-30*scale,cy-10*scale); ctx.lineTo(cx-30*scale,cy+40*scale); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(cx+30*scale,cy-10*scale); ctx.lineTo(cx+30*scale,cy+40*scale); ctx.stroke();
-      // Glowing cyber-tendrils
-      ctx.strokeStyle = '#00d4ff';
-      ctx.lineWidth = 1.5;
-      for(let i=0;i<5;i++){
-        const sx = cx + (i-2)*25*scale;
-        ctx.beginPath(); ctx.moveTo(sx,cy+100*scale);
-        ctx.quadraticCurveTo(sx+Math.sin(i)*15*scale,cy+140*scale,sx+Math.cos(i*1.5)*30*scale,cy+170*scale);
+      ctx.beginPath(); ctx.arc(cx,cy-94*s,36*s,Math.PI,2*Math.PI); ctx.fill();
+      // Hair front spikes
+      ctx.beginPath(); ctx.moveTo(cx-18*s,cy-104*s); ctx.lineTo(cx-6*s,cy-130*s); ctx.lineTo(cx+6*s,cy-104*s); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx+6*s,cy-104*s); ctx.lineTo(cx+18*s,cy-128*s); ctx.lineTo(cx+20*s,cy-102*s); ctx.fill();
+      // Eyes
+      ctx.fillStyle = '#ff3864';
+      ctx.beginPath(); ctx.ellipse(cx-14*s,cy-78*s,10*s,5*s,0,Math.PI*0.2,Math.PI*0.8); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx+14*s,cy-78*s,10*s,5*s,0,Math.PI*0.2,Math.PI*0.8); ctx.fill();
+      // Pupils
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(cx-14*s,cy-76*s,2*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+14*s,cy-76*s,2*s,0,Math.PI*2); ctx.fill();
+      // Cyber visor
+      ctx.shadowColor = '#00d4ff'; ctx.shadowBlur = 16;
+      ctx.fillStyle = 'rgba(0,212,255,0.25)';
+      ctx.beginPath(); ctx.roundRect(cx-22*s,cy-72*s,44*s,8*s,3); ctx.fill();
+      ctx.shadowBlur = 0;
+      // Mouth
+      ctx.fillStyle = '#4a3a2a';
+      ctx.beginPath(); ctx.roundRect(cx-6*s,cy-62*s,12*s,2*s,2); ctx.fill();
+      // Neon lines on coat
+      ctx.strokeStyle = '#ff3864'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(cx-35*s,cy-5*s); ctx.lineTo(cx-35*s,cy+50*s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+35*s,cy-5*s); ctx.lineTo(cx+35*s,cy+50*s); ctx.stroke();
+      // Data tendrils
+      ctx.strokeStyle = '#00d4ff'; ctx.lineWidth = 1.2;
+      for(let i=0;i<6;i++){
+        const sx = cx+(i-3)*22*s; ctx.beginPath(); ctx.moveTo(sx,cy+120*s);
+        ctx.quadraticCurveTo(sx+Math.sin(i*1.2)*20*s,cy+160*s,sx+Math.cos(i*0.8)*35*s,cy+200*s);
         ctx.stroke();
       }
-      // Neon visor
-      ctx.fillStyle = '#00d4ff';
-      ctx.shadowColor = '#00d4ff'; ctx.shadowBlur = 6;
-      ctx.beginPath(); ctx.roundRect(cx-18*scale,cy-72*scale,36*scale,8*scale,2); ctx.fill();
-      ctx.shadowBlur = 0;
       break;
-
-    // ── DARK FANTASY: Berserker knight with sword ──
-    case 'theme-fantasy':
-      // Heavy armor body
-      ctx.fillStyle = '#2a1a0a';
-      ctx.beginPath(); ctx.moveTo(cx-50*scale, cy-25*scale);
-      ctx.lineTo(cx+50*scale, cy-25*scale);
-      ctx.lineTo(cx+65*scale, cy+90*scale);
-      ctx.lineTo(cx-65*scale, cy+90*scale);
-      ctx.closePath(); ctx.fill();
-      // Shoulder pads
-      ctx.fillStyle = '#3a2510';
-      ctx.beginPath(); ctx.arc(cx-55*scale,cy-20*scale,18*scale,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(cx+55*scale,cy-20*scale,18*scale,0,Math.PI*2); ctx.fill();
-      // Helmet
-      ctx.fillStyle = '#4a3520';
-      ctx.beginPath(); ctx.arc(cx, cy-60*scale, 32*scale, Math.PI, 2*Math.PI); ctx.fill();
-      // Helmet faceplate
-      ctx.fillStyle = '#5a4530';
-      ctx.beginPath(); ctx.roundRect(cx-15*scale,cy-70*scale,30*scale,20*scale,3); ctx.fill();
-      // Greatsword
-      ctx.fillStyle = '#8a7a6a';
-      ctx.shadowColor = '#c41e1e'; ctx.shadowBlur = 8;
-      ctx.beginPath(); ctx.roundRect(cx+50*scale-3*scale,cy-120*scale,6*scale,200*scale,2); ctx.fill();
-      // Sword crossguard
-      ctx.fillStyle = '#6a5a4a';
-      ctx.beginPath(); ctx.roundRect(cx+50*scale-16*scale,cy+75*scale,32*scale,6*scale,2); ctx.fill();
-      ctx.shadowBlur = 0;
-      // Blood trail / aura
-      ctx.strokeStyle = 'rgba(196,30,30,0.15)';
-      ctx.lineWidth = 3;
-      for(let i=0;i<3;i++){
-        ctx.beginPath(); ctx.moveTo(cx-60*scale+i*40*scale,cy-10*scale);
-        ctx.quadraticCurveTo(cx-80*scale+i*50*scale,cy+50*scale,cx-40*scale+i*30*scale,cy+120*scale);
-        ctx.stroke();
-      }
+    }
+    // ── DARK FANTASY BERSERKER ──
+    case 'fantasy': {
       // Cape
-      ctx.fillStyle = 'rgba(196,30,30,0.12)';
-      ctx.beginPath(); ctx.moveTo(cx-40*scale,cy-10*scale);
-      ctx.quadraticCurveTo(cx-60*scale,cy+60*scale,cx-30*scale,cy+130*scale);
-      ctx.lineTo(cx+30*scale,cy+130*scale);
-      ctx.quadraticCurveTo(cx+60*scale,cy+60*scale,cx+40*scale,cy-10*scale);
-      ctx.fill();
-      break;
-
-    // ── GHIBLI: Floating spirit, soft flow ──
-    case 'theme-ghibli':
-      // Soft body / robes
-      ctx.fillStyle = '#7a9a7a';
-      ctx.beginPath(); ctx.moveTo(cx-50*scale, cy-20*scale);
-      ctx.quadraticCurveTo(cx-60*scale,cy+40*scale,cx-30*scale,cy+110*scale);
-      ctx.lineTo(cx+30*scale,cy+110*scale);
-      ctx.quadraticCurveTo(cx+60*scale,cy+40*scale,cx+50*scale,cy-20*scale);
-      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(140,20,20,0.2)';
+      ctx.beginPath(); ctx.moveTo(cx-50*s,cy-20*s); ctx.quadraticCurveTo(cx-70*s,cy+60*s,cx-40*s,cy+160*s);
+      ctx.lineTo(cx+40*s,cy+160*s); ctx.quadraticCurveTo(cx+70*s,cy+60*s,cx+50*s,cy-20*s); ctx.fill();
+      // Body armor
+      ctx.fillStyle = '#2a1a0e';
+      ctx.beginPath(); ctx.moveTo(cx-55*s,cy-25*s); ctx.lineTo(cx+55*s,cy-25*s);
+      ctx.lineTo(cx+70*s,cy+100*s); ctx.lineTo(cx-70*s,cy+100*s); ctx.closePath(); ctx.fill();
+      // Chest plate
+      ctx.fillStyle = '#3a2512';
+      ctx.beginPath(); ctx.moveTo(cx-30*s,cy-15*s); ctx.lineTo(cx+30*s,cy-15*s);
+      ctx.lineTo(cx+25*s,cy+70*s); ctx.lineTo(cx-25*s,cy+70*s); ctx.closePath(); ctx.fill();
+      // Shoulder pads
+      ctx.fillStyle = '#4a3018';
+      ctx.beginPath(); ctx.arc(cx-60*s,cy-20*s,18*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+60*s,cy-20*s,18*s,0,Math.PI*2); ctx.fill();
       // Head
-      ctx.fillStyle = '#f0e8d8';
-      ctx.beginPath(); ctx.arc(cx, cy-70*scale, 30*scale, 0, Math.PI*2); ctx.fill();
-      // Flowing hair
+      ctx.fillStyle = '#e8d4c0';
+      ctx.beginPath(); ctx.arc(cx,cy-70*s,34*s,0,Math.PI*2); ctx.fill();
+      // Hair wild
+      ctx.fillStyle = '#1a0a05';
+      ctx.beginPath(); ctx.moveTo(cx-30*s,cy-82*s);
+      for(let i=0;i<10;i++){const a=Math.PI*0.5+Math.random()*Math.PI;const r=38+Math.random()*20;ctx.lineTo(cx+Math.cos(a)*r,cy-70*s+Math.sin(a)*r);}
+      ctx.fill();
+      // Scar across face
+      ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx-20*s,cy-85*s); ctx.lineTo(cx-10*s,cy-68*s); ctx.stroke();
+      // Angry eyes
+      ctx.fillStyle = '#c41e1e';
+      ctx.shadowColor = '#c41e1e'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.ellipse(cx-15*s,cy-74*s,9*s,4*s,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx+15*s,cy-74*s,9*s,4*s,0,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(cx-15*s,cy-73*s,2*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+15*s,cy-73*s,2*s,0,Math.PI*2); ctx.fill();
+      // Mouth grim line
+      ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx-10*s,cy-58*s); ctx.lineTo(cx+10*s,cy-58*s); ctx.stroke();
+      // Greatsword handle
+      ctx.fillStyle = '#5a4028';
+      ctx.fillRect(cx+52*s-3*s,cy-130*s,6*s,220*s);
+      // Sword blade glow
+      ctx.shadowColor = '#c41e1e'; ctx.shadowBlur = 10;
+      ctx.fillStyle = '#8a7a62';
+      ctx.fillRect(cx+52*s-1.5*s,cy-130*s,3*s,180*s);
+      ctx.shadowBlur = 0;
+      // Sword crossguard
+      ctx.fillStyle = '#6a5028';
+      ctx.beginPath(); ctx.roundRect(cx+52*s-18*s,cy+50*s,36*s,8*s,3); ctx.fill();
+      // Rune glow on blade
+      ctx.fillStyle = 'rgba(196,30,30,0.1)';
+      for(let i=0;i<3;i++){
+        ctx.beginPath(); ctx.arc(cx+52*s,cy-80*s+i*50*s,6*s,0,Math.PI*2); ctx.fill();
+      }
+      break;
+    }
+    // ── GHIBLI SOARING SPIRIT ──
+    case 'ghibli': {
+      // Wind aura
+      ctx.fillStyle = 'rgba(200,200,180,0.04)';
+      ctx.beginPath(); ctx.arc(cx,cy,100*s,0,Math.PI*2); ctx.fill();
+      // Flowing robes
+      ctx.fillStyle = '#4a7a5a';
+      ctx.beginPath(); ctx.moveTo(cx-55*s,cy-20*s); ctx.quadraticCurveTo(cx-65*s,cy+40*s,cx-35*s,cy+130*s);
+      ctx.quadraticCurveTo(cx,cy+145*s,cx+35*s,cy+130*s);
+      ctx.quadraticCurveTo(cx+65*s,cy+40*s,cx+55*s,cy-20*s); ctx.closePath(); ctx.fill();
+      // Robe highlight
+      ctx.fillStyle = '#5a8a6a';
+      ctx.beginPath(); ctx.moveTo(cx-30*s,cy-15*s); ctx.quadraticCurveTo(cx-40*s,cy+50*s,cx-20*s,cy+120*s);
+      ctx.lineTo(cx+20*s,cy+120*s); ctx.quadraticCurveTo(cx+40*s,cy+50*s,cx+30*s,cy-15*s); ctx.fill();
+      // Head
+      ctx.fillStyle = '#f5eee0';
+      ctx.beginPath(); ctx.arc(cx,cy-75*s,30*s,0,Math.PI*2); ctx.fill();
+      // Hair flowing
       ctx.fillStyle = '#3a4a3a';
       ctx.beginPath();
-      for(let a=Math.PI*0.8;a<Math.PI*1.8;a+=0.15){
-        const r = 34*scale + Math.sin(a*3)*8*scale;
-        const px = cx + Math.cos(a)*r;
-        const py = cy-70*scale + Math.sin(a)*r;
-        a===Math.PI*0.8 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
-      }
+      ctx.moveTo(cx-20*s,cy-95*s);
+      ctx.quadraticCurveTo(cx-40*s,cy-90*s,cx-55*s,cy-70*s);
+      ctx.quadraticCurveTo(cx-65*s,cy-55*s,cx-60*s,cy-35*s);
+      ctx.quadraticCurveTo(cx-50*s,cy-60*s,cx-30*s,cy-85*s);
       ctx.fill();
-      // Hair flowing to side
-      ctx.fillStyle = '#4a5a4a';
-      ctx.beginPath(); ctx.moveTo(cx+20*scale,cy-85*scale);
-      ctx.quadraticCurveTo(cx+55*scale,cy-70*scale,cx+70*scale,cy-40*scale);
-      ctx.quadraticCurveTo(cx+65*scale,cy-50*scale,cx+50*scale,cy-75*scale);
-      ctx.fill();
-      // Floating sparkles / soot sprites
-      ctx.fillStyle = '#d4a574';
-      for(let i=0;i<12;i++){
-        ctx.globalAlpha = 0.3 + Math.random()*0.4;
-        ctx.beginPath();
-        ctx.arc(cx-70*scale+Math.random()*140*scale,cy-120*scale+Math.random()*160*scale,2+Math.random()*4,0,Math.PI*2);
+      // Hair back
+      ctx.beginPath(); ctx.arc(cx,cy-100*s,32*s,Math.PI,2*Math.PI); ctx.fill();
+      // Ghibli eyes (big)
+      ctx.fillStyle = '#3a4a3a';
+      ctx.beginPath(); ctx.ellipse(cx-14*s,cy-76*s,10*s,12*s,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx+14*s,cy-76*s,10*s,12*s,0,0,Math.PI*2); ctx.fill();
+      // Eye shine
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(cx-16*s,cy-80*s,4*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+12*s,cy-80*s,4*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx-12*s,cy-74*s,2*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+16*s,cy-74*s,2*s,0,Math.PI*2); ctx.fill();
+      // Warm smile
+      ctx.strokeStyle = '#6a5a4a'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(cx-2*s,cy-66*s,8*s,0.1,Math.PI-0.1); ctx.stroke();
+      // Arms spread
+      ctx.strokeStyle = '#f5eee0'; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(cx-50*s,cy-10*s); ctx.lineTo(cx-85*s,cy-30*s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+50*s,cy-10*s); ctx.lineTo(cx+85*s,cy-30*s); ctx.stroke();
+      // Sparkles
+      ctx.fillStyle = '#d4a060';
+      for(let i=0;i<14;i++){
+        ctx.globalAlpha = 0.2+Math.random()*0.4;
+        ctx.beginPath(); ctx.arc(cx-80*s+Math.random()*160*s,cy-130*s+Math.random()*180*s,1.5+Math.random()*3,0,Math.PI*2);
         ctx.fill();
       }
       ctx.globalAlpha = 1;
       // Wind lines
-      ctx.strokeStyle = 'rgba(212,165,116,0.2)';
-      ctx.lineWidth = 1.5;
-      for(let i=0;i<5;i++){
-        ctx.beginPath();
-        const yOff = -40+Math.random()*100;
-        ctx.moveTo(cx-80*scale,cy+yOff);
-        ctx.quadraticCurveTo(cx-30*scale,cy+yOff-10*scale,cx+60*scale,cy+yOff-15*scale);
+      ctx.strokeStyle = 'rgba(160,190,160,0.15)'; ctx.lineWidth = 1.5;
+      for(let i=0;i<6;i++){
+        ctx.beginPath(); ctx.moveTo(cx-90*s+Math.random()*30*s,cy-40*s+Math.random()*100*s);
+        ctx.quadraticCurveTo(cx-40*s,cy-50*s+Math.random()*80*s,cx+80*s,cy-45*s+Math.random()*80*s);
         ctx.stroke();
       }
-      // Smile
-      ctx.strokeStyle = '#5a4a3a'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(cx-2*scale,cy-66*scale,6*scale,0.2,Math.PI-0.2); ctx.stroke();
-      // Eyes closed (softer)
-      ctx.strokeStyle = '#5a4a3a'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(cx-12*scale,cy-74*scale,3*scale,0,Math.PI); ctx.stroke();
-      ctx.beginPath(); ctx.arc(cx+8*scale,cy-74*scale,3*scale,0,Math.PI); ctx.stroke();
       break;
-
-    // ── RETRO 80s: Geometric synthwave figure ──
-    case 'theme-retro':
-      // Gradient background (sunset)
-      const grad = ctx.createLinearGradient(cx,cx-120*scale,cx,cx+100*scale);
-      grad.addColorStop(0,'#ff6b9d'); grad.addColorStop(0.5,'#7000ff'); grad.addColorStop(1,'#0a0e27');
-      // Geometric body (boxy)
-      ctx.fillStyle = '#12163a';
-      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 2;
-      // Head - triangle
-      ctx.beginPath(); ctx.moveTo(cx,cy-90*scale); ctx.lineTo(cx-25*scale,cy-50*scale); ctx.lineTo(cx+25*scale,cy-50*scale); ctx.closePath(); ctx.fill(); ctx.stroke();
-      // Body - trapezoid
-      ctx.beginPath(); ctx.moveTo(cx-35*scale,cy-45*scale); ctx.lineTo(cx+35*scale,cy-45*scale);
-      ctx.lineTo(cx+45*scale,cy+40*scale); ctx.lineTo(cx-45*scale,cy+40*scale); ctx.closePath(); ctx.fill(); ctx.stroke();
-      // Legs - two columns
-      ctx.fillRect(cx-25*scale,cy+40*scale,16*scale,70*scale); ctx.strokeRect(cx-25*scale,cy+40*scale,16*scale,70*scale);
-      ctx.fillRect(cx+9*scale,cy+40*scale,16*scale,70*scale); ctx.strokeRect(cx+9*scale,cy+40*scale,16*scale,70*scale);
-      // Arms - horizontal lines
-      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(cx-45*scale,cy-10*scale); ctx.lineTo(cx-65*scale,cy+20*scale); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(cx+45*scale,cy-10*scale); ctx.lineTo(cx+65*scale,cy+20*scale); ctx.stroke();
-      // Neon visor
-      ctx.fillStyle = '#00d4ff';
-      ctx.shadowColor = '#00d4ff'; ctx.shadowBlur = 10;
-      ctx.beginPath(); ctx.roundRect(cx-18*scale,cy-70*scale,36*scale,10*scale,3); ctx.fill();
+    }
+    // ── RETRO 80s SYNTHWAVE FIGURE ──
+    case 'retro': {
+      // Glow behind
+      ctx.shadowColor = '#ff6b9d'; ctx.shadowBlur = 40;
+      // Head - diamond
+      ctx.fillStyle = '#0a0a1a';
+      ctx.beginPath(); ctx.moveTo(cx,cy-95*s); ctx.lineTo(cx-28*s,cy-55*s);
+      ctx.lineTo(cx,cy-15*s); ctx.lineTo(cx+28*s,cy-55*s); ctx.closePath(); ctx.fill();
       ctx.shadowBlur = 0;
+      // Neon outline head
+      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx,cy-95*s); ctx.lineTo(cx-28*s,cy-55*s); ctx.lineTo(cx,cy-15*s);
+      ctx.lineTo(cx+28*s,cy-55*s); ctx.closePath(); ctx.stroke();
+      // Body - trapezoid
+      ctx.fillStyle = '#0e0e2e';
+      ctx.beginPath(); ctx.moveTo(cx-40*s,cy-10*s); ctx.lineTo(cx+40*s,cy-10*s);
+      ctx.lineTo(cx+55*s,cy+60*s); ctx.lineTo(cx-55*s,cy+60*s); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Neon lines on body
+      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx-18*s,cy-5*s); ctx.lineTo(cx-25*s,cy+50*s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+18*s,cy-5*s); ctx.lineTo(cx+25*s,cy+50*s); ctx.stroke();
+      // Legs
+      ctx.fillStyle = '#0e0e2e';
+      ctx.fillRect(cx-30*s,cy+60*s,16*s,80*s);
+      ctx.fillRect(cx+14*s,cy+60*s,16*s,80*s);
+      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 1;
+      ctx.strokeRect(cx-30*s,cy+60*s,16*s,80*s);
+      ctx.strokeRect(cx+14*s,cy+60*s,16*s,80*s);
+      // Arms
+      ctx.strokeStyle = '#ff6b9d'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(cx-55*s,cy); ctx.lineTo(cx-75*s,cy+25*s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+55*s,cy); ctx.lineTo(cx+75*s,cy+25*s); ctx.stroke();
+      // Visor
+      ctx.shadowColor = '#00d4ff'; ctx.shadowBlur = 20;
+      ctx.fillStyle = '#00d4ff';
+      ctx.beginPath(); ctx.roundRect(cx-18*s,cy-65*s,36*s,12*s,4); ctx.fill();
+      ctx.shadowBlur = 0;
+      // Sunglasses reflection
+      ctx.fillStyle = 'rgba(10,10,26,0.4)';
+      ctx.beginPath(); ctx.roundRect(cx-18*s,cy-65*s,16*s,10*s,3); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(cx+2*s,cy-65*s,16*s,10*s,3); ctx.fill();
       // Scanlines
-      ctx.strokeStyle = 'rgba(0,212,255,0.08)';
-      ctx.lineWidth = 0.5;
-      for(let i=0;i<30;i++){
-        const y = cy-100*scale+i*8*scale;
-        ctx.beginPath(); ctx.moveTo(cx-70*scale,y); ctx.lineTo(cx+70*scale,y); ctx.stroke();
-      }
+      ctx.strokeStyle = 'rgba(0,212,255,0.06)'; ctx.lineWidth = 0.5;
+      for(let i=0;i<30;i++){const y=cy-110*s+i*9*s;ctx.beginPath();ctx.moveTo(cx-80*s,y);ctx.lineTo(cx+80*s,y);ctx.stroke();}
       break;
-
-    // ── BATTLE SHONEN: Dynamic fighting pose ──
-    case 'theme-shonen':
-      // Body - dynamic angled
-      ctx.fillStyle = '#faf6f0';
-      ctx.beginPath();
-      ctx.moveTo(cx-30*scale,cy-15*scale);
-      ctx.lineTo(cx+45*scale,cy-25*scale);
-      ctx.lineTo(cx+55*scale,cy+60*scale);
-      ctx.lineTo(cx-20*scale,cy+70*scale);
-      ctx.closePath(); ctx.fill();
+    }
+    // ── BATTLE SHONEN FIGHTER ──
+    case 'shonen': {
+      // Speed lines behind
+      ctx.strokeStyle = 'rgba(0,68,255,0.06)'; ctx.lineWidth = 2;
+      for(let i=0;i<12;i++){
+        ctx.beginPath(); ctx.moveTo(cx-50*s-Math.random()*40*s,cy-30*s+Math.random()*100*s);
+        ctx.lineTo(cx-10*s-5*s,cy-10*s+Math.random()*80*s); ctx.stroke();
+      }
+      // Dynamic body
+      ctx.fillStyle = '#f0e8d8';
+      ctx.beginPath(); ctx.moveTo(cx-35*s,cy-10*s); ctx.lineTo(cx+50*s,cy-20*s);
+      ctx.lineTo(cx+60*s,cy+70*s); ctx.lineTo(cx-25*s,cy+80*s); ctx.closePath(); ctx.fill();
+      // Abs shading
+      ctx.fillStyle = '#d8d0c0';
+      ctx.beginPath(); ctx.moveTo(cx+5*s,cy+25*s); ctx.lineTo(cx+40*s,cy+20*s);
+      ctx.lineTo(cx+45*s,cy+60*s); ctx.lineTo(cx,cy+65*s); ctx.closePath(); ctx.fill();
       // Head
       ctx.fillStyle = '#f0dcc0';
-      ctx.beginPath(); ctx.arc(cx+15*scale,cy-65*scale,28*scale,0,Math.PI*2); ctx.fill();
-      // Spiky hair
-      ctx.fillStyle = '#2a2520';
-      ctx.beginPath();
-      ctx.moveTo(cx-15*scale,cy-85*scale);
-      for(let i=0;i<8;i++){
-        const angle = Math.PI*0.7 + Math.random()*0.6;
-        const len = 20+Math.random()*25; ctx.lineTo(cx+Math.cos(angle)*len*scale,cy-65*scale-Math.sin(angle)*len*scale);
-      }
-      ctx.fill();
-      // Hair spikes
-      for(let i=0;i<5;i++){
-        const sx = cx-10*scale+i*10*scale;
-        ctx.beginPath();
-        ctx.moveTo(sx,cy-80*scale);
-        ctx.lineTo(sx-5*scale,cy-105*scale+(i%2)*10);
-        ctx.lineTo(sx+5*scale,cy-105*scale+(i%2)*10);
-        ctx.fill();
-      }
-      // Fist (extended punch arm)
+      ctx.beginPath(); ctx.arc(cx+20*s,cy-65*s,32*s,0,Math.PI*2); ctx.fill();
+      // Hair
+      ctx.fillStyle = '#2a2018';
+      ctx.beginPath(); ctx.arc(cx+20*s,cy-82*s,36*s,Math.PI,2*Math.PI); ctx.fill();
+      // Spikes
+      ctx.beginPath(); ctx.moveTo(cx-5*s,cy-90*s); ctx.lineTo(cx-12*s,cy-120*s); ctx.lineTo(cx+5*s,cy-92*s); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx+10*s,cy-92*s); ctx.lineTo(cx+8*s,cy-125*s); ctx.lineTo(cx+18*s,cy-94*s); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx+22*s,cy-95*s); ctx.lineTo(cx+28*s,cy-128*s); ctx.lineTo(cx+32*s,cy-96*s); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx+35*s,cy-93*s); ctx.lineTo(cx+48*s,cy-120*s); ctx.lineTo(cx+40*s,cy-92*s); ctx.fill();
+      // Eyes intense
+      ctx.fillStyle = '#2a2018';
+      ctx.beginPath(); ctx.ellipse(cx+10*s,cy-68*s,6*s,5*s,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx+30*s,cy-68*s,6*s,5*s,0,0,Math.PI*2); ctx.fill();
+      // Eye shine
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(cx+8*s,cy-70*s,2*s,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+28*s,cy-70*s,2*s,0,Math.PI*2); ctx.fill();
+      // Angry brows
+      ctx.strokeStyle = '#1a1a1a'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(cx+2*s,cy-76*s); ctx.lineTo(cx+14*s,cy-74*s); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx+38*s,cy-76*s); ctx.lineTo(cx+26*s,cy-74*s); ctx.stroke();
+      // Gritting teeth mouth
+      ctx.fillStyle = '#2a2018'; ctx.beginPath(); ctx.roundRect(cx+14*s,cy-54*s,12*s,5*s,2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.roundRect(cx+14*s,cy-54*s,10*s,2.5*s,1.5); ctx.fill();
+      // Extended punch arm
       ctx.strokeStyle = '#f0dcc0'; ctx.lineWidth = 8;
-      ctx.beginPath(); ctx.moveTo(cx+45*scale,cy-15*scale);
-      ctx.lineTo(cx+90*scale,cy-55*scale);
-      ctx.stroke();
-      // Fist ball
-      ctx.fillStyle = '#f0dcc0';
-      ctx.beginPath(); ctx.arc(cx+92*scale,cy-58*scale,8*scale,0,Math.PI*2); ctx.fill();
-      // Impact burst lines
-      ctx.strokeStyle = '#ff4400';
-      ctx.lineWidth = 2.5;
-      for(let i=0;i<8;i++){
-        const a = -Math.PI/8 + Math.random()*Math.PI/4;
-        const r1 = 15+Math.random()*8;
-        const r2 = 25+Math.random()*15;
-        ctx.beginPath();
-        ctx.moveTo(cx+92*scale+Math.cos(a)*r1*scale,cy-58*scale+Math.sin(a)*r1*scale);
-        ctx.lineTo(cx+92*scale+Math.cos(a)*r2*scale,cy-58*scale+Math.sin(a)*r2*scale);
-        ctx.stroke();
-      }
-      // Speed lines behind
-      ctx.strokeStyle = 'rgba(0,68,255,0.12)';
-      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(cx+50*s,cy-15*s); ctx.lineTo(cx+95*s,cy-50*s); ctx.stroke();
+      ctx.fillStyle = '#f0dcc0'; ctx.beginPath(); ctx.arc(cx+97*s,cy-52*s,8*s,0,Math.PI*2); ctx.fill();
+      // Impact burst
+      ctx.shadowColor = '#ff4400'; ctx.shadowBlur = 15;
+      ctx.strokeStyle = '#ff4400'; ctx.lineWidth = 2.5;
       for(let i=0;i<10;i++){
-        ctx.beginPath();
-        ctx.moveTo(cx-40*scale-Math.random()*30*scale,cy-30*scale+Math.random()*80*scale);
-        ctx.lineTo(cx-10*scale,cy-20*scale+Math.random()*60*scale);
-        ctx.stroke();
+        const a=-Math.PI/6+Math.random()*Math.PI/3; const r1=14+Math.random()*10; const r2=28+Math.random()*20;
+        ctx.beginPath(); ctx.moveTo(cx+97*s+Math.cos(a)*r1,cy-52*s+Math.sin(a)*r1);
+        ctx.lineTo(cx+97*s+Math.cos(a)*r2,cy-52*s+Math.sin(a)*r2); ctx.stroke();
       }
-      // Determined mouth line
-      ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(cx+8*scale,cy-60*scale); ctx.lineTo(cx+18*scale,cy-60*scale); ctx.stroke();
-      // Eye
-      ctx.fillStyle = '#2a2520';
-      ctx.beginPath(); ctx.ellipse(cx+10*scale,cy-70*scale,4*scale,5*scale,0,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // Energy aura
+      ctx.strokeStyle = 'rgba(255,68,0,0.08)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx+97*s,cy-52*s,20*s,0,Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx+97*s,cy-52*s,28*s,0,Math.PI*2); ctx.stroke();
       break;
+    }
   }
 }
 
-function generateCharSprite(theme, w, h){
-  const canvas = document.createElement('canvas');
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  drawCharacter(ctx, w, h, theme);
-  return new THREE.CanvasTexture(canvas);
+function generateCharTexture(theme, w, h){
+  const c = document.createElement('canvas'); c.width=w; c.height=h;
+  drawAnimeChar(c.getContext('2d'), w, h, theme);
+  return new THREE.CanvasTexture(c);
 }
 
-// ═══════════════════════════════════════════════════
-// THREE.JS — 3D SCENE
-// ═══════════════════════════════════════════════════
-(function(){
+// ═══════════════════════════════════════════════════════════
+// THREE.JS SCENE MANAGER — per-theme worlds
+// ═══════════════════════════════════════════════════════════
+const sceneData = { scene:null, camera:null, renderer:null, objects:[], anim:null };
 const canvas = document.getElementById('three-canvas');
-if(!canvas) return;
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 8);
-const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// Theme colors
-const themeColors = {
-  'theme-cyberpunk': { accent:0xff3864, accent2:0xffaa00, accent3:0x7000ff, glow:0x00d4ff, particle:[0xff3864,0xffaa00,0x7000ff,0x00ff88,0xfb923c] },
-  'theme-fantasy': { accent:0xc41e1e, accent2:0x8b4513, accent3:0x2a1a0a, glow:0xc41e1e, particle:[0xc41e1e,0x8b4513,0xff6600,0x4a3020,0xaa5522] },
-  'theme-ghibli': { accent:0x5b8c5a, accent2:0xd4a574, accent3:0x7ab0d4, glow:0x5b8c5a, particle:[0x5b8c5a,0xd4a574,0x7ab0d4,0x88aa77,0xaabb88] },
-  'theme-retro': { accent:0xff6b9d, accent2:0x00d4ff, accent3:0xffd700, glow:0xff6b9d, particle:[0xff6b9d,0x00d4ff,0xffd700,0xff00aa,0x00ff88] },
-  'theme-shonen': { accent:0xff4400, accent2:0xffcc00, accent3:0x0044ff, glow:0xff4400, particle:[0xff4400,0xffcc00,0x0044ff,0xff8800,0xff0044] },
-};
-
-// ── ANIME CHARACTER SPRITE ──
-let charSprite = null;
-let charMesh = null;
-
-function createCharSprite(themeClass){
-  if(charMesh){ scene.remove(charMesh); charMesh.geometry.dispose(); charMesh.material.dispose(); }
-  const texture = generateCharSprite(themeClass, 256, 384);
-  const mat = new THREE.SpriteMaterial({
-    map: texture,
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    opacity: 0.7,
+function initScene(){
+  const s = new THREE.Scene();
+  const c = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  c.position.set(0,0,8);
+  const r = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  r.setSize(window.innerWidth, window.innerHeight);
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  sceneData.scene=s; sceneData.camera=c; sceneData.renderer=r;
+  window.addEventListener('resize', ()=>{
+    c.aspect=window.innerWidth/window.innerHeight; c.updateProjectionMatrix();
+    r.setSize(window.innerWidth, window.innerHeight);
   });
-  charMesh = new THREE.Sprite(mat);
-  charMesh.position.set(0, 0.5, -4);
-  charMesh.scale.set(4.5*canvas.width/500, 6.8*canvas.width/500, 1);
-  scene.add(charMesh);
-  charSprite = charMesh;
 }
 
-createCharSprite('theme-cyberpunk');
+// Clean up objects from previous theme
+function clearScene(){
+  const {scene,objects} = sceneData;
+  objects.forEach(o=>{ scene.remove(o.mesh); if(o.mesh.geometry) o.mesh.geometry.dispose(); if(o.mesh.material) o.mesh.material.dispose(); });
+  sceneData.objects = [];
+}
 
-// ── AURA RING around character ──
-const aGeom = new THREE.RingGeometry(1.2, 1.5, 64);
-const aMat = new THREE.MeshBasicMaterial({ color:0xff3864, transparent:true, opacity:0.06, side:THREE.DoubleSide });
-const auraRing = new THREE.Mesh(aGeom, aMat);
-auraRing.position.set(0, 0, -2);
-auraRing.rotation.x = Math.PI/2.5;
-scene.add(auraRing);
-
-// ── GLOW PARTICLES ──
-const pCount = 1200;
-const pos = new Float32Array(pCount*3);
-const cols = new Float32Array(pCount*3);
-const sizes = new Float32Array(pCount);
-const initialPos = new Float32Array(pCount*3);
-let pal = [new THREE.Color(0x00d4ff), new THREE.Color(0xa855f7), new THREE.Color(0xdc2626), new THREE.Color(0x00ff88), new THREE.Color(0xfb923c)];
-
-function rebuildParticles(colorHexes){
-  pal = colorHexes.map(h => new THREE.Color(h));
-  for(let i=0; i<pCount; i++){
-    const r = 1.5 + Math.random()*5;
-    const theta = Math.random()*Math.PI*2;
-    const phi = Math.acos(2*Math.random()-1);
-    const x = r*Math.sin(phi)*Math.cos(theta);
-    const y = r*Math.cos(phi)*0.6;
-    const z = r*Math.sin(phi)*Math.sin(theta) - 4;
-    pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
-    initialPos[i*3] = x; initialPos[i*3+1] = y; initialPos[i*3+2] = z;
-    const c = pal[Math.floor(Math.random()*pal.length)];
-    cols[i*3] = c.r; cols[i*3+1] = c.g; cols[i*3+2] = c.b;
-    sizes[i] = 0.02 + Math.random()*0.05;
+// ── THEME BUILDERS ──
+function build_cyberpunk(){
+  const {scene,camera} = sceneData;
+  // Digital rain
+  const rainCount = 120; const dropPositions = [];
+  for(let i=0;i<rainCount;i++){
+    dropPositions.push((Math.random()-0.5)*14, (Math.random()-0.5)*20-4, (Math.random()-0.5)*10-3);
   }
-  pGeom.attributes.position.needsUpdate = true;
-  pGeom.attributes.color.needsUpdate = true;
-  pGeom.attributes.size.needsUpdate = true;
+  const rGeom = new THREE.BufferGeometry();
+  rGeom.setAttribute('position', new THREE.Float32BufferAttribute(dropPositions, 3));
+  const rMat = new THREE.PointsMaterial({ color:0x00d4ff, size:0.04, transparent:true, opacity:0.3, blending:THREE.AdditiveBlending });
+  const rain = new THREE.Points(rGeom, rMat);
+  scene.add(rain);
+  sceneData.objects.push({mesh:rain, update:(t)=>{const p=rain.geometry.attributes.position.array;for(let i=0;i<rainCount;i++){p[i*3+1]-=0.005;if(p[i*3+1]<-8){p[i*3]=(Math.random()-0.5)*14;p[i*3+1]=10;p[i*3+2]=(Math.random()-0.5)*10-3;}}rain.geometry.attributes.position.needsUpdate=true;}});
+  // Grid lines
+  const gMat = new THREE.LineBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.03 });
+  for(let z=-5;z<=5;z+=0.8){
+    const gGeom = new THREE.BufferGeometry(); const v = new Float32Array([-6,z,-8,6,z,-8]);
+    gGeom.setAttribute('position', new THREE.BufferAttribute(v,3));
+    const line = new THREE.Line(gGeom, gMat); scene.add(line); sceneData.objects.push({mesh:line});
+  }
+  // Character sprite
+  const tex = generateCharTexture('cyberpunk', 256, 384);
+  const sMat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:0.7 });
+  const sprite = new THREE.Sprite(sMat); sprite.position.set(1,0.5,-2.5); sprite.scale.set(3.8,5.7,1);
+  scene.add(sprite); sceneData.objects.push({mesh:sprite});
+  // Floating hex particles
+  const hCount = 60; const hPos = [];
+  for(let i=0;i<hCount;i++){
+    hPos.push((Math.random()-0.5)*8, (Math.random()-0.5)*6+1, (Math.random()-0.5)*6-3);
+  }
+  const hGeom = new THREE.BufferGeometry();
+  hGeom.setAttribute('position', new THREE.Float32BufferAttribute(hPos,3));
+  const hMat = new THREE.PointsMaterial({ color:0xff3864, size:0.03, transparent:true, opacity:0.2, blending:THREE.AdditiveBlending });
+  const hex = new THREE.Points(hGeom, hMat);
+  scene.add(hex); sceneData.objects.push({mesh:hex, update:(t)=>{hex.rotation.y+=0.002;}});
 }
 
-const pGeom = new THREE.BufferGeometry();
-pGeom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-pGeom.setAttribute('color', new THREE.BufferAttribute(cols, 3));
-pGeom.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-const pMat = new THREE.PointsMaterial({ size:0.04, vertexColors:true, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending, sizeAttenuation:true });
-const particles = new THREE.Points(pGeom, pMat);
-scene.add(particles);
-rebuildParticles([0xff3864,0xffaa00,0x7000ff,0x00ff88,0xfb923c]);
-
-// ── Ground glow ──
-const gGeom = new THREE.CircleGeometry(3, 32);
-const gMat = new THREE.MeshBasicMaterial({ color:0xff3864, transparent:true, opacity:0.03, side:THREE.DoubleSide });
-const groundGlow = new THREE.Mesh(gGeom, gMat);
-groundGlow.position.set(0, -1.5, -2);
-groundGlow.rotation.x = -Math.PI/2;
-scene.add(groundGlow);
-
-// Theme update
-window.__updateThreeTheme = function(themeClass){
-  const c = themeColors[themeClass] || themeColors['theme-cyberpunk'];
-  if(auraRing) auraRing.material.color.setHex(c.accent);
-  if(groundGlow) groundGlow.material.color.setHex(c.glow);
-  rebuildParticles(c.particle);
-  createCharSprite(themeClass);
-};
-
-function onResize(){
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  if(charMesh) charMesh.scale.set(4.5*window.innerWidth/500, 6.8*window.innerWidth/500, 1);
+function build_fantasy(){
+  const {scene,camera} = sceneData;
+  // Fog particles
+  const fCount = 400; const fPos = [];
+  for(let i=0;i<fCount;i++){fPos.push((Math.random()-0.5)*20,(Math.random()-0.5)*16-2,(Math.random()-0.5)*12-6);}
+  const fGeom = new THREE.BufferGeometry();
+  fGeom.setAttribute('position', new THREE.Float32BufferAttribute(fPos,3));
+  const fMat = new THREE.PointsMaterial({ color:0x8a7a6a, size:0.08, transparent:true, opacity:0.04, blending:THREE.AdditiveBlending, sizeAttenuation:true });
+  const fog = new THREE.Points(fGeom, fMat);
+  scene.add(fog); sceneData.objects.push({mesh:fog, update:(t)=>{fog.rotation.y+=0.0003;}});
+  // Rune rings
+  const rMat = new THREE.MeshBasicMaterial({ color:0xc41e1e, transparent:true, opacity:0.06, side:THREE.DoubleSide, wireframe:true });
+  for(let i=0;i<3;i++){
+    const rGeom = new THREE.TorusGeometry(1.5+i*0.8, 0.03, 16, 48);
+    const ring = new THREE.Mesh(rGeom, rMat.clone());
+    ring.position.set(0,0.2*i-0.3,-3-i*0.5);
+    ring.rotation.x = Math.PI/3 + i*0.4;
+    scene.add(ring); sceneData.objects.push({mesh:ring, update:(t)=>{ring.rotation.z+=0.003*(i+1);ring.rotation.x+=0.001*(i+1);}});
+  }
+  // Trees (cone+cylinder)
+  const tMat = new THREE.MeshBasicMaterial({ color:0x1a1008, transparent:true, opacity:0.05 });
+  for(let i=0;i<8;i++){
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.08,1.2,4), tMat);
+    const canopy = new THREE.Mesh(new THREE.ConeGeometry(0.3,0.6,5), tMat);
+    const x=(Math.random()-0.5)*10, z=-4-Math.random()*5;
+    trunk.position.set(x, -0.5, z); canopy.position.set(x, 0.2, z);
+    scene.add(trunk); scene.add(canopy);
+    sceneData.objects.push({mesh:trunk}, {mesh:canopy});
+  }
+  // Character
+  const tex = generateCharTexture('fantasy', 256, 384);
+  const sMat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:0.6 });
+  const sprite = new THREE.Sprite(sMat); sprite.position.set(0.5,0.3,-3); sprite.scale.set(4,6,1);
+  scene.add(sprite); sceneData.objects.push({mesh:sprite});
+  // Blood glow particles
+  const bCount = 50; const bPos = [];
+  for(let i=0;i<bCount;i++){bPos.push((Math.random()-0.5)*6,(Math.random()-0.5)*4+1,(Math.random()-0.5)*4-3);}
+  const bGeom = new THREE.BufferGeometry(); bGeom.setAttribute('position', new THREE.Float32BufferAttribute(bPos,3));
+  const bMat = new THREE.PointsMaterial({ color:0xc41e1e, size:0.02, transparent:true, opacity:0.1, blending:THREE.AdditiveBlending });
+  const blood = new THREE.Points(bGeom, bMat);
+  scene.add(blood); sceneData.objects.push({mesh:blood, update:(t)=>{blood.rotation.y+=0.001;}});
 }
-window.addEventListener('resize', onResize);
 
-let scrollY = 0;
-let time = 0;
+function build_ghibli(){
+  const {scene,camera} = sceneData;
+  // Clouds
+  const cMat = new THREE.MeshBasicMaterial({ color:0xc8d8c8, transparent:true, opacity:0.04, side:THREE.DoubleSide });
+  for(let i=0;i<18;i++){
+    const cloud = new THREE.Mesh(new THREE.SphereGeometry(0.6+Math.random()*0.5, 6, 6), cMat);
+    cloud.position.set((Math.random()-0.5)*12, (Math.random()-0.5)*6+1, -5-Math.random()*4);
+    cloud.scale.y = 0.4; cloud.scale.x = 1+Math.random()*0.5;
+    scene.add(cloud); sceneData.objects.push({mesh:cloud, update:(t)=>{cloud.position.x+=Math.sin(t+cloud.position.y)*0.002;}});
+  }
+  // Floating islands (discs)
+  const iMat = new THREE.MeshBasicMaterial({ color:0x4a8c4a, transparent:true, opacity:0.03, side:THREE.DoubleSide });
+  for(let i=0;i<4;i++){
+    const island = new THREE.Mesh(new THREE.CircleGeometry(0.5+Math.random()*0.8, 8), iMat);
+    island.position.set((Math.random()-0.5)*9, (Math.random()-0.5)*3+1.5, -4-Math.random()*4);
+    island.rotation.x = Math.PI/2;
+    scene.add(island); sceneData.objects.push({mesh:island, update:(t)=>{island.position.y+=Math.sin(t+island.position.x)*0.002;}});
+  }
+  // Character
+  const tex = generateCharTexture('ghibli', 256, 384);
+  const sMat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:0.65 });
+  const sprite = new THREE.Sprite(sMat); sprite.position.set(-0.5,0.8,-2); sprite.scale.set(4,6,1);
+  scene.add(sprite); sceneData.objects.push({mesh:sprite});
+  // Sparkle particles
+  const spCount = 100; const spPos = [];
+  for(let i=0;i<spCount;i++){spPos.push((Math.random()-0.5)*14,(Math.random()-0.5)*10+1,(Math.random()-0.5)*8-4);}
+  const spGeom = new THREE.BufferGeometry(); spGeom.setAttribute('position', new THREE.Float32BufferAttribute(spPos,3));
+  const spMat = new THREE.PointsMaterial({ color:0xd4a060, size:0.015, transparent:true, opacity:0.15, blending:THREE.AdditiveBlending });
+  const sparkles = new THREE.Points(spGeom, spMat);
+  scene.add(sparkles); sceneData.objects.push({mesh:sparkles, update:(t)=>{sparkles.rotation.y+=0.0005;}});
+}
+
+function build_retro(){
+  const {scene,camera} = sceneData;
+  // Grid floor
+  const gMat = new THREE.LineBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.04 });
+  for(let z=-6;z<=6;z+=0.5){
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([-7,z,-8,7,z,-8]),3));
+    const l = new THREE.Line(g, gMat); scene.add(l); sceneData.objects.push({mesh:l});
+  }
+  // Floating pyramids
+  const pMat = new THREE.MeshBasicMaterial({ color:0xff6b9d, transparent:true, opacity:0.04, wireframe:true });
+  for(let i=0;i<6;i++){
+    const py = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 4), pMat);
+    py.position.set((Math.random()-0.5)*7, (Math.random()-0.5)*3+1, -3-Math.random()*4);
+    scene.add(py); sceneData.objects.push({mesh:py, update:(t)=>{py.rotation.y+=0.005*(i+1);py.position.y+=Math.sin(t+i)*0.003;}});
+  }
+  // Neon rings
+  const rMat = new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.05, wireframe:true });
+  for(let i=0;i<3;i++){
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2+i*0.5, 0.02, 8, 24), rMat);
+    ring.position.set(0,0.5-i*0.3,-3-i);
+    ring.rotation.x = Math.PI/2.5; ring.rotation.z = i*0.3;
+    scene.add(ring); sceneData.objects.push({mesh:ring, update:(t)=>{ring.rotation.z+=0.003*(i+1);}});
+  }
+  // Character
+  const tex = generateCharTexture('retro', 256, 384);
+  const sMat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:0.55 });
+  const sprite = new THREE.Sprite(sMat); sprite.position.set(0.5,0,-2); sprite.scale.set(3.5,5.2,1);
+  scene.add(sprite); sceneData.objects.push({mesh:sprite});
+  // Scanlines overlay (actually, do via particles)
+  const slCount = 200; const slPos = [];
+  for(let i=0;i<slCount;i++){slPos.push((Math.random()-0.5)*16, (Math.random()-0.5)*12, -8);}
+  const slGeom = new THREE.BufferGeometry(); slGeom.setAttribute('position', new THREE.Float32BufferAttribute(slPos,3));
+  const slMat = new THREE.PointsMaterial({ color:0x00d4ff, size:0.005, transparent:true, opacity:0.05 });
+  const scan = new THREE.Points(slGeom, slMat);
+  scene.add(scan); sceneData.objects.push({mesh:scan});
+}
+
+function build_shonen(){
+  const {scene,camera} = sceneData;
+  // Impact particles (fast bright bursts)
+  const bCount = 300; const bPos = []; const bSizes = [];
+  for(let i=0;i<bCount;i++){
+    const r = Math.random()*5; const theta = Math.random()*Math.PI*2; const phi = Math.acos(2*Math.random()-1);
+    bPos.push(r*Math.sin(phi)*Math.cos(theta), r*Math.cos(phi)*0.5+0.5, r*Math.sin(phi)*Math.sin(theta)-4);
+    bSizes.push(0.01+Math.random()*0.08);
+  }
+  const bGeom = new THREE.BufferGeometry();
+  bGeom.setAttribute('position', new THREE.Float32BufferAttribute(bPos,3));
+  bGeom.setAttribute('size', new THREE.Float32BufferAttribute(bSizes,1));
+  const bMat = new THREE.PointsMaterial({ color:0xff4400, size:0.03, transparent:true, opacity:0.15, blending:THREE.AdditiveBlending, sizeAttenuation:true });
+  const burst = new THREE.Points(bGeom, bMat);
+  scene.add(burst); sceneData.objects.push({mesh:burst, update:(t)=>{const p=burst.geometry.attributes.position.array;for(let i=0;i<bCount;i++){p[i*3]*=0.999;p[i*3+1]*=0.999;p[i*3+2]*=0.999;if(Math.abs(p[i*3])<0.1&&i%3===0){const a=Math.random()*4-2,b=Math.random()*2-1;const v=new THREE.Vector3(a,b,0).normalize();p[i*3]=v.x*4;p[i*3+1]=v.y*2+0.5;p[i*3+2]=v.z*4-4;}}burst.geometry.attributes.position.needsUpdate=true;}});
+  // Speed lines
+  const lMat = new THREE.LineBasicMaterial({ color:0x0044ff, transparent:true, opacity:0.04 });
+  for(let i=0;i<30;i++){
+    const g = new THREE.BufferGeometry();
+    const x=(Math.random()-0.5)*10,y=(Math.random()-0.5)*8,z=-4;
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([x-Math.random()*0.5,y-Math.random()*0.5,z,x+Math.random()*0.3,y+Math.random()*0.3,z+1]),3));
+    const l = new THREE.Line(g, lMat); scene.add(l); sceneData.objects.push({mesh:l});
+  }
+  // Character
+  const tex = generateCharTexture('shonen', 256, 384);
+  const sMat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:0.7 });
+  const sprite = new THREE.Sprite(sMat); sprite.position.set(0,0.3,-2.5); sprite.scale.set(4.2,6.3,1);
+  scene.add(sprite); sceneData.objects.push({mesh:sprite});
+  // Energy aura ring
+  const aMat = new THREE.MeshBasicMaterial({ color:0xff4400, transparent:true, opacity:0.04, side:THREE.DoubleSide });
+  const aura = new THREE.Mesh(new THREE.RingGeometry(1.8,2.2,48), aMat);
+  aura.position.set(0,0,-1.5); aura.rotation.x = Math.PI/3;
+  scene.add(aura); sceneData.objects.push({mesh:aura, update:(t)=>{aura.rotation.z+=0.01;aura.material.opacity=0.03+Math.sin(t*2)*0.015;}});
+}
+
+// ── SWITCH THEME ──
+const themeBuilders = { cyberpunk:build_cyberpunk, fantasy:build_fantasy, ghibli:build_ghibli, retro:build_retro, shonen:build_shonen };
+let scrollY = 0, time = 0;
+
+function switchTheme(theme){
+  clearScene();
+  const {scene,camera} = sceneData;
+  // Remove all non-tracked scene children
+  while(scene.children.length > 0) scene.remove(scene.children[0]);
+  sceneData.objects = [];
+  // Rebuild
+  if(themeBuilders[theme]) themeBuilders[theme]();
+  // Add scroll-based camera
+  sceneData.objects.push({
+    mesh: {type:'virtual'},
+    update:()=>{
+      const sn = Math.min(1, scrollY/(document.documentElement.scrollHeight-window.innerHeight));
+      camera.position.z = 8+sn*4; camera.position.y = -sn*1.5;
+    }
+  });
+}
+
+// ═══ INIT ═══
+initScene();
+switchTheme('cyberpunk');
+
 function animate(){
   requestAnimationFrame(animate);
-  time += 0.01;
-  // Character slow float
-  if(charSprite){
-    charSprite.position.y = 0.5 + Math.sin(time*0.3)*0.15;
-    charSprite.material.opacity = 0.6 + Math.sin(time*0.5)*0.1;
-  }
-  // Aura ring rotates and pulses
-  auraRing.rotation.z += 0.005;
-  auraRing.material.opacity = 0.04 + Math.sin(time*0.8)*0.02;
-  // Particles orbit
-  particles.rotation.y += 0.0006;
-  particles.rotation.x += 0.0002;
-  // Camera follows scroll
-  const scrollNorm = Math.min(1, scrollY / (document.documentElement.scrollHeight - window.innerHeight));
-  camera.position.z = 8 + scrollNorm*4;
-  camera.position.y = -scrollNorm*1.5;
-  renderer.render(scene, camera);
+  time += 0.016;
+  sceneData.objects.forEach(o=>{ if(o.update) o.update(time); });
+  sceneData.renderer.render(sceneData.scene, sceneData.camera);
 }
 animate();
-window.__threeScroll = function(y){ scrollY = y; };
-})();
+window.__threeScroll = y=>{ scrollY=y; };
+window.__switchThreeTheme = switchTheme;
 
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // LENIS + GSAP
-// ═══════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function(){
-const lenis = new Lenis({ duration:1.4, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)), wheelMultiplier:0.9, smoothTouch:false, touchMultiplier:0.8 });
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', ()=>{
+const lenis = new Lenis({duration:1.3, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)), wheelMultiplier:0.9, smoothTouch:false});
 lenis.on('scroll', e => {
   const p = document.getElementById('progress');
   if(p) p.style.width = (e.progress*100)+'%';
   if(window.__threeScroll) window.__threeScroll(e.animatedScroll);
 });
-function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+let lastScroll = 0;
+lenis.on('scroll', e => {
+  const n = document.getElementById('nav'); if(!n) return;
+  if(e.animatedScroll-lastScroll>20&&e.animatedScroll>80) n.classList.add('hidden');
+  else if(e.animatedScroll-lastScroll<-10) n.classList.remove('hidden');
+  lastScroll=e.animatedScroll;
+});
+function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
 requestAnimationFrame(raf);
 window.__lenis = lenis;
 
@@ -936,16 +918,6 @@ ScrollTrigger.scrollerProxy(document.body, {
   scrollLeft(){ return 0; },
   getBoundingClientRect(){ return {top:0,left:0,width:window.innerWidth,height:window.innerHeight}; },
   pinType: document.body.style.transform?'transform':'fixed',
-});
-
-// Nav
-let lastScroll = 0;
-lenis.on('scroll', e => {
-  const n = document.getElementById('nav');
-  if(!n) return;
-  if(e.animatedScroll-lastScroll>20&&e.animatedScroll>80) n.classList.add('hidden');
-  else if(e.animatedScroll-lastScroll<-10) n.classList.remove('hidden');
-  lastScroll=e.animatedScroll;
 });
 document.querySelectorAll('[data-nav]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.getElementById(a.dataset.nav);if(t&&lenis)lenis.scrollTo(t);})});
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const id=a.getAttribute('href').slice(1);const t=document.getElementById(id);if(t&&lenis)lenis.scrollTo(t);})});
@@ -959,12 +931,12 @@ document.querySelectorAll('.p-card:not(.place)').forEach(c=>{c.addEventListener(
 document.querySelectorAll('.r-hero,.r-card').forEach(c=>{const d=parseInt(c.dataset.delay)||0;gsap.fromTo(c,{opacity:0,y:60,rotateX:12,scale:0.95},{opacity:1,y:0,rotateX:0,scale:1,duration:0.9,delay:d*0.12,ease:'power3.out',scrollTrigger:{trigger:c,start:'top 85%',end:'top 40%',scrub:0.5}})});
 
 // Skills
-const skills = [
+const skills=[
   {icon:'🛡️',name:'SOC & IR',cat:'soc',lv:'ADVANCED',pct:85,tags:['SIEM','Log Analysis','Wireshark','NIST IR','MITRE ATT&CK','Threat Intel'],desc:'SOC ops — log analysis, incident response.'},
   {icon:'🌐',name:'Web Security',cat:'web',lv:'ADVANCED',pct:88,tags:['SQLi','XSS','SSRF','CSRF','XXE','SSTI','OAuth','JWT','GraphQL'],desc:'240+ PortSwigger labs completed.'},
   {icon:'🔗',name:'Pentesting',cat:'pentest',lv:'INTERMEDIATE',pct:65,tags:['AD','BloodHound','Kerberos','CrackMapExec','Impacket'],desc:'AD enumeration, Kerberos, lateral movement.'},
   {icon:'☁️',name:'Cloud Security',cat:'cloud',lv:'INTERMEDIATE',pct:60,tags:['S3','SSRF→IMDS','CORS','JWT','BOLA'],desc:'Cloud infra — S3, SSRF, API auth.'},
-  {icon:'📶',name:'Wireless',cat:'wireless',lv:'INTERMEDIATE',pct:55,tags:['WPA','PMKID','Evil Portal','Bluetooth','Aircrack-ng'],desc:'Ghost Suite, WPA cracking.'},
+  {icon:'📶',name:'Wireless',cat:'wireless',lv:'INTERMEDIATE',pct:55,tags:['WPA','PMKID','Evil Portal','Bluetooth'],desc:'Ghost Suite, WPA cracking.'},
   {icon:'📱',name:'Mobile',cat:'mobile',lv:'INTERMEDIATE',pct:50,tags:['ADB','Jadx','APK','Burp','Root'],desc:'APK decompilation, mobile API.'},
   {icon:'🐍',name:'Tool Building',cat:'tooling',lv:'INTERMEDIATE',pct:55,tags:['Python','Bash','Recon','Automation'],desc:'Custom recon and exploitation tools.'},
 ];
@@ -982,17 +954,16 @@ tst.addEventListener('click',()=>{ts.classList.toggle('open')});
 document.addEventListener('click',e=>{if(!ts.contains(e.target))ts.classList.remove('open')});
 tbs.forEach(b=>{b.addEventListener('click',()=>{
   const theme=b.dataset.theme;
-  document.body.className=theme;
-  if(window.__updateThreeTheme) window.__updateThreeTheme(theme);
+  document.body.setAttribute('data-theme',theme);
+  if(window.__switchThreeTheme) window.__switchThreeTheme(theme);
   tbs.forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
   ts.classList.remove('open');
   ScrollTrigger.refresh();
 })});
-
 ScrollTrigger.refresh();
-console.log('%c🎨 Orbit Anime Lab — Character Edition','font-size:24px;font-weight:800;color:#ff3864');
-console.log('%cEach theme has a unique anime character sprite drawn on canvas','font-size:13px;color:#8888aa');
+console.log('%c🎌 Orbit Anime Worlds','font-size:24px;font-weight:800;color:#ff3864');
+console.log('%c5 unique 3D environments · Detailed anime characters','font-size:13px;color:#888');
 });
 </script>
 </body>
