@@ -13,6 +13,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:image" content="https://idkgarvit.github.io/og-image.png" />
 <meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cstyle%3Etext%7Bfont-family:monospace;font-weight:900%7D%3C/style%3E%3Ctext x='20' y='78' font-size='70' fill='%2300d4ff'%3E/%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ═══ RESET ═══ */
@@ -79,7 +80,7 @@ nav .links a:hover{color:var(--fg)}
 .hero-strip span strong{color:var(--fg-m);font-weight:500}
 
 /* Hero Right - Terminal */
-.hero-terminal{background:rgba(0,0,0,.5);border:1px solid rgba(0,212,255,.06);border-radius:12px;overflow:hidden;backdrop-filter:blur(12px);transform:perspective(800px) rotateY(-3deg) rotateX(2deg);transition:transform .5s ease}
+.hero-terminal{background:rgba(0,0,0,.5);border:1px solid rgba(0,212,255,.06);border-radius:12px;overflow:hidden;backdrop-filter:blur(12px);transform:perspective(800px) rotateY(-6deg) rotateX(3deg);transition:transform .5s cubic-bezier(.22,1,.36,1);box-shadow:-8px 12px 40px rgba(0,0,0,.4)}
 .hero-terminal:hover{transform:perspective(800px) rotateY(0deg) rotateX(0deg)}
 .term-bar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(255,255,255,.015);border-bottom:1px solid rgba(255,255,255,.03)}
 .term-dot{width:9px;height:9px;border-radius:50%}
@@ -96,18 +97,31 @@ nav .links a:hover{color:var(--fg)}
 @keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
 
 /* ═══ GLITCH TEXT ═══ */
-.glitch{position:relative;display:inline-block}
-.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-.glitch::before{color:var(--cyan);animation:glitch1 3s infinite;clip-path:inset(0 0 80% 0)}
-.glitch::after{color:var(--purple);animation:glitch2 3s infinite;clip-path:inset(80% 0 0 0)}
-@keyframes glitch1{0%,92%,100%{transform:translate(0)}94%{transform:translate(-2px,1px)}96%{transform:translate(1px,-1px)}98%{transform:translate(-1px,0)}}
-@keyframes glitch2{0%,92%,100%{transform:translate(0)}94%{transform:translate(2px,-1px)}96%{transform:translate(-1px,1px)}98%{transform:translate(1px,0)}}
+.glitch{position:relative;display:inline-block;cursor:crosshair}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .25s ease}
+.glitch:hover::before,.glitch:hover::after{opacity:1}
+.glitch::before{color:var(--cyan);animation:glitch1 .6s infinite;clip-path:inset(10% 0 65% 0)}
+.glitch::after{color:var(--purple);animation:glitch2 .6s infinite;clip-path:inset(60% 0 5% 0)}
+@keyframes glitch1{0%{transform:translate(0)}20%{transform:translate(-4px,2px) skewX(-1deg)}40%{transform:translate(3px,-1px) skewX(1deg)}60%{transform:translate(-2px,1px)}80%{transform:translate(5px,-2px) skewX(-.5deg)}100%{transform:translate(0)}}
+@keyframes glitch2{0%{transform:translate(0)}20%{transform:translate(4px,-2px) skewX(1deg)}40%{transform:translate(-3px,1px) skewX(-1deg)}60%{transform:translate(2px,-1px)}80%{transform:translate(-5px,2px) skewX(.5deg)}100%{transform:translate(0)}}
 
 /* ═══ EPISODE DIVIDERS ═══ */
 .ep-divider{display:flex;align-items:center;gap:16px;margin-bottom:24px;position:relative;z-index:1}
-.ep-divider .num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--purple);letter-spacing:1px;white-space:nowrap}
-.ep-divider .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.3),transparent)}
-.ep-divider .sub{font-size:10px;color:var(--fg-d);font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase}
+.ep-divider .num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--purple);letter-spacing:2px;white-space:nowrap}
+.ep-divider .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.2),transparent)}
+.ep-divider .sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--fg-d);letter-spacing:1px}
+
+/* ═══ EPISODE REVEAL TRANSITION ═══ */
+#ep-reveal{position:fixed;inset:0;z-index:9997;display:flex;align-items:center;justify-content:center;background:rgba(8,11,16,.92);backdrop-filter:blur(12px);pointer-events:none;opacity:0;transition:opacity .5s ease}
+#ep-reveal.open{opacity:1;pointer-events:auto}
+#ep-reveal .label{font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:3px;color:var(--purple);text-align:center}
+#ep-reveal .label .tag{display:block;font-size:11px;color:var(--fg-d);margin-top:6px;letter-spacing:1px}
+#ep-reveal .bar-wrap{position:fixed;bottom:50%;left:50%;transform:translateX(-50%);display:flex;gap:4px;width:120px}
+#ep-reveal .bar-wrap span{height:2px;flex:1;background:var(--purple);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+#ep-reveal.open .bar-wrap span{transform:scaleX(1)}
+#ep-reveal.open .bar-wrap span:nth-child(2){transition-delay:.05s}
+#ep-reveal.open .bar-wrap span:nth-child(3){transition-delay:.1s}
+#ep-reveal.open .bar-wrap span:nth-child(4){transition-delay:.15s}
 
 /* ═══ SECTIONS ═══ */
 .section{padding:clamp(60px,8vh,100px) 0;position:relative;z-index:1}
@@ -137,11 +151,12 @@ nav .links a:hover{color:var(--fg)}
 .pill-iot{background:rgba(168,85,247,.1);color:var(--purple)}
 .pill-cloud{background:rgba(34,197,94,.1);color:#22c55e}
 .stats-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-c{background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:20px 16px;text-align:center;transition:all .3s}
+.stat-c{background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:20px 16px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
 .stat-c:hover{border-color:rgba(0,212,255,.08);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,212,255,.02)}
 .stat-c .n{font-size:30px;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
 .stat-c .n .pl{font-size:16px;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .stat-c .l{color:var(--fg-d);font-size:11px;margin-top:5px;font-weight:500}
+.stat-c .sicon{font-size:20px;margin-bottom:6px;display:block;opacity:.6}
 
 /* ═══ PROJECTS ═══ */
 .p-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -246,7 +261,7 @@ footer{padding:50px 0;position:relative;z-index:1;border-top:1px solid rgba(255,
 footer .in{max-width:1100px;margin:0 auto;padding:0 var(--gutter);text-align:center}
 footer .soc{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
 footer .soc a{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.035);color:var(--fg-m);text-decoration:none;transition:all .3s}
-footer .soc a:hover{background:rgba(168,85,247,.05);border-color:rgba(168,85,247,.12);color:var(--purple);transform:translateY(-2px)}
+footer .soc a:hover{background:rgba(168,85,247,.05);border-color:rgba(168,85,247,.12);color:var(--purple);transform:translateY(-2px);box-shadow:0 0 24px rgba(168,85,247,.06)}
 footer .cr{font-size:12px;color:var(--fg-d)}
 footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:500}
 
@@ -256,7 +271,7 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
 
 /* ═══ MOBILE ═══ */
 @media(max-width:860px){
-  .hero-content{grid-template-columns:1fr;text-align:center;padding-top:80px;gap:40px}
+  .hero-content{grid-template-columns:1fr;text-align:center;padding-top:80px;gap:28px}
   .hero-terminal{transform:none}
   .hero-terminal:hover{transform:none}
   .hero .sub{margin:0 auto 24px}
@@ -271,9 +286,17 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
 @media(max-width:480px){
   nav .links a{margin-left:10px;font-size:9px;letter-spacing:.6px}
   .hero h1{font-size:32px}
+  .hero .sub p{font-size:14px}
+  .hero-strip span{font-size:9px}
   .stats-g{grid-template-columns:1fr 1fr;gap:8px}
   .stat-c{padding:14px 12px}
   .stat-c .n{font-size:24px}
+  .s-title{font-size:28px}
+  .container{padding:0 14px}
+  .ep-divider{gap:10px}
+  .ep-divider .num{font-size:8px}
+  footer .soc{gap:8px}
+  footer .soc a{font-size:10px;padding:6px 10px}
 }
 </style>
 </head>
@@ -372,10 +395,10 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
         </p>
       </div>
       <div class="stats-g">
-        <div class="stat-c"><div class="n"><span class="cu" data-t="240">0</span><span class="pl">+</span></div><div class="l">PortSwigger Labs</div></div>
-        <div class="stat-c"><div class="n"><span class="cu" data-t="12">0</span><span class="pl">+</span></div><div class="l">Vulnerability Reports</div></div>
-        <div class="stat-c"><div class="n"><span class="cu" data-t="5">0</span></div><div class="l">Bug Bounty Platforms</div></div>
-        <div class="stat-c"><div class="n">P<span class="cu" data-t="1">0</span></div><div class="l">Highest Severity</div></div>
+        <div class="stat-c"><span class="sicon">🧪</span><div class="n"><span class="cu" data-t="240">0</span><span class="pl">+</span></div><div class="l">PortSwigger Labs</div></div>
+        <div class="stat-c"><span class="sicon">📋</span><div class="n"><span class="cu" data-t="12">0</span><span class="pl">+</span></div><div class="l">Vulnerability Reports</div></div>
+        <div class="stat-c"><span class="sicon">🎯</span><div class="n"><span class="cu" data-t="5">0</span></div><div class="l">Bug Bounty Platforms</div></div>
+        <div class="stat-c"><span class="sicon">⚠️</span><div class="n">P<span class="cu" data-t="1">0</span></div><div class="l">Highest Severity</div></div>
       </div>
     </div>
   </div>
@@ -410,9 +433,15 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
         <p>Security audit script that automates intel gathering and vulnerability identification during internal assessments. Map networks, surface risks.</p>
         <div class="pt"><span>Audit</span><span>Intel</span><span>Python</span></div>
       </a>
-      <a href="https://github.com/idkgarvit" target="_blank" class="p-card place r r4">
-        <p>⚡ more tools in development</p>
-      </a>
+      <div class="p-card place r r4">
+        <div style="font-size:24px;margin-bottom:6px">📬</div>
+        <h3 style="font-size:14px;color:#e0e4ec;margin-bottom:2px">Contact & Status</h3>
+        <p style="font-size:12px;color:var(--fg-d);margin-bottom:6px">Aug–Dec 2026 · transformation arc</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+          <a href="mailto:garvitkanojia15@gmail.com" style="font-size:10px;padding:4px 12px;border-radius:6px;background:var(--cyan-g);border:1px solid rgba(0,212,255,.1);color:var(--cyan);text-decoration:none;font-family:'JetBrains Mono',monospace;transition:all .3s">email</a>
+          <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank" style="font-size:10px;padding:4px 12px;border-radius:6px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.1);color:var(--purple);text-decoration:none;font-family:'JetBrains Mono',monospace;transition:all .3s">linkedin</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -466,7 +495,7 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
 </section>
 
 <!-- TIMELINE as part of footer area -->
-<section class="section r" style="padding-bottom:30px">
+<section class="section r" id="timeline" style="padding-bottom:30px">
   <div class="container">
     <div class="ep-divider">
       <span class="num">◆ EPISODE 05</span>
@@ -514,6 +543,7 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
 <footer>
   <div class="in">
     <div class="soc">
+      <a href="mailto:garvitkanojia15@gmail.com">📧 Email</a>
       <a href="https://github.com/idkgarvit" target="_blank">🐙 GitHub</a>
       <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank">💼 LinkedIn</a>
       <a href="https://hackerone.com/idkgarvit" target="_blank">🛡️ HackerOne</a>
@@ -523,6 +553,8 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
     <div class="cr">Built with 🧊 by <span class="o">Orbit</span> · 2026</div>
   </div>
 </footer>
+
+<div id="ep-reveal"><div class="label"><span id="ep-num">EPISODE 01</span><span class="tag" id="ep-name">Profile</span></div><div class="bar-wrap"><span></span><span></span><span></span><span></span></div></div>
 
 <script>
 // ─── MATRIX RAIN ───
@@ -616,6 +648,44 @@ const revObs=new IntersectionObserver((entries)=>{
 },{threshold:.06});
 document.querySelectorAll('.r').forEach(el=>revObs.observe(el));
 
+// ─── EPISODE REVEAL TRANSITION ───
+const epData = [
+  {sec:'about',num:'EPISODE 01',label:'Origin'},
+  {sec:'work',num:'EPISODE 02',label:'Arsenal'},
+  {sec:'research',num:'EPISODE 03',label:'Campaigns'},
+  {sec:'skills',num:'EPISODE 04',label:'Stack'},
+  {sec:'timeline',num:'EPISODE 05',label:'History'},
+];
+const epOverlay = document.getElementById('ep-reveal');
+const epNum = document.getElementById('ep-num');
+const epName = document.getElementById('ep-name');
+let epTimer = null;
+let lastEp = -1;
+const epObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting && e.intersectionRatio > 0.3){
+      const idx = parseInt(e.target.dataset.ep);
+      if(idx !== lastEp && idx !== undefined){
+        lastEp = idx;
+        clearTimeout(epTimer);
+        const d = epData[idx];
+        if(d && d.num){
+          epNum.textContent = d.num;
+          epName.textContent = d.label;
+          epOverlay.classList.add('open');
+          epTimer = setTimeout(()=>{epOverlay.classList.remove('open')},700);
+        }
+      }
+    }
+  });
+},{threshold:[0.3]});
+document.querySelectorAll('.section').forEach((el,i)=>{
+  if(i < epData.length){
+    el.dataset.ep = i;
+    epObs.observe(el);
+  }
+});
+
 // ─── COUNT UP ───
 const cuObs=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
@@ -652,7 +722,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(a=>{
 
 console.log('%c🪐 Orbit','font-size:28px;font-weight:800');
 console.log('%cSOC · Web Security · Pentesting','font-size:14px;color:#00d4ff');
-console.log('%c"Breaking things to fix them"','font-size:12px;color:#888');
+console.log('%c"The One Piece is real"','font-size:12px;color:#a855f7');
+console.log('%c「この世界は残酷だ、そしてとても美しい」','font-size:11px;color:#666');
 </script>
 
 </body>
