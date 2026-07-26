@@ -51,13 +51,22 @@ nav .links a:hover::after{width:100%}
 
 /* ═══ 3D SCENE ═══ */
 #scene{
-  position:relative;
+  position:fixed;
+  inset:0;
   z-index:5;
-  perspective:800px;
-  perspective-origin:50% 40%;
+  perspective:1200px;
+  perspective-origin:50% 45%;
+  pointer-events:none;
+  overflow:hidden;
+}
+#camera{
+  transform-origin:50% 0%;
   transform-style:preserve-3d;
   will-change:transform;
+  backface-visibility:hidden;
+  pointer-events:auto;
 }
+#spacer{pointer-events:none}
 
 /* ═══ HERO ═══ */
 .hero{min-height:100vh;display:flex;align-items:center;position:relative;padding:0 var(--gutter);transform-style:preserve-3d}

@@ -117,38 +117,81 @@ const revObs=new IntersectionObserver((entries)=>{
 },{threshold:.06});
 document.querySelectorAll('.r, .stat-c, .p-card, .r-card, .s-card, .tl-item').forEach(el=>revObs.observe(el));
 
-// ─── 3D SCROLL DEPTH EFFECT ───
+// ─── 3D SCROLL CAMERA ───
 // "stays on one screen — when scroll, everything moves"
-// Single clean effect: the ENTIRE scene tilts & pulls back in 3D
-// as you scroll, creating the feeling of flying through a 3D space.
-// Background layers (matrix, particles) sit at different Z depths
-// for natural parallax.
+// The scene is fixed to the viewport. Scroll progress drives a 3D
+// transform on #camera (translateY + rotateX), creating the feeling
+// of flying through a 3D space without the page scrolling.
 (function(){
-const scene = document.getElementById('scene');
-if(!scene) return;
+const camera = document.getElementById('camera');
+const spacer = document.getElementById('spacer');
+if(!camera || !spacer) return;
 let ticking = false;
+let viewH = window.innerHeight;
 
-function update3D(){
-  const vh = window.innerHeight;
-  const maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
-  const progress = Math.min(window.scrollY / maxScroll, 1);
+function resizeSpacer(){
+  // Make spacer exactly as tall as the camera's content so scroll
+  // progress perfectly maps to camera translate distance
+  const camH = camera.scrollHeight;
+  spacer.style.height = Math.max(500, camH + 80) + 'px';
+}
+
+function updateCam(){
+  const totalH = camera.scrollHeight;
+  const maxDist = Math.max(0, totalH - viewH);
+  // Progress === how far the camera has scrolled through the viewport
+  const progress = Math.min(1, window.scrollY / Math.max(1, spacer.offsetHeight - viewH));
   
-  // Scene tilt: flat at top → 16° backward at bottom + Z pullback
-  // This creates the "stays on one screen, moves in 3D" feel
-  const rotX = progress * -16;
-  const transY = progress * -120;
-  const transZ = progress * -150;
-  scene.style.transform = `rotateX(${rotX}deg) translateY(${transY}px) translateZ(${transZ}px)`;
+  // Camera moves up to reveal sections + tilts in 3D
+  const y = -progress * maxDist;
+  const rx = progress * -14;
+  const z = progress * -120;
+  camera.style.transform = `translateY(${y}px) rotateX(${rx}deg) translateZ(${z}px)`;
+  
+  // Trigger reveals for sections brought into view by the camera
+  // (IntersectionObserver won't detect them under 3D transforms)
+  const revealProgress = progress + 0.06;
+  document.querySelectorAll('#camera .section, #camera .hero').forEach(sec => {
+    if(sec.classList.contains('v')) return;
+    const secTop = sec.offsetTop;
+    const secProgress = secTop / Math.max(1, totalH);
+    if(revealProgress >= secProgress){
+      sec.classList.add('v');
+      sec.querySelectorAll('.r, .stat-c, .p-card, .r-card, .s-card, .tl-item').forEach(ch => {
+        ch.classList.add('v');
+      });
+    }
+  });
   
   ticking = false;
 }
 
-window.addEventListener('scroll', ()=>{
-  if(!ticking){ requestAnimationFrame(update3D); ticking = true; }
-}, {passive: true});
+function onScroll(){
+  if(!ticking){ requestAnimationFrame(updateCam); ticking = true; }
+}
 
-// Initial render
-requestAnimationFrame(() => setTimeout(update3D, 50));
+function onResize(){
+  viewH = window.innerHeight;
+  resizeSpacer();
+  if(!ticking){ requestAnimationFrame(updateCam); ticking = true; }
+}
+
+function init(){
+  // Measure camera height, set spacer, then render initial cam position
+  resizeSpacer();
+  viewH = window.innerHeight;
+  updateCam();
+}
+
+window.addEventListener('scroll', onScroll, {passive: true});
+window.addEventListener('resize', onResize, {passive: true});
+
+// Wait for layout to settle then fire once
+if(document.readyState === 'complete'){
+  setTimeout(init, 80);
+} else {
+  window.addEventListener('load', () => setTimeout(init, 80));
+}
 })();
 
 // ─── COUNT UP ───

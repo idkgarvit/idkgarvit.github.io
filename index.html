@@ -26,6 +26,9 @@
 <div class="scanline"></div>
 <div id="progress"></div>
 
+<!-- Spacer: creates scroll room matching camera content height -->
+<div id="spacer"></div>
+
 <!-- NAV (outside 3D scene so it stays flat) -->
 <nav id="nav">
   <div class="inner">
@@ -39,8 +42,10 @@
   </div>
 </nav>
 
-<!-- 3D Scroll Scene Container -->
+<!-- 3D Scroll Scene Container (position: fixed, acts as camera obscura) -->
 <div id="scene">
+  <!-- Camera: moves in 3D space driven by scroll progress -->
+  <div id="camera">
 
 <!-- HERO -->
 <section class="hero">
@@ -276,6 +281,7 @@
   </div>
 </footer>
 
+</div><!-- /camera -->
 </div><!-- /scene -->
 
 <script src="script.js"></script>
