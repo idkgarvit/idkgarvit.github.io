@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writeups — Orbit</title>
+<meta name="description" content="Security research writeups by Orbit — bug bounty, blockchain security, IoT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b10; --bg2:#0c101a; --bg3:#111726;
+  --fg:#c8d0dc; --fg-m:#7a8494; --fg-d:#3a4250;
+  --cyan:#00d4ff; --cyan-g:rgba(0,212,255,.08);
+  --crimson:#dc2626; --purple:#a855f7; --green:#00ff88; --orange:#fb923c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+::selection{background:var(--cyan);color:var(--bg)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--crimson),var(--cyan));border-radius:2px}
+a{color:var(--cyan);text-decoration:none}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,11,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav .inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--fg);font-size:15px}
+.logo span{color:var(--cyan)}
+.nav-links{display:flex;gap:22px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.nav-links a{color:var(--fg-m)}
+.nav-links a:hover{color:var(--cyan)}
+
+/* header */
+.wrap{max-width:1100px;margin:0 auto;padding:120px 24px 60px}
+.back{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--fg-m)}
+.back:hover{color:var(--cyan)}
+h1.page-title{font-size:clamp(28px,5vw,44px);font-weight:800;color:#fff;margin:18px 0 8px;line-height:1.15}
+.page-sub{color:var(--fg-m);font-size:15px;max-width:640px}
+.count-line{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);margin-top:14px}
+
+/* cards */
+.w-list{margin-top:40px;display:flex;flex-direction:column;gap:16px}
+.w-card{display:block;background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:24px 28px;transition:border-color .2s,transform .2s,background .2s;position:relative;overflow:hidden}
+.w-card:hover{border-color:rgba(0,212,255,.35);transform:translateY(-2px);background:var(--bg3)}
+.w-card.soon{opacity:.55;cursor:not-allowed}
+.w-card.soon:hover{transform:none;border-color:rgba(255,255,255,.06);background:var(--bg2)}
+.w-meta{display:flex;gap:10px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;margin-bottom:10px}
+.tag{padding:2px 10px;border-radius:20px;border:1px solid}
+.t-crit{color:var(--crimson);border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.07)}
+.t-web3{color:var(--purple);border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.07)}
+.t-date{color:var(--fg-d)}
+.w-card h3{color:#fff;font-size:19px;font-weight:700;margin-bottom:6px}
+.w-card p{color:var(--fg-m);font-size:13.5px;max-width:720px}
+.w-arrow{position:absolute;right:28px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;color:var(--fg-d);transition:.2s}
+.w-card:hover .w-arrow{color:var(--cyan);right:22px}
+.w-stat{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);margin-top:10px}
+
+footer{border-top:1px solid rgba(255,255,255,.05);margin-top:80px}
+footer .inner{max-width:1100px;margin:0 auto;padding:28px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-d);display:flex;justify-content:space-between}
+footer a{color:var(--fg-m)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="inner">
+    <a class="logo" href="/">~/orbit<span>.writeups</span></a>
+    <div class="nav-links">
+      <a href="/">portfolio</a>
+      <a href="https://github.com/idkgarvit" target="_blank">github</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <a class="back" href="/">&larr; back to portfolio</a>
+  <h1 class="page-title">Writeups</h1>
+  <p class="page-sub">Deep dives on real findings — how they were discovered, verified, and what they teach. The ones that got away get written up too.</p>
+  <div class="count-line">$ ls ./published --count=<span id="wc">3</span></div>
+
+  <div class="w-list">
+
+    <a class="w-card" href="/writeups/pimlico-erc4337-bundler-key.html">
+      <div class="w-meta">
+        <span class="tag t-crit">P1 · DUPED</span>
+        <span class="tag t-web3">ERC-4337</span>
+        <span class="t-date">2026-07 · Polygon Technology / HackerOne</span>
+      </div>
+      <h3>Proving Unrestricted Write Access to an ERC-4337 Bundler — Without Spending a Rupee of Gas</h3>
+      <p>Hardcoded Pimlico API key in wallet.polygon.technology's JS bundle. How reading AA error codes turned a "can't demo it" key leak into a proven 7-chain exploitation chain.</p>
+      <span class="w-stat">// read time ~9 min</span>
+      <span class="w-arrow">-&gt;</span>
+    </a>
+
+    <div class="w-card soon">
+      <div class="w-meta">
+        <span class="tag t-crit">DUPED</span>
+        <span class="tag t-web3">IDOR</span>
+        <span class="t-date">2026-07 · Baazi Games / CoinPoker · Com Olho</span>
+      </div>
+      <h3>CoinPicker — Tournament Winner Data Exposure on CoinPoker</h3>
+      <p>Triage accepted it as P3. Then someone else filed it first. The finding, the timeline, and what unauthenticated endpoint enumeration looks like on a real-money gaming platform.</p>
+      <span class="w-stat">// draft in progress</span>
+    </div>
+
+    <div class="w-card soon">
+      <div class="w-meta">
+        <span class="tag t-crit">DUPED</span>
+        <span class="tag t-web3">AD / Config</span>
+        <span class="t-date">2026-07 · TMF Group / Com Olho</span>
+      </div>
+      <h3>ADFS Configuration Leak on a Global HR Platform</h3>
+      <p>An exposed ADFS config that someone else reported 3 weeks earlier. Federation metadata, what it exposes, and why duplicate windows on enterprise programs are measured in days, not months.</p>
+      <span class="w-stat">// queued</span>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <span>orbit &copy; 2026 — infrared security research</span>
+    <a href="/">idkgarvit.github.io</a>
+  </div>
+</footer>
+
+</body>
+</html>

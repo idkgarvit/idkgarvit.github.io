@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proving Unrestricted Write Access to an ERC-4337 Bundler — Orbit</title>
+<meta name="description" content="How a hardcoded Pimlico API key in wallet.polygon.technology's JS bundle became a proven 7-chain ERC-4337 exploitation chain — without spending gas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b10; --bg2:#0c101a; --bg3:#111726;
+  --fg:#c8d0dc; --fg-m:#7a8494; --fg-d:#3a4250;
+  --cyan:#00d4ff; --crimson:#dc2626; --purple:#a855f7; --green:#00ff88; --orange:#fb923c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--fg);line-height:1.75;font-size:16px}
+::selection{background:var(--cyan);color:var(--bg)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--crimson),var(--cyan))}
+a{color:var(--cyan);text-decoration:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,11,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav .inner{max-width:860px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--fg);font-size:14px}
+.logo span{color:var(--cyan)}
+.nav-links{font-family:'JetBrains Mono',monospace;font-size:12px}
+.nav-links a{color:var(--fg-m)}
+.nav-links a:hover{color:var(--cyan)}
+.wrap{max-width:860px;margin:0 auto;padding:130px 24px 40px}
+.back{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--fg-m)}
+.back:hover{color:var(--cyan)}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 10px;font-family:'JetBrains Mono',monospace;font-size:11px}
+.tag{padding:2px 10px;border-radius:20px;border:1px solid}
+.t-crit{color:var(--crimson);border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.07)}
+.t-web3{color:var(--purple);border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.07)}
+.t-date{color:var(--fg-d)}
+h1.title{font-size:clamp(26px,4.5vw,40px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:14px}
+.standfirst{color:var(--fg-m);font-size:17px;border-left:3px solid var(--cyan);padding-left:18px;margin:26px 0}
+h2{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:20px;margin:52px 0 16px;font-weight:700}
+h2::before{content:"## ";color:var(--fg-d)}
+h3{color:#fff;font-size:16px;margin:32px 0 10px;font-weight:600}
+p{margin:14px 0;color:var(--fg)}
+strong{color:#fff}
+code{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--bg3);border:1px solid rgba(255,255,255,.06);border-radius:5px;padding:1px 7px;color:var(--green)}
+pre{background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0}
+pre code{background:none;border:none;padding:0;color:var(--fg);font-size:13px;line-height:1.65}
+.callout{background:var(--bg2);border:1px solid rgba(0,212,255,.25);border-radius:10px;padding:18px 22px;margin:22px 0;font-size:14.5px}
+.callout.warn{border-color:rgba(220,38,38,.35)}
+.callout .cl-t{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);display:block;margin-bottom:6px}
+.callout.warn .cl-t{color:var(--crimson)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+th{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-m);text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
+td:first-child{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px}
+.ok{color:var(--green)} .bad{color:var(--crimson)} .warn{color:var(--orange)}
+.hr{border:none;border-top:1px dashed rgba(255,255,255,.12);margin:48px 0}
+footer{border-top:1px solid rgba(255,255,255,.05);margin-top:70px}
+footer .inner{max-width:860px;margin:0 auto;padding:28px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-d);display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="inner">
+<a class="logo" href="/writeups/">~/orbit<span>.writeups</span></a>
+<div class="nav-links"><a href="/">portfolio</a></div>
+</div></nav>
+
+<div class="wrap">
+<a class="back" href="/writeups/">&larr; all writeups</a>
+<div class="meta-row">
+<span class="tag t-crit">P1 · DUPED</span>
+<span class="tag t-web3">ERC-4337</span>
+<span class="tag t-web3">Account Abstraction</span>
+<span class="t-date">Polygon Technology · HackerOne · July 2026</span>
+</div>
+<h1 class="title">Proving Unrestricted Write Access to an ERC-4337 Bundler — Without Spending a Rupee of Gas</h1>
+<p class="standfirst">A hardcoded Pimlico API key in wallet.polygon.technology's JavaScript bundle. Anyone can find a leaked key — the interesting part is <em>proving what it can do</em>. This is how reading account-abstraction error codes turned "here's a key leak I can't fully demo" into a verified exploitation chain across 7 EVM chains.</p>
+<h2>The find</h2>
+<p><strong>Target:</strong> Polygon's staking dashboard, <code>wallet.polygon.technology</code>. Standard recon move — pull the JS bundles, grep for secrets. One file stood out: <code>assets/index-BnISb7kF.js</code>.</p>
+<pre><code>$ grep -oP 'pim_[A-Za-z0-9]+' index-BnISb7kF.js
+pim_XuUP...zR5t5XUpAiZ2yQVQ   # partially redacted here — rotate your keys, folks</code></pre>
+<p>A <strong>Pimlico API key</strong>. Pimlico runs ERC-4337 bundler infrastructure — the service that takes <code>eth_sendUserOperation</code> calls and gets smart-account transactions onto Ethereum chains. A key like this isn't a read-only analytics token. It's a <em>write-capable credential to transaction infrastructure</em>.</p>
+<p>First question: does it work? Second question: what does it work on?</p>
+<pre><code>$ curl -s -X POST "https://api.pimlico.io/v2/137/rpc?apikey=pim_..." \
+  -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
+
+{"jsonrpc":"2.0","result":"0x89","id":1}    # 0x89 = 137 = Polygon mainnet. Live.</code></pre>
+<p>Live on Polygon mainnet. And per Pimlico's URL scheme (<code>/v2/{chainId}/rpc</code>), the same key answered on <strong>Ethereum, Arbitrum, Optimism, Base, Amoy and Sepolia</strong> too. Seven chains, one hardcoded string.</p>
+
+<h2>Why a bundler key is worse than it looks</h2>
+<p>If you've never touched account abstraction (ERC-4337), here's the 30-second version: instead of an EOA signing transactions, users have <strong>smart contract wallets</strong>. Transactions get packaged as <strong>UserOperations</strong>, and a <strong>bundler</strong> submits them on-chain. New wallets are deployed lazily by a <strong>factory</strong> embedded in the UserOp's <code>initCode</code>.</p>
+<p>So a leaked bundler key doesn't just let you "use the API." It potentially lets you:</p>
+<p>1. submit arbitrary UserOps at someone else's infrastructure cost,<br>
+2. deploy new smart wallets through any factory the bundler will simulate,<br>
+3. do both across every chain the key is provisioned for.</p>
+<div class="callout warn"><span class="cl-t">THE PROBLEM</span>
+Every triager's first question: "so did you actually take over a wallet?" No — completing that chain needs gas prefund in a wallet I'd create, plus a valid signature. That's ~$0.008 of MATIC and one ECDSA signature away, but "it would work with more steps" is not a report. I needed proof that didn't cost anything.</div>
+<h2>Reversing the wallet factory</h2>
+<p>The dashboard's JS also referenced Polygon's smart wallet factory. Before crafting any UserOp, I needed to know exactly what that factory deploys — on-chain reversing, no source code needed.</p>
+<pre><code># accountImplementation() selector 0x290ab984 → which implementation do wallets point to?
+$ cast call 0xf6102306...e536 "accountImplementation()(address)"
+0xD206aC7f...9eC8
+
+# does that implementation speak ERC-4337? scan bytecode for validateUserOp
+# validateUserOp(address,bytes32,uint256,uint256) → selector 0x69cf4295
+$ cast code 0xD206aC7f...9eC8 | grep -i 69cf4295
+... PUSH4 0x69cf4295 ...    # present — it's a real ERC-4337 wallet</code></pre>
+<p>Factory: <code>createAccount(address owner, bytes32 salt, bytes)</code> — selector <code>0x4534137e</code>. Implementation: a genuine ERC-4337 wallet with <code>validateUserOp</code> and EIP-1271 signature support. EntryPoint: v0.6 at <code>0x5FF1...789</code>.</p>
+<div class="callout"><span class="cl-t">GOTCHA WORTH REMEMBERING</span>
+Selector math matters here. <code>createAccount(address,uint256,bytes)</code> hashes to <code>0xef67dc69</code>, but this factory takes a <strong>bytes32 salt</strong>: <code>createAccount(address,bytes32,bytes)</code> = <code>0x4534137e</code>. Craft your <code>initCode</code> with the wrong variant and the factory reverts for a reason that has nothing to do with the vulnerability — and you'll waste hours blaming the bundler.</div>
+
+<h2>The trick: let the error codes testify</h2>
+<p>Here's the core idea. I can't complete a full wallet takeover without gas. But an ERC-4337 bundler processes a UserOp through <strong>distinct validation stages before anything touches a chain state</strong>, and each stage has its own error code. If I submit a UserOp with a deliberately invalid (dummy) signature and watch <em>which</em> stage rejects it, the error code itself becomes my evidence trail:</p>
+<table>
+<tr><th>Stage</th><th>If it fails you see</th><th>What passing means</th></tr>
+<tr><td class="ok">RPC auth</td><td class="bad">401 / 403</td><td>Key valid, endpoint live</td></tr>
+<tr><td class="ok">UserOp parse + simulation entry</td><td class="bad">AA10 / direct reject</td><td>Bundler accepts arbitrary structures</td></tr>
+<tr><td class="ok">initCode execution (factory)</td><td class="bad">AA13</td><td>No AA13 ⇒ factory ran, wallet deployed in simulation</td></tr>
+<tr><td class="ok">EntryPoint routing</td><td class="bad">unknown EntryPoint reject</td><td>Bundler routes to the real EntryPoint</td></tr>
+<tr><td class="warn">wallet validateUserOp</td><td class="warn">AA23</td><td>Only the dummy signature failed — everything upstream passed</td></tr>
+</table>
+<p>So I built a UserOp with:</p>
+<p>• <code>sender</code> = a fresh address I generated (not allowlisted anywhere)<br>
+• <code>initCode</code> = Polygon's own factory + <code>createAccount(myKey, salt, myKey)</code><br>
+• <code>signature</code> = 65 bytes of <code>0xaa…aa</code> — garbage on purpose<br>
+• <code>callData</code> = empty</p>
+<pre><code>$ curl -s -X POST "https://api.pimlico.io/v2/137/rpc?apikey=pim_..." \
+  -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_sendUserOperation","params":[{
+        "sender":"0x67e7...20E7","nonce":"0x0",
+        "initCode":"0xf6102306...e536" + "4534137e" + abi.encode(owner,salt,innerCall),
+        "callData":"0x",
+        "callGasLimit":"0xAE9F6","verificationGasLimit":"0x49382",
+        "preVerificationGas":"0x182C3",
+        "maxFeePerGas":"0x3b9aca00","maxPriorityFeePerGas":"0x3b9aca00",
+        "paymasterAndData":"0x",
+        "signature":"0xaaaa...aaaa"
+      },"0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"],"id":1}'
+
+{"error":{"message":"UserOperation reverted during simulation with reason:
+ AA23 reverted (or OOG)","code":-32500}}</code></pre>
+<p><strong>AA23.</strong> The best possible rejection.</p>
+<h2>Reading the verdict</h2>
+<p>AA23 means <em>wallet-level signature verification failed</em>. Expected — I sent garbage on purpose. The point is everything that did <strong>not</strong> happen:</p>
+<table>
+<tr><th>Restriction that could have fired</th><th>Expected signal</th><th>Reality</th></tr>
+<tr><td>Sender allowlist</td><td>reject before simulation</td><td class="bad">never fired</td></tr>
+<tr><td>Factory / initCode restriction</td><td class="warn">AA13</td><td class="bad">never fired</td></tr>
+<tr><td>EntryPoint pinning</td><td>unknown-EP reject</td><td class="bad">never fired</td></tr>
+<tr><td>Rate limit / scope cap</td><td>429 / permission error</td><td class="bad">never fired</td></tr>
+</table>
+<p>The bundler authenticated my key, accepted a fully arbitrary UserOp from an unknown sender, executed Polygon's own factory code to deploy a wallet owned by <em>my</em> generated key — all in simulation — and only stopped at the signature check. That's not "a key that can read status." That's <strong>unrestricted write-path access to transaction infrastructure</strong>, and the only thing between me and execution was $0.008 of gas prefund.</p>
+<div class="callout"><span class="cl-t">THE GENERALIZABLE LESSON</span>
+When you can't complete an exploitation chain, don't stop at "I couldn't demo it." Find the protocol's <strong>stage-gated error codes</strong> and make each stage testify. A transition between two error codes (AA23 with dummy sig vs. AA13 with broken initCode) is protocol-defined proof of exactly how far your access reaches. This works anywhere systems validate in stages: OAuth flows, JWT libraries, SAML, cloud IAM policy evaluation.</div>
+
+<h2>Aftermath</h2>
+<p>Reported to Polygon Technology via HackerOne as P1 in July 2026, with the full chain: key extraction → factory reversing → UserOp craft → stage-by-stage evidence. It was resolved as a <strong>duplicate</strong> — someone else had reported the same key first. Which is its own validation: two independent researchers hit the same hardcoded credential in the same bundle.</p>
+<p>The key has since been rotated. The technique below is what stays.</p>
+
+<h2>TL;DR for the next hunter</h2>
+<p>1. JS-bundle grepping finds keys. Error-code analysis proves what they do.<br>
+2. ERC-4337 cheat sheet: <code>AA13</code> = factory/initCode failed · <code>AA23</code> = wallet rejected signature (everything upstream passed) · <code>AA21</code> = wallet validated but insufficient prefund.<br>
+3. Verify factories before trusting them: get the implementation via <code>accountImplementation()</code>, scan bytecode for <code>0x69cf4295</code> (<code>validateUserOp</code>).<br>
+4. Watch selector variants — bytes32 salt vs uint256 salt produce different function signatures and different reverts.<br>
+5. A write-capable key with no demonstrated spend is still a finding. Frame it as infrastructure access, and let the error codes carry the impact story.</p>
+
+<hr class="hr">
+<p style="font-size:13px;color:var(--fg-m)">Written by <strong style="color:var(--cyan)">Orbit</strong> — infrared security research. Find more at the <a href="/writeups/">writeups index</a> or the <a href="/">portfolio</a>.</p>
+</div>
+<footer><div class="inner"><span>orbit © 2026</span><span><a href="/writeups/">all writeups</a> · <a href="/">portfolio</a></span></div></footer>
+</body>
+</html>
