@@ -79,7 +79,7 @@ footer .inner{max-width:860px;margin:0 auto;padding:28px 24px;font-family:'JetBr
 <h2>The find</h2>
 <p><strong>Target:</strong> Polygon's staking dashboard, <code>wallet.polygon.technology</code>. Standard recon move — pull the JS bundles, grep for secrets. One file stood out: <code>assets/index-BnISb7kF.js</code>.</p>
 <pre><code>$ grep -oP 'pim_[A-Za-z0-9]+' index-BnISb7kF.js
-pim_XuUP...zR5t5XUpAiZ2yQVQ   # partially redacted here — rotate your keys, folks</code></pre>
+pim_XuUP[REDACTED]            # value withheld — see Aftermath. Yes, it matters.</code></pre>
 <p>A <strong>Pimlico API key</strong>. Pimlico runs ERC-4337 bundler infrastructure — the service that takes <code>eth_sendUserOperation</code> calls and gets smart-account transactions onto Ethereum chains. A key like this isn't a read-only analytics token. It's a <em>write-capable credential to transaction infrastructure</em>.</p>
 <p>First question: does it work? Second question: what does it work on?</p>
 <pre><code>$ curl -s -X POST "https://api.pimlico.io/v2/137/rpc?apikey=pim_..." \
@@ -105,9 +105,9 @@ $ cast call 0xf6102306...e536 "accountImplementation()(address)"
 
 # does that implementation speak ERC-4337? scan bytecode for validateUserOp
 # validateUserOp(address,bytes32,uint256,uint256) → selector 0x69cf4295
-$ cast code 0xD206aC7f...9eC8 | grep -i 69cf4295
-... PUSH4 0x69cf4295 ...    # present — it's a real ERC-4337 wallet</code></pre>
-<p>Factory: <code>createAccount(address owner, bytes32 salt, bytes)</code> — selector <code>0x4534137e</code>. Implementation: a genuine ERC-4337 wallet with <code>validateUserOp</code> and EIP-1271 signature support. EntryPoint: v0.6 at <code>0x5FF1...789</code>.</p>
+$ cast code 0xD206aC7f...9eC8 | grep -c 69cf4295
+0    # ABSENT — this wallet validates signatures through a NON-standard path</code></pre>
+<p>Factory: <code>createAccount(address owner, bytes32 salt, bytes)</code> — selector <code>0x4534137e</code>. Implementation: a smart-account wallet wired to EntryPoint v0.6 (<code>0x5FF1...789</code>) — but with a twist that becomes important later: <strong>no canonical <code>validateUserOp</code> selector in its bytecode.</strong> Polygon's wallet uses a custom validation scheme instead of the stock ERC-4337 dispatcher.</p>
 <div class="callout"><span class="cl-t">GOTCHA WORTH REMEMBERING</span>
 Selector math matters here. <code>createAccount(address,uint256,bytes)</code> hashes to <code>0xef67dc69</code>, but this factory takes a <strong>bytes32 salt</strong>: <code>createAccount(address,bytes32,bytes)</code> = <code>0x4534137e</code>. Craft your <code>initCode</code> with the wrong variant and the factory reverts for a reason that has nothing to do with the vulnerability — and you'll waste hours blaming the bundler.</div>
 
@@ -119,7 +119,7 @@ Selector math matters here. <code>createAccount(address,uint256,bytes)</code> ha
 <tr><td class="ok">UserOp parse + simulation entry</td><td class="bad">AA10 / direct reject</td><td>Bundler accepts arbitrary structures</td></tr>
 <tr><td class="ok">initCode execution (factory)</td><td class="bad">AA13</td><td>No AA13 ⇒ factory ran, wallet deployed in simulation</td></tr>
 <tr><td class="ok">EntryPoint routing</td><td class="bad">unknown EntryPoint reject</td><td>Bundler routes to the real EntryPoint</td></tr>
-<tr><td class="warn">wallet validateUserOp</td><td class="warn">AA23</td><td>Only the dummy signature failed — everything upstream passed</td></tr>
+<tr><td class="warn">wallet-level validation</td><td class="warn">AA23</td><td>Terminal stage reached — only the wallet's own signature check failed</td></tr>
 </table>
 <p>So I built a UserOp with:</p>
 <p>• <code>sender</code> = a fresh address I generated (not allowlisted anywhere)<br>
@@ -151,18 +151,20 @@ Selector math matters here. <code>createAccount(address,uint256,bytes)</code> ha
 <tr><td>EntryPoint pinning</td><td>unknown-EP reject</td><td class="bad">never fired</td></tr>
 <tr><td>Rate limit / scope cap</td><td>429 / permission error</td><td class="bad">never fired</td></tr>
 </table>
-<p>The bundler authenticated my key, accepted a fully arbitrary UserOp from an unknown sender, executed Polygon's own factory code to deploy a wallet owned by <em>my</em> generated key — all in simulation — and only stopped at the signature check. That's not "a key that can read status." That's <strong>unrestricted write-path access to transaction infrastructure</strong>, and the only thing between me and execution was $0.008 of gas prefund.</p>
+<p>The bundler authenticated my key, accepted a fully arbitrary UserOp from an unknown sender, executed Polygon's own factory code to deploy a wallet owned by <em>my</em> generated key — all in simulation — and only stopped at the wallet's own validation logic. That's not "a key that can read status." That's <strong>unrestricted write-path access to transaction infrastructure</strong>, and the only thing between me and execution was a dust gas prefund (~0.001 MATIC).</p>
 <div class="callout"><span class="cl-t">THE GENERALIZABLE LESSON</span>
 When you can't complete an exploitation chain, don't stop at "I couldn't demo it." Find the protocol's <strong>stage-gated error codes</strong> and make each stage testify. A transition between two error codes (AA23 with dummy sig vs. AA13 with broken initCode) is protocol-defined proof of exactly how far your access reaches. This works anywhere systems validate in stages: OAuth flows, JWT libraries, SAML, cloud IAM policy evaluation.</div>
+<div class="callout warn"><span class="cl-t">WHY AA23 AND NOT AA21</span>
+On a stock ERC-4337 wallet, a valid-signature-but-no-gas UserOp dies with <code>AA21</code> (prefund too low) — which is why my first instinct was to chase AA21 as "proof." But this implementation has no canonical <code>validateUserOp</code>, so its custom validator rejects the garbage signature first: <code>AA23</code>. Don't treat either code as "better proof" — both mean the op sailed through the bundler's entire pre-wallet pipeline. Read the implementation before interpreting the code.</div>
 
 <h2>Aftermath</h2>
 <p>Reported to Polygon Technology via HackerOne as P1 in July 2026, with the full chain: key extraction → factory reversing → UserOp craft → stage-by-stage evidence. It was resolved as a <strong>duplicate</strong> — someone else had reported the same key first. Which is its own validation: two independent researchers hit the same hardcoded credential in the same bundle.</p>
-<p>The key has since been rotated. The technique below is what stays.</p>
+<p>One uncomfortable footnote: at publication — roughly a month after the report — the key <strong>still authenticated successfully</strong> against Pimlico's API. Sometimes the slowest part of a leak isn't the finding. It's the rotation.</p>
 
 <h2>TL;DR for the next hunter</h2>
 <p>1. JS-bundle grepping finds keys. Error-code analysis proves what they do.<br>
 2. ERC-4337 cheat sheet: <code>AA13</code> = factory/initCode failed · <code>AA23</code> = wallet rejected signature (everything upstream passed) · <code>AA21</code> = wallet validated but insufficient prefund.<br>
-3. Verify factories before trusting them: get the implementation via <code>accountImplementation()</code>, scan bytecode for <code>0x69cf4295</code> (<code>validateUserOp</code>).<br>
+3. Verify factories before trusting them: <code>accountImplementation()</code> returns the implementation; scan its bytecode for <code>0x69cf4295</code>. Absent = custom validator → expect AA23 on dummy-sig probes. Present = stock flow → AA21 means you're one prefund away from execution.<br>
 4. Watch selector variants — bytes32 salt vs uint256 salt produce different function signatures and different reverts.<br>
 5. A write-capable key with no demonstrated spend is still a finding. Frame it as infrastructure access, and let the error codes carry the impact story.</p>
 
