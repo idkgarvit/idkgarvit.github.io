@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://idkgarvit.github.io/sitemap.xml

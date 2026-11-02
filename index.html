@@ -822,7 +822,7 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
         <div class="stat-c" id="stat-240"><span class="sicon">🧪</span><div class="n"><span class="cu" data-t="240">0</span><span class="pl">+</span></div><div class="l">PortSwigger Labs</div></div>
         <div class="stat-c" id="stat-12"><span class="sicon">📋</span><div class="n"><span class="cu" data-t="12">0</span><span class="pl">+</span></div><div class="l">Vulnerability Reports</div></div>
         <div class="stat-c" id="stat-5"><span class="sicon">🎯</span><div class="n"><span class="cu" data-t="5">0</span></div><div class="l">Bug Bounty Platforms</div></div>
-        <div class="stat-c" id="stat-p1"><span class="sicon">⚠️</span><div class="n">P<span class="cu" data-t="1">0</span></div><div class="l">Highest Severity</div></div>
+        <div class="stat-c" id="stat-p1"><span class="sicon">⚠️</span><div class="n">P<span class="cu" data-t="1">0</span></div><div class="l">Highest Reported Severity</div></div>
       </div>
     </div>
   </div>
@@ -840,10 +840,10 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
     <p class="s-desc">Open-source security tools for recon, defense, and automation. Projects I've built and contributed to.</p>
     <div class="p-grid" id="p-grid">
       <a href="https://github.com/idkgarvit/LIDRA" target="_blank" class="p-card" data-delay="0">
-        <div class="pm"><span class="pb pb-sh">Shell</span><span>Own</span></div>
+        <div class="pm"><span class="pb pb-py">Python</span><span>Own</span></div>
         <h3>LIDRA</h3>
-        <p>Lightweight recon and automation framework. Domain discovery, port scanning, endpoint mapping — single pipeline for security assessments.</p>
-        <div class="pt"><span>Recon</span><span>Automation</span><span>Shell</span></div>
+        <p>Lightweight host IDS/IPS. Detects from real packets and Linux logs, then blocks the source with an auditable firewall rule. False-positive budget enforced in CI.</p>
+        <div class="pt"><span>IDS/IPS</span><span>Network Sec</span><span>Python</span></div>
       </a>
       <a href="https://github.com/idkgarvit/OBSIDIOS" target="_blank" class="p-card" data-delay="1">
         <div class="pm"><span class="pb pb-py">Python</span><span>Own</span></div>
@@ -889,17 +889,17 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
 
     <div class="r-grid">
       <a href="/writeups/pimlico-erc4337-bundler-key.html" class="r-card" data-delay="1">
-        <div class="rm"><span class="rb2 rb-crit">Critical</span><span>Polygon · H1</span></div>
+        <div class="rm"><span class="rb2 rb-crit">P1</span><span>Polygon · H1</span><span style="color:var(--fg-d);font-size:10px;font-family:'JetBrains Mono',monospace">closed as duplicate</span></div>
         <h4>ERC-4337 Bundler Key — 7 Chains <span style="color:var(--cyan);font-size:11px;font-family:'JetBrains Mono',monospace">[writeup →]</span></h4>
-        <p>Hardcoded Pimlico bundler API key in JS bundle with unrestricted eth_sendUserOperation across 7 EVM chains. Smart wallet factory exploitation chain.</p>
+        <p>Hardcoded Pimlico bundler API key in JS bundle with unrestricted eth_sendUserOperation across 7 EVM chains. Proved the full chain without spending gas; independently found, closed as a duplicate of an earlier report.</p>
         <div class="rt"><span>ERC-4337</span><span>Blockchain</span><span>Hardcoded Key</span></div>
       </a>
-      <a href="https://bugcrowd.com/idkgarvit" target="_blank" class="r-card" data-delay="2">
-        <div class="rm"><span class="rb2 rb-med">P5</span><span>Nubank · Bugcrowd</span></div>
-        <h4>Unauthenticated S3 Write</h4>
-        <p>Production S3 bucket with public write policies — anyone could upload, modify, or delete objects in a live banking environment.</p>
-        <div class="rt"><span>S3</span><span>Cloud</span><span>AWS</span><span>Misconfig</span></div>
-      </a>
+      <div class="r-card" data-delay="2" style="cursor:default">
+        <div class="rm"><span class="rb2 rb-med">Restricted</span><span>Multiple programs</span></div>
+        <h4>Further findings under disclosure restriction</h4>
+        <p>Reports filed against fintech, cloud and blockchain programs whose policies bar public disclosure. Client-side signing, cloud storage write paths and access-control issues, withheld pending program permission.</p>
+        <div class="rt"><span>Cloud</span><span>Access Control</span><span>Mobile</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -932,8 +932,8 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
       <div class="tl-item" data-delay="0">
         <div class="tl-d"></div>
         <div class="tl-dt">2026</div>
-        <div class="tl-t">P1 Critical — Polygon Technology</div>
-        <div class="tl-de">ERC-4337 bundler key exploitation chain across 7 EVM chains.</div>
+        <div class="tl-t">P1 Critical — Polygon Technology (duplicate)</div>
+        <div class="tl-de">ERC-4337 bundler key exploitation chain across 7 EVM chains. Independently reproduced; closed as a duplicate of an earlier report.</div>
       </div>
       <div class="tl-item" data-delay="1">
         <div class="tl-d"></div>
@@ -970,9 +970,9 @@ footer .cr .o{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weig
       <a href="mailto:garvitkanojia15@gmail.com">📧 Email</a>
       <a href="https://github.com/idkgarvit" target="_blank">🐙 GitHub</a>
       <a href="https://linkedin.com/in/garvit-kanojia-399701277" target="_blank">💼 LinkedIn</a>
-      <a href="https://hackerone.com/idkgarvit" target="_blank">🛡️ HackerOne</a>
-      <a href="https://bugcrowd.com/idkgarvit" target="_blank">🐞 Bugcrowd</a>
-      <a href="https://instagram.com/garvit_kanojia_15" target="_blank">📸 Instagram</a>
+      <a href="https://hackerone.com/orbit15" target="_blank">🛡️ HackerOne</a>
+      <a href="https://bugcrowd.com/garvitkanojia9bd121" target="_blank">🐞 Bugcrowd</a>
+      <a href="/writeups/">📝 Writeups</a>
     </div>
     <div class="cr">Built with 🧊 by <span class="o">Orbit</span> · 2026</div>
   </div>
